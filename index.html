@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduLylas Demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .modal-backdrop { background: rgba(15, 23, 42, 0.7); }
+    .tab-active { border-bottom: 2px solid #2563eb; color: #2563eb; }
+    .focus-ring:focus { outline: 2px solid #2563eb; outline-offset: 2px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+  <div class="max-w-6xl mx-auto px-4 pb-24">
+    <div class="bg-white shadow-md rounded-2xl p-4 mt-4 sticky top-0 z-30">
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <div class="flex items-center space-x-2">
+          <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold">EL</div>
+          <div>
+            <p class="font-bold text-xl">EduLylas</p>
+            <p class="text-xs text-blue-500">#শেখারঅভিযান</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button id="creatorToggle" class="text-sm text-blue-600 underline focus-ring" aria-label="Switch account">Switch Account</button>
+          <button class="relative focus-ring" aria-label="Notifications">
+            <span class="material-icons text-slate-600">notifications</span>
+            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1">3</span>
+          </button>
+          <div id="navUser" class="flex items-center space-x-2"></div>
+        </div>
+      </div>
+      <div class="mt-4">
+        <input id="searchInput" aria-label="Search" class="w-full border border-slate-200 rounded-xl px-4 py-2 focus:ring focus:ring-blue-100" placeholder="Search topics, playbooks, creators…" />
+      </div>
+    </div>
+
+    <details class="bg-white rounded-2xl shadow p-4 mt-4" open>
+      <summary class="font-semibold cursor-pointer">README • Demo Instructions</summary>
+      <div class="mt-3 text-sm space-y-2">
+        <p>Save this file as <strong>index.html</strong> and open it directly in Chrome/Edge (double-click). All demo data persists in <code>localStorage</code>; no server needed.</p>
+        <p>Auto-login user: <strong>dev@edulylas.test</strong> (password hint: <code>demo-pass-123</code>). Use the “Switch Account” link to hop to the creator <strong>creator@edulylas.test</strong>.</p>
+        <p>Payments: open any locked episode or “Unlock Full Playbook” CTA. Card flow auto succeeds after 1.5s. bKash shows a mini confirm modal—press confirm to finish. Nagad intentionally fails the first time; use the retry button to succeed on the second attempt. Transactions land in <code>edulylas_purchases</code> and unlocks in <code>edulylas_unlocks</code>.</p>
+        <p>Key storage schema: <code>edulylas_users</code>, <code>edulylas_playbooks</code>, <code>edulylas_episodes</code>, <code>edulylas_purchases</code>, <code>edulylas_unlocks</code>, <code>edulylas_comments</code>, and <code>edulylas_current_user</code>. Episode notes save to <code>edulylas_notes_{episodeId}_{userId}</code>.</p>
+        <p>Reset demo data from the Profile tab. YouTube embeds need internet; if they fail, use the provided “Open on YouTube” links.</p>
+      </div>
+    </details>
+
+    <div class="mt-6 space-y-6" id="app">
+      <section class="flex flex-wrap gap-2" id="categoryShortcuts" aria-label="Categories"></section>
+      <section>
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-lg font-semibold">Trending Playbooks</h2>
+          <span class="text-xs text-slate-500">বিনামূল্যে &amp; প্রিমিয়াম মিশ্রিত</span>
+        </div>
+        <div id="trendingCarousel" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2"></div>
+      </section>
+      <section>
+        <h2 class="text-lg font-semibold mb-3">Recommended For You</h2>
+        <div id="recommendedFeed" class="space-y-4"></div>
+      </section>
+      <section id="playbookPreview" class="bg-white rounded-2xl shadow p-4"></section>
+      <section id="playbookDetails" class="bg-white rounded-2xl shadow p-4"></section>
+      <section id="episodePlayer" class="bg-white rounded-2xl shadow p-4"></section>
+      <section id="creatorPanel" class="hidden bg-white rounded-2xl shadow p-4"></section>
+      <section id="profilePanel" class="bg-white rounded-2xl shadow p-4"></section>
+    </div>
+  </div>
+
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-inner py-2 z-40">
+    <div class="max-w-6xl mx-auto px-4 flex justify-between text-sm font-semibold text-slate-500">
+      <button class="nav-btn focus-ring" data-view="home">Home</button>
+      <button class="nav-btn focus-ring" data-view="search">Search</button>
+      <button class="nav-btn focus-ring" data-view="creator">Create</button>
+      <button class="nav-btn focus-ring" data-view="profile">Profile</button>
+    </div>
+  </nav>
+
+  <div id="paymentModal" class="hidden fixed inset-0 flex items-center justify-center z-50">
+    <div class="modal-backdrop absolute inset-0"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl w-11/12 max-w-lg p-6 space-y-4">
+      <button id="closePayment" class="absolute top-3 right-3 text-slate-500" aria-label="Close payment">✕</button>
+      <div>
+        <h3 class="text-xl font-semibold">Unlock Playbook</h3>
+        <p id="paymentPlaybookTitle" class="text-sm text-slate-500"></p>
+      </div>
+      <div class="flex space-x-3" role="tablist">
+        <button class="payment-tab tab-active" data-provider="card">Card</button>
+        <button class="payment-tab" data-provider="bkash">bKash</button>
+        <button class="payment-tab" data-provider="nagad">Nagad</button>
+      </div>
+      <div id="paymentContent" class="space-y-3 text-sm"></div>
+      <div id="paymentStatus" class="text-sm"></div>
+      <button id="payNowBtn" class="w-full bg-blue-600 text-white rounded-xl py-2 font-semibold">Pay ৳<span id="payAmountLabel"></span></button>
+    </div>
+  </div>
+
+  <div id="bkashMiniModal" class="hidden fixed inset-0 z-60 flex items-center justify-center">
+    <div class="modal-backdrop absolute inset-0"></div>
+    <div class="relative bg-white rounded-2xl shadow-xl p-4 w-80 text-center space-y-3">
+      <h4 class="font-semibold">Confirm on bKash</h4>
+      <p class="text-sm text-slate-600">Approve the transaction in your bKash app, then tap confirm.</p>
+      <button id="bkashConfirmBtn" class="bg-pink-600 text-white px-4 py-2 rounded-xl w-full">I confirmed in bKash</button>
+    </div>
+  </div>
+
+  <template id="episodeCommentTemplate">
+    <div class="border border-slate-100 rounded-xl p-3 bg-slate-50">
+      <p class="text-sm"></p>
+      <span class="text-xs text-slate-500"></span>
+    </div>
+  </template>
+
+  <script>
+  const storeKeys = {
+    users: 'edulylas_users',
+    playbooks: 'edulylas_playbooks',
+    episodes: 'edulylas_episodes',
+    purchases: 'edulylas_purchases',
+    unlocks: 'edulylas_unlocks',
+    comments: 'edulylas_comments',
+    currentUser: 'edulylas_current_user'
+  };
+  const allowedEmbedDomains = ['youtube.com', 'youtu.be', 'medium.com', 'dev.to'];
+  let appState = { activePlaybookId: 'pb_python', activeEpisodeId: 'ep_py_1', nagadAttempts: 0, pendingProvider: 'card' };
+
+  function getFromStore(key) {
+    try { return JSON.parse(localStorage.getItem(key)) || null; } catch (e) { return null; }
+  }
+  function saveToStore(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  function seedData(force=false) {
+    if (!force && getFromStore(storeKeys.users)) return;
+    const users = [
+      { id: 'u1', name: 'Dev Learner', email: 'dev@edulylas.test', isCreator: false, avatarUrl: 'https://i.pravatar.cc/80?img=12' },
+      { id: 'u2', name: 'OpenSource Academy', email: 'creator@edulylas.test', isCreator: true, avatarUrl: 'https://i.pravatar.cc/80?img=32' }
+    ];
+    const playbooks = [
+      { id: 'pb_python', slug: 'python-programming-playbook', title: 'Python Programming Playbook', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Beginner→Pro Python with projects. First 2 episodes free; rest locked.', tags: ['Tech','Programming'], difficulty: 'Beginner→Intermediate', rating: 4.7, priceTaka: 499, thumbnailUrl: 'https://img.youtube.com/vi/rfscVS0vtbw/hqdefault.jpg', totalEpisodes: 6, createdAt: '2025-10-01T09:00:00Z' },
+      { id: 'pb_marketing', slug: 'digital-marketing-master-playbook-2025', title: 'Digital Marketing Master Playbook 2025', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Campaign blueprints covering SEO, PPC, funnels.', tags: ['Marketing','Business'], difficulty: 'Intermediate', rating: 4.6, priceTaka: 399, thumbnailUrl: 'https://via.placeholder.com/480x270?text=Digital+Marketing', totalEpisodes: 8, createdAt: '2025-09-12T09:00:00Z' },
+      { id: 'pb_uiux', slug: 'ui-ux-design-crash-playbook', title: 'UI/UX Design Crash Playbook', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Sketch to prototype: UX research, UI systems, and usability.', tags: ['Design','Tech'], difficulty: 'Beginner', rating: 4.8, priceTaka: 349, thumbnailUrl: 'https://via.placeholder.com/480x270?text=UI%2FUX+Design', totalEpisodes: 8, createdAt: '2025-08-05T09:00:00Z' },
+      { id: 'pb_ai', slug: 'ai-machine-learning-starter-pack', title: 'AI & Machine Learning Starter Pack', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Math-light intro to AI/ML workflows and tools.', tags: ['AI/ML','Tech'], difficulty: 'Intermediate', rating: 4.9, priceTaka: 599, thumbnailUrl: 'https://via.placeholder.com/480x270?text=AI+ML', totalEpisodes: 7, createdAt: '2025-11-10T09:00:00Z' },
+      { id: 'pb_fullstack', slug: 'full-stack-web-development-2025', title: 'Full-Stack Web Development 2025', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Modern MERN stack with Edge deployments.', tags: ['Tech'], difficulty: 'Intermediate', rating: 4.5, priceTaka: 499, thumbnailUrl: 'https://via.placeholder.com/480x270?text=Full+Stack+2025', totalEpisodes: 9, createdAt: '2025-10-21T09:00:00Z' },
+      { id: 'pb_ba', slug: 'business-analytics-excel-powerbi', title: 'Business Analytics with Excel & Power BI', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Dashboards, KPIs, Power Query recipes.', tags: ['Business'], difficulty: 'Beginner', rating: 4.4, priceTaka: 349, thumbnailUrl: 'https://via.placeholder.com/480x270?text=Analytics', totalEpisodes: 6, createdAt: '2025-09-25T09:00:00Z' },
+      { id: 'pb_startup', slug: 'entrepreneurship-startup-playbook', title: 'Entrepreneurship & Startup Playbook', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Idea validation to funding decks.', tags: ['Business'], difficulty: 'All Levels', rating: 4.3, priceTaka: 299, thumbnailUrl: 'https://via.placeholder.com/480x270?text=Startup', totalEpisodes: 7, createdAt: '2025-07-18T09:00:00Z' }
+    ];
+    const episodes = [
+      { id:'ep_py_1', playbookId:'pb_python', title:'Intro to Python', description:'Overview, setup, why Python.', embedUrl:'https://www.youtube.com/embed/rfscVS0vtbw', thumbnailUrl:'https://img.youtube.com/vi/rfscVS0vtbw/hqdefault.jpg', order:1, isFree:true, durationSeconds:600 },
+      { id:'ep_py_2', playbookId:'pb_python', title:'Variables & Data Types', description:'Basics of variables, lists, dicts.', embedUrl:'https://www.youtube.com/embed/_uQrJ0TkZlc', thumbnailUrl:'https://img.youtube.com/vi/_uQrJ0TkZlc/hqdefault.jpg', order:2, isFree:true, durationSeconds:900 },
+      { id:'ep_py_3', playbookId:'pb_python', title:'Control Flow', description:'Conditionals and loops.', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Control+Flow', order:3, isFree:false, durationSeconds:1200 },
+      { id:'ep_py_4', playbookId:'pb_python', title:'Functions & Modules', description:'Modular design and functions.', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Functions', order:4, isFree:false, durationSeconds:1300 },
+      { id:'ep_py_5', playbookId:'pb_python', title:'OOP Basics', description:'Classes, objects, inheritance.', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+OOP', order:5, isFree:false, durationSeconds:1500 },
+      { id:'ep_py_6', playbookId:'pb_python', title:'Build a CLI Project', description:'Project: CLI todo app.', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+CLI+Project', order:6, isFree:false, durationSeconds:1800 },
+      { id:'ep_dm_1', playbookId:'pb_marketing', title:'Intro to Digital Marketing', description:'Marketing fundamentals.', embedUrl:'https://www.youtube.com/embed/3m3H5gqk4_k', thumbnailUrl:'https://img.youtube.com/vi/3m3H5gqk4_k/hqdefault.jpg', order:1, isFree:true, durationSeconds:720 },
+      { id:'ep_dm_2', playbookId:'pb_marketing', title:'SEO Basics', description:'Keyword research & on-page SEO.', embedUrl:'https://www.youtube.com/embed/5WpwzKJq0Ck', thumbnailUrl:'https://img.youtube.com/vi/5WpwzKJq0Ck/hqdefault.jpg', order:2, isFree:true, durationSeconds:800 },
+      { id:'ep_dm_3', playbookId:'pb_marketing', title:'Paid Ads Foundations', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Ads', order:3, isFree:false, durationSeconds:900 },
+      { id:'ep_dm_4', playbookId:'pb_marketing', title:'Funnels & Automation', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Funnels', order:4, isFree:false, durationSeconds:1000 },
+      { id:'ep_dm_5', playbookId:'pb_marketing', title:'Email Marketing', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Email', order:5, isFree:false, durationSeconds:1000 },
+      { id:'ep_dm_6', playbookId:'pb_marketing', title:'Analytics & Reporting', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Analytics', order:6, isFree:false, durationSeconds:1000 },
+      { id:'ep_dm_7', playbookId:'pb_marketing', title:'Retention Strategies', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Retention', order:7, isFree:false, durationSeconds:1000 },
+      { id:'ep_dm_8', playbookId:'pb_marketing', title:'Scaling Playbooks', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Scaling', order:8, isFree:false, durationSeconds:1000 },
+      { id:'ep_uiux_1', playbookId:'pb_uiux', title:'Design Thinking Sprint', description:'How to empathize & define problems.', embedUrl:'https://www.youtube.com/embed/3W3w2YQ1kKM', thumbnailUrl:'https://img.youtube.com/vi/3W3w2YQ1kKM/hqdefault.jpg', order:1, isFree:true, durationSeconds:780 },
+      { id:'ep_uiux_2', playbookId:'pb_uiux', title:'User Research Basics', description:'Interview frameworks.', embedUrl:'https://www.youtube.com/embed/FZgqRL0vh6U', thumbnailUrl:'https://img.youtube.com/vi/FZgqRL0vh6U/hqdefault.jpg', order:2, isFree:true, durationSeconds:900 },
+      { id:'ep_uiux_3', playbookId:'pb_uiux', title:'Wireframing Essentials', description:'Low-fi to hi-fi workflow.', embedUrl:'https://www.youtube.com/embed/6s2n0FQ8k3E', thumbnailUrl:'https://img.youtube.com/vi/6s2n0FQ8k3E/hqdefault.jpg', order:3, isFree:true, durationSeconds:860 },
+      { id:'ep_uiux_4', playbookId:'pb_uiux', title:'UI Systems & Components', description:'Atomic design crash.', embedUrl:'https://www.youtube.com/embed/_sKjKQp2kQg', thumbnailUrl:'https://img.youtube.com/vi/_sKjKQp2kQg/hqdefault.jpg', order:4, isFree:true, durationSeconds:910 },
+      { id:'ep_uiux_5', playbookId:'pb_uiux', title:'Prototyping in Figma', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Prototype', order:5, isFree:false, durationSeconds:1000 },
+      { id:'ep_uiux_6', playbookId:'pb_uiux', title:'UX Writing', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+UX+Writing', order:6, isFree:false, durationSeconds:900 },
+      { id:'ep_uiux_7', playbookId:'pb_uiux', title:'Usability Testing', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Testing', order:7, isFree:false, durationSeconds:1000 },
+      { id:'ep_uiux_8', playbookId:'pb_uiux', title:'Design Handoff', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Handoff', order:8, isFree:false, durationSeconds:950 },
+      { id:'ep_ai_1', playbookId:'pb_ai', title:'AI/ML Landscape', description:'Intro to AI & ML.', embedUrl:'https://www.youtube.com/embed/GwIo3gDZCVQ', thumbnailUrl:'https://img.youtube.com/vi/GwIo3gDZCVQ/hqdefault.jpg', order:1, isFree:true, durationSeconds:900 },
+      { id:'ep_ai_2', playbookId:'pb_ai', title:'Data Prep Pipelines', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Data', order:2, isFree:false, durationSeconds:1100 },
+      { id:'ep_fullstack_1', playbookId:'pb_fullstack', title:'Full-Stack Foundations', description:'MERN overview.', embedUrl:'https://www.youtube.com/embed/3JluqTojuME', thumbnailUrl:'https://img.youtube.com/vi/3JluqTojuME/hqdefault.jpg', order:1, isFree:true, durationSeconds:960 },
+      { id:'ep_ba_1', playbookId:'pb_ba', title:'Analytics Kickoff', description:'Excel dashboards.', embedUrl:'https://www.youtube.com/embed/mhQGZbV0BX4', thumbnailUrl:'https://img.youtube.com/vi/mhQGZbV0BX4/hqdefault.jpg', order:1, isFree:true, durationSeconds:840 },
+      { id:'ep_startup_1', playbookId:'pb_startup', title:'Startup Mindset', description:'Intro to lean loops.', embedUrl:'https://www.youtube.com/embed/rxjBWkg3wG8', thumbnailUrl:'https://img.youtube.com/vi/rxjBWkg3wG8/hqdefault.jpg', order:1, isFree:true, durationSeconds:780 }
+    ];
+    const comments = [
+      { id:'c1', userId:'u1', episodeId:'ep_py_1', content:'Great intro — clear and fast!', createdAt:'2025-11-01T10:00:00Z' },
+      { id:'c2', userId:'u1', episodeId:'ep_dm_2', content:'SEO tips were practical.', createdAt:'2025-11-02T11:00:00Z' }
+    ];
+    const purchases = [
+      { id:'p1', userId:'u1', playbookId:'pb_python', amountTaka:499, provider:'card', providerPaymentId:'stripe_test_001', status:'completed', createdAt:'2025-11-03T12:00:00Z' }
+    ];
+    const unlocks = [
+      { id:'uplay_1', userId:'u1', playbookId:'pb_python', unlockedAt:'2025-11-03T12:00:01Z' }
+    ];
+    saveToStore(storeKeys.users, users);
+    saveToStore(storeKeys.playbooks, playbooks);
+    saveToStore(storeKeys.episodes, episodes);
+    saveToStore(storeKeys.comments, comments);
+    saveToStore(storeKeys.purchases, purchases);
+    saveToStore(storeKeys.unlocks, unlocks);
+  }
+
+  function autoLogin() {
+    let current = getFromStore(storeKeys.currentUser);
+    const users = getFromStore(storeKeys.users) || [];
+    if (!current) {
+      const defaultUser = users.find(u => u.email === 'dev@edulylas.test');
+      if (defaultUser) {
+        current = { id: defaultUser.id, email: defaultUser.email, name: defaultUser.name, isCreator: defaultUser.isCreator };
+        saveToStore(storeKeys.currentUser, current);
+      }
+    }
+    return current;
+  }
+
+  function switchUser() {
+    const current = getFromStore(storeKeys.currentUser);
+    const users = getFromStore(storeKeys.users);
+    const next = current && current.email === 'dev@edulylas.test'
+      ? users.find(u => u.email === 'creator@edulylas.test')
+      : users.find(u => u.email === 'dev@edulylas.test');
+    if (next) {
+      saveToStore(storeKeys.currentUser, { id: next.id, email: next.email, name: next.name, isCreator: next.isCreator });
+      document.dispatchEvent(new CustomEvent('edulylas:userSwitched'));
+    }
+  }
+
+  function formatDuration(seconds) {
+    const min = Math.floor(seconds / 60);
+    const sec = seconds % 60;
+    return `${min}m ${sec.toString().padStart(2,'0')}s`;
+  }
+
+  function userHasUnlocked(playbookId, userId) {
+    const unlocks = getFromStore(storeKeys.unlocks) || [];
+    return unlocks.some(u => u.playbookId === playbookId && u.userId === userId);
+  }
+  function renderNavUser() {
+    const container = document.getElementById('navUser');
+    const current = getFromStore(storeKeys.currentUser);
+    if (!current) return;
+    const users = getFromStore(storeKeys.users) || [];
+    const userObj = users.find(u => u.id === current.id);
+    container.innerHTML = `
+      <div class="text-right">
+        <p class="text-sm font-semibold">${current.name}</p>
+        <p class="text-xs text-slate-500">${current.email}</p>
+      </div>
+      <img src="${userObj?.avatarUrl || 'https://via.placeholder.com/40'}" alt="avatar" class="w-10 h-10 rounded-full border"/>
+    `;
+  }
+
+  function renderCategories() {
+    const categories = ['Tech','Business','Marketing','Design','AI/ML','Freelancing'];
+    const row = document.getElementById('categoryShortcuts');
+    row.innerHTML = '';
+    categories.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.textContent = cat;
+      btn.className = 'px-4 py-2 rounded-full border border-slate-200 bg-white text-sm focus-ring';
+      btn.addEventListener('click', () => filterByCategory(cat));
+      row.appendChild(btn);
+    });
+  }
+
+  function filterByCategory(cat) {
+    const feed = document.getElementById('recommendedFeed');
+    const cards = feed.querySelectorAll('[data-tags]');
+    cards.forEach(card => {
+      const tags = card.dataset.tags.split(',');
+      card.style.display = tags.includes(cat) ? 'block' : 'none';
+    });
+  }
+
+  function renderTrending() {
+    const playbooks = getFromStore(storeKeys.playbooks) || [];
+    const trending = playbooks.slice(0,4);
+    const container = document.getElementById('trendingCarousel');
+    container.innerHTML = '';
+    trending.forEach(pb => {
+      const freeCount = (getFromStore(storeKeys.episodes) || []).filter(ep => ep.playbookId === pb.id && ep.isFree).length;
+      const card = document.createElement('article');
+      card.className = 'min-w-[240px] bg-white rounded-2xl shadow p-3 cursor-pointer hover:-translate-y-1 transition transform';
+      card.innerHTML = `
+        <img src="${pb.thumbnailUrl}" alt="${pb.title}" class="w-full h-32 object-cover rounded-xl"/>
+        <div class="mt-2 space-y-1">
+          <p class="text-xs uppercase text-slate-500">${pb.creatorName}</p>
+          <h3 class="font-semibold">${pb.title}</h3>
+          <p class="text-xs text-blue-500">${pb.tags.join(', ')}</p>
+          <span class="inline-flex items-center text-xs mt-1 px-2 py-1 rounded-full bg-slate-100">${freeCount} Free • ${pb.totalEpisodes - freeCount} Paid</span>
+        </div>`;
+      card.addEventListener('click', () => {
+        appState.activePlaybookId = pb.id;
+        const firstEpisode = (getFromStore(storeKeys.episodes) || []).find(ep => ep.playbookId === pb.id);
+        appState.activeEpisodeId = firstEpisode?.id || null;
+        renderAll();
+      });
+      container.appendChild(card);
+    });
+  }
+
+  function renderRecommended(listOverride) {
+    const playbooks = getFromStore(storeKeys.playbooks) || [];
+    const recommendedIds = ['pb_fullstack','pb_ba','pb_startup'];
+    const container = document.getElementById('recommendedFeed');
+    container.innerHTML = '';
+    const data = listOverride?.length ? listOverride : playbooks.filter(pb => recommendedIds.includes(pb.id));
+    data.forEach(pb => {
+      const card = document.createElement('article');
+      card.className = 'bg-white rounded-2xl shadow flex flex-col md:flex-row gap-4 p-4 border border-transparent hover:border-blue-100 cursor-pointer';
+      card.dataset.tags = pb.tags.join(',');
+      card.innerHTML = `
+        <img src="${pb.thumbnailUrl}" alt="${pb.title}" class="w-full md:w-48 h-32 object-cover rounded-xl"/>
+        <div class="flex-1">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold">${pb.title}</h3>
+            <span class="text-sm font-bold text-blue-600">৳${pb.priceTaka}</span>
+          </div>
+          <p class="text-sm text-slate-600">${pb.description}</p>
+          <div class="flex items-center text-xs text-yellow-500 mt-1">⭐ ${pb.rating}</div>
+          <div class="flex gap-2 mt-2 flex-wrap">
+            <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">বিনামূল্যে intro</span>
+            <span class="px-2 py-1 bg-rose-100 text-rose-600 rounded-full text-xs">প্রিমিয়াম সিরিজ</span>
+          </div>
+        </div>`;
+      card.addEventListener('click', () => {
+        appState.activePlaybookId = pb.id;
+        const firstEpisode = (getFromStore(storeKeys.episodes) || []).find(ep => ep.playbookId === pb.id);
+        appState.activeEpisodeId = firstEpisode?.id || null;
+        renderAll();
+      });
+      container.appendChild(card);
+    });
+  }
+  function renderPlaybookPreview() {
+    const playbooks = getFromStore(storeKeys.playbooks) || [];
+    const episodes = getFromStore(storeKeys.episodes) || [];
+    const currentUser = getFromStore(storeKeys.currentUser);
+    const pb = playbooks.find(p => p.id === appState.activePlaybookId) || playbooks[0];
+    if (!pb) return;
+    const unlocked = userHasUnlocked(pb.id, currentUser?.id);
+    const pbEpisodes = episodes.filter(ep => ep.playbookId === pb.id).sort((a,b) => a.order - b.order);
+    const freeCount = pbEpisodes.filter(ep => ep.isFree).length;
+    const progress = pb.totalEpisodes ? (freeCount / pb.totalEpisodes) * 100 : 0;
+    const container = document.getElementById('playbookPreview');
+    container.innerHTML = `
+      <div class="flex flex-col md:flex-row gap-4">
+        <img src="${pb.thumbnailUrl}" alt="${pb.title}" class="w-full md:w-60 h-40 object-cover rounded-2xl"/>
+        <div class="flex-1">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-xs uppercase text-slate-500">${pb.creatorName}</p>
+              <h3 class="text-2xl font-bold">${pb.title}</h3>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-sm">${pb.difficulty}</span>
+          </div>
+          <p class="mt-2 text-sm text-slate-600">${pb.description}</p>
+          <div class="mt-2 flex gap-2 flex-wrap">
+            ${pb.tags.map(tag => `<span class='text-xs bg-slate-100 rounded-full px-3 py-1'>${tag}</span>`).join('')}
+          </div>
+          <div class="mt-3">
+            <div class="w-full bg-slate-200 rounded-full h-2">
+              <div class="bg-blue-500 h-2 rounded-full" style="width:${progress}%"></div>
+            </div>
+            <p class="text-xs mt-1 text-slate-500">${freeCount} episodes free previewed</p>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-3 items-center justify-between">
+            <p class="text-lg font-semibold">Unlock all episodes for <span class="text-blue-600">৳${pb.priceTaka}</span></p>
+            <button ${unlocked ? 'disabled' : ''} class="px-4 py-2 rounded-xl font-semibold ${unlocked ? 'bg-slate-200 text-slate-500 cursor-not-allowed' : 'bg-blue-600 text-white'}" data-playbook="${pb.id}" aria-label="Unlock full playbook">${unlocked ? 'Already unlocked' : 'Unlock Full Playbook • ৳'+pb.priceTaka}</button>
+          </div>
+        </div>
+      </div>
+      <div class="mt-4">
+        <h4 class="font-semibold mb-2">Episode Preview</h4>
+        <div class="space-y-3" id="previewEpisodeList"></div>
+      </div>
+    `;
+    const actionBtn = container.querySelector('button[data-playbook]');
+    if (actionBtn && !unlocked) {
+      actionBtn.addEventListener('click', () => openPaymentModal(pb));
+    }
+    const listEl = document.getElementById('previewEpisodeList');
+    pbEpisodes.forEach(ep => {
+      const isLocked = !ep.isFree && !unlocked;
+      const row = document.createElement('div');
+      row.className = 'flex items-center gap-3 p-3 border rounded-xl cursor-pointer hover:bg-slate-50';
+      row.innerHTML = `
+        <img src="${ep.thumbnailUrl}" alt="${ep.title}" class="w-24 h-16 object-cover rounded-lg"/>
+        <div class="flex-1">
+          <div class="flex justify-between">
+            <h5 class="font-semibold">${ep.order}. ${ep.title}</h5>
+            <span class="text-xs text-slate-500">${formatDuration(ep.durationSeconds)}</span>
+          </div>
+          <p class="text-sm text-slate-500">${ep.description}</p>
+          <span class="text-xs ${ep.isFree ? 'text-green-600' : 'text-rose-500'}">${ep.isFree ? 'বিনামূল্যে' : 'Locked প্রিমিয়াম'}</span>
+        </div>
+        ${isLocked ? '<div class="text-rose-500 font-semibold">🔒</div>' : ''}
+      `;
+      row.addEventListener('click', () => {
+        if (isLocked) {
+          openPaymentModal(pb);
+        } else {
+          appState.activeEpisodeId = ep.id;
+          renderEpisodePlayer();
+        }
+      });
+      listEl.appendChild(row);
+    });
+    renderPlaybookDetails(pb);
+  }
+
+  function renderPlaybookDetails(pb) {
+    const playbooks = getFromStore(storeKeys.playbooks) || [];
+    const episodes = getFromStore(storeKeys.episodes) || [];
+    const detail = document.getElementById('playbookDetails');
+    const pbObj = pb || playbooks.find(p => p.id === appState.activePlaybookId);
+    if (!pbObj) return;
+    const pbEpisodes = episodes.filter(ep => ep.playbookId === pbObj.id).sort((a,b) => a.order - b.order);
+    detail.innerHTML = `
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <h3 class="text-xl font-semibold">Playbook Details</h3>
+        <span class="text-sm text-slate-500">Rating ⭐ ${pbObj.rating}</span>
+      </div>
+      <p class="text-sm text-slate-600 mt-2">${pbObj.description}</p>
+      <div class="mt-3 flex flex-wrap gap-2">
+        ${pbObj.tags.map(tag => `<span class='px-3 py-1 rounded-full bg-slate-100 text-xs'>${tag}</span>`).join('')}
+      </div>
+      <div class="mt-4 space-y-2">
+        ${pbEpisodes.map(ep => `<div class='flex items-center justify-between border rounded-xl px-3 py-2 text-sm'>
+          <span>${ep.order}. ${ep.title}</span>
+          <span>${ep.isFree ? 'বিনামূল্যে' : '🔒'}</span>
+        </div>`).join('')}
+      </div>
+    `;
+  }
+  function openPaymentModal(pb) {
+    if (!pb) return;
+    document.getElementById('paymentPlaybookTitle').textContent = `${pb.title} • ৳${pb.priceTaka}`;
+    document.getElementById('payAmountLabel').textContent = pb.priceTaka;
+    document.getElementById('paymentModal').classList.remove('hidden');
+    document.getElementById('paymentModal').dataset.playbookId = pb.id;
+    appState.pendingProvider = 'card';
+    setPaymentTab('card');
+    document.getElementById('paymentStatus').textContent = '';
+  }
+
+  function closePaymentModal() {
+    document.getElementById('paymentModal').classList.add('hidden');
+    document.getElementById('paymentStatus').textContent = '';
+    document.getElementById('paymentContent').innerHTML = '';
+  }
+
+  function setPaymentTab(provider) {
+    appState.pendingProvider = provider;
+    document.querySelectorAll('.payment-tab').forEach(btn => {
+      btn.classList.toggle('tab-active', btn.dataset.provider === provider);
+    });
+    const content = document.getElementById('paymentContent');
+    if (provider === 'card') {
+      content.innerHTML = `
+        <label class="block text-sm">Card number
+          <input class="w-full border rounded-lg px-3 py-2 mt-1" placeholder="4242 4242 4242 4242"/>
+        </label>
+        <div class="flex gap-3">
+          <label class="flex-1 text-sm">Expiry<input class="w-full border rounded-lg px-3 py-2 mt-1" placeholder="12/29"/></label>
+          <label class="flex-1 text-sm">CVC<input class="w-full border rounded-lg px-3 py-2 mt-1" placeholder="123"/></label>
+        </div>`;
+    } else if (provider === 'bkash') {
+      content.innerHTML = `
+        <p class="text-sm">Enter bKash number</p>
+        <input class="w-full border rounded-lg px-3 py-2" placeholder="01XXXXXXXXX"/>
+        <div class="bg-pink-50 border border-pink-200 rounded-xl p-3">A confirmation prompt will appear.</div>`;
+    } else {
+      content.innerHTML = `
+        <p class="text-sm">Enter Nagad number</p>
+        <input class="w-full border rounded-lg px-3 py-2" placeholder="01XXXXXXXXX"/>
+        <p class="text-xs text-slate-500">First attempt fails to simulate OTP timeout.</p>`;
+    }
+  }
+
+  function showBkashMiniModal() {
+    return new Promise(resolve => {
+      const modal = document.getElementById('bkashMiniModal');
+      modal.classList.remove('hidden');
+      const btn = document.getElementById('bkashConfirmBtn');
+      const handler = () => {
+        btn.removeEventListener('click', handler);
+        modal.classList.add('hidden');
+        resolve();
+      };
+      btn.addEventListener('click', handler);
+    });
+  }
+
+  function simulatePayment(provider) {
+    return new Promise((resolve, reject) => {
+      const statusEl = document.getElementById('paymentStatus');
+      statusEl.textContent = 'Processing payment…';
+      if (provider === 'card') {
+        setTimeout(() => resolve({ success: true, providerPaymentId: 'card_'+Date.now() }), 1500);
+      } else if (provider === 'bkash') {
+        showBkashMiniModal().then(() => {
+          statusEl.innerHTML = '<div class="bg-pink-100 text-pink-700 rounded-xl p-2 text-center">Confirming…</div>';
+          setTimeout(() => {
+            statusEl.innerHTML = '<div class="bg-green-100 text-green-700 rounded-xl p-2 text-center">bKash confirmed!</div>';
+            resolve({ success: true, providerPaymentId: 'bkash_'+Date.now() });
+          }, 1200);
+        });
+      } else if (provider === 'nagad') {
+        appState.nagadAttempts = appState.nagadAttempts || 0;
+        appState.nagadAttempts += 1;
+        setTimeout(() => {
+          if (appState.nagadAttempts === 1) {
+            statusEl.innerHTML = '<div class="bg-amber-50 text-amber-700 rounded-xl p-2 space-y-2">Payment failed. OTP expired.<div><button id="retryNagad" class="px-3 py-1 rounded-lg bg-amber-600 text-white">Retry Nagad</button></div></div>';
+            document.getElementById('retryNagad').addEventListener('click', () => startPayment(true));
+            reject({ success:false });
+          } else {
+            statusEl.innerHTML = '<div class="bg-green-100 text-green-700 rounded-xl p-2 text-center">Nagad confirmed!</div>';
+            resolve({ success:true, providerPaymentId:'nagad_'+Date.now() });
+          }
+        }, 1800);
+      }
+    });
+  }
+
+  function unlockPlaybook(userId, playbookId) {
+    const unlocks = getFromStore(storeKeys.unlocks) || [];
+    if (!unlocks.some(u => u.userId === userId && u.playbookId === playbookId)) {
+      unlocks.push({ id: 'unlock_'+Date.now(), userId, playbookId, unlockedAt: new Date().toISOString() });
+      saveToStore(storeKeys.unlocks, unlocks);
+    }
+    document.dispatchEvent(new CustomEvent('edulylas:unlocked', { detail: { playbookId } }));
+  }
+
+  function startPayment(isRetry=false) {
+    const modal = document.getElementById('paymentModal');
+    const playbookId = modal.dataset.playbookId;
+    const playbook = (getFromStore(storeKeys.playbooks) || []).find(p => p.id === playbookId);
+    const user = getFromStore(storeKeys.currentUser);
+    if (!playbook || !user) return;
+    const purchases = getFromStore(storeKeys.purchases) || [];
+    const purchase = { id: 'p_'+Date.now(), userId: user.id, playbookId, amountTaka: playbook.priceTaka, provider: appState.pendingProvider, providerPaymentId: '', status: 'pending', createdAt: new Date().toISOString() };
+    purchases.push(purchase);
+    saveToStore(storeKeys.purchases, purchases);
+    simulatePayment(appState.pendingProvider)
+      .then(result => {
+        purchase.status = 'completed';
+        purchase.providerPaymentId = result.providerPaymentId;
+        saveToStore(storeKeys.purchases, purchases);
+        unlockPlaybook(user.id, playbookId);
+        document.getElementById('paymentStatus').innerHTML = '<div class="bg-green-100 text-green-700 rounded-xl p-2">Payment successful!</div>';
+        setTimeout(() => {
+          closePaymentModal();
+          showReceipt(purchase, playbook);
+        }, 1200);
+      })
+      .catch(() => {
+        purchase.status = 'failed';
+        saveToStore(storeKeys.purchases, purchases);
+      });
+  }
+
+  function showReceipt(purchase, playbook) {
+    alert(`Receipt\nPlaybook: ${playbook.title}\nAmount: ৳${purchase.amountTaka}\nProvider: ${purchase.provider}\nTxn: ${purchase.providerPaymentId}\nDate: ${new Date(purchase.createdAt).toLocaleString()}`);
+    renderAll();
+  }
+  function renderEpisodePlayer() {
+    const episodes = getFromStore(storeKeys.episodes) || [];
+    const comments = getFromStore(storeKeys.comments) || [];
+    const users = getFromStore(storeKeys.users) || [];
+    const currentEpisode = episodes.find(ep => ep.id === appState.activeEpisodeId) || episodes[0];
+    if (!currentEpisode) return;
+    const currentUser = getFromStore(storeKeys.currentUser);
+    const pbUnlocked = userHasUnlocked(currentEpisode.playbookId, currentUser?.id);
+    const container = document.getElementById('episodePlayer');
+    const isLocked = !currentEpisode.isFree && !pbUnlocked;
+    const noteKey = `edulylas_notes_${currentEpisode.id}_${currentUser?.id || 'guest'}`;
+    const savedNotes = localStorage.getItem(noteKey) || '';
+    const fallbackUrl = currentEpisode.embedUrl ? currentEpisode.embedUrl.replace('/embed/','/watch?v=') : '#';
+    container.innerHTML = `
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs text-slate-500">Episode ${currentEpisode.order}</p>
+          <h3 class="text-xl font-bold">${currentEpisode.title}</h3>
+        </div>
+        <span class="px-3 py-1 rounded-full ${currentEpisode.isFree ? 'bg-green-100 text-green-700' : 'bg-rose-100 text-rose-600'}">${currentEpisode.isFree ? 'বিনামূল্যে' : 'প্রিমিয়াম'}</span>
+      </div>
+      <div class="mt-3 relative">
+        ${isLocked ? `<div class='absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-white rounded-2xl'>
+          <p class='mb-2 font-semibold'>Unlock to watch</p>
+          <button class='bg-white text-slate-900 px-4 py-2 rounded-xl font-semibold' onclick="openPaymentModal((getFromStore(storeKeys.playbooks)||[]).find(p=>p.id==='${currentEpisode.playbookId}'))">Unlock Playbook</button>
+        </div>` : ''}
+        ${currentEpisode.embedUrl ? `<iframe src="${currentEpisode.embedUrl}" class="w-full h-64 rounded-2xl" allowfullscreen loading="lazy"></iframe>` : `<div class='w-full h-64 bg-slate-200 rounded-2xl flex items-center justify-center'>Locked content placeholder</div>`}
+        ${currentEpisode.embedUrl ? `<p class='text-xs text-slate-500 mt-1'>Having trouble? <a href="${fallbackUrl}" class='text-blue-600 underline' target='_blank'>Open on YouTube</a></p>` : ''}
+      </div>
+      <p class="mt-4 text-sm text-slate-600">${currentEpisode.description}</p>
+      <div class="mt-4 grid md:grid-cols-2 gap-4">
+        <div>
+          <h4 class="font-semibold">Notes</h4>
+          <textarea id="episodeNotes" class="w-full border rounded-xl px-3 py-2 mt-1" rows="4" placeholder="Type notes…">${savedNotes}</textarea>
+        </div>
+        <div>
+          <h4 class="font-semibold">Comments</h4>
+          <div class="space-y-2 mt-2 max-h-48 overflow-y-auto" id="commentList"></div>
+          <form id="commentForm" class="mt-2 space-y-2">
+            <textarea class="w-full border rounded-xl px-3 py-2" rows="2" placeholder="Share your thoughts" required></textarea>
+            <button class="bg-slate-900 text-white px-4 py-2 rounded-xl">Post Comment</button>
+          </form>
+        </div>
+      </div>
+    `;
+    document.getElementById('episodeNotes').addEventListener('input', (e) => {
+      localStorage.setItem(noteKey, e.target.value);
+    });
+    const commentList = document.getElementById('commentList');
+    commentList.innerHTML = '';
+    comments.filter(c => c.episodeId === currentEpisode.id).forEach(c => {
+      const user = users.find(u => u.id === c.userId);
+      const item = document.getElementById('episodeCommentTemplate').content.cloneNode(true);
+      item.querySelector('p').textContent = `${user?.name || 'Learner'}: ${c.content}`;
+      item.querySelector('span').textContent = new Date(c.createdAt).toLocaleString();
+      commentList.appendChild(item);
+    });
+    document.getElementById('commentForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = e.target.querySelector('textarea').value.trim();
+      if (!text) return;
+      const commentsStore = getFromStore(storeKeys.comments) || [];
+      commentsStore.push({ id: 'c_'+Date.now(), userId: currentUser.id, episodeId: currentEpisode.id, content: text.replace(/[<>]/g,''), createdAt: new Date().toISOString() });
+      saveToStore(storeKeys.comments, commentsStore);
+      e.target.reset();
+      renderEpisodePlayer();
+    });
+  }
+  function renderCreatorPanel() {
+    const current = getFromStore(storeKeys.currentUser);
+    const panel = document.getElementById('creatorPanel');
+    if (!current?.isCreator) {
+      panel.classList.add('hidden');
+      return;
+    }
+    panel.classList.remove('hidden');
+    panel.innerHTML = `
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-semibold">Creator Mini-Dashboard</h3>
+        <p class="text-sm text-slate-500">Logged in as creator</p>
+      </div>
+      <form id="createPlaybookForm" class="mt-4 grid md:grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm">Title<input name="title" class="w-full border rounded-lg px-3 py-2 mt-1" required></label>
+        </div>
+        <div>
+          <label class="text-sm">Price (৳)<input name="price" type="number" class="w-full border rounded-lg px-3 py-2 mt-1" required></label>
+        </div>
+        <div>
+          <label class="text-sm">Thumbnail URL<input name="thumbnail" class="w-full border rounded-lg px-3 py-2 mt-1" required></label>
+        </div>
+        <div>
+          <label class="text-sm">Tags (comma)<input name="tags" class="w-full border rounded-lg px-3 py-2 mt-1" required></label>
+        </div>
+        <div>
+          <label class="text-sm">Difficulty<input name="difficulty" class="w-full border rounded-lg px-3 py-2 mt-1" required></label>
+        </div>
+        <div>
+          <label class="text-sm">Rating<input name="rating" type="number" step="0.1" class="w-full border rounded-lg px-3 py-2 mt-1" required></label>
+        </div>
+        <div class="md:col-span-2">
+          <label class="text-sm">Description<textarea name="description" class="w-full border rounded-lg px-3 py-2 mt-1" required></textarea></label>
+        </div>
+        <div class="md:col-span-2">
+          <button class="bg-blue-600 text-white px-4 py-2 rounded-xl">Create Playbook</button>
+        </div>
+      </form>
+      <hr class="my-4"/>
+      <form id="addEpisodeForm" class="space-y-3">
+        <h4 class="font-semibold">Add Episode</h4>
+        <select name="playbookId" class="w-full border rounded-lg px-3 py-2" required></select>
+        <input name="title" class="w-full border rounded-lg px-3 py-2" placeholder="Episode title" required />
+        <input name="embed" class="w-full border rounded-lg px-3 py-2" placeholder="Embed URL" required />
+        <input name="thumbnail" class="w-full border rounded-lg px-3 py-2" placeholder="Thumbnail URL" required />
+        <input name="duration" type="number" class="w-full border rounded-lg px-3 py-2" placeholder="Duration seconds" required />
+        <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="isFree"/> Free episode</label>
+        <button class="bg-slate-900 text-white px-4 py-2 rounded-xl">Add Episode</button>
+        <p id="creatorValidation" class="text-sm text-rose-500"></p>
+      </form>
+    `;
+    const select = panel.querySelector('select[name="playbookId"]');
+    const playbooks = getFromStore(storeKeys.playbooks).filter(pb => pb.creatorId === current.id || current.email === 'creator@edulylas.test');
+    playbooks.forEach(pb => {
+      const option = document.createElement('option');
+      option.value = pb.id;
+      option.textContent = pb.title;
+      select.appendChild(option);
+    });
+    panel.querySelector('#createPlaybookForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const newPb = {
+        id: 'pb_'+Date.now(),
+        slug: form.get('title').toLowerCase().replace(/\s+/g,'-'),
+        title: form.get('title'),
+        creatorId: current.id,
+        creatorName: current.name,
+        description: form.get('description'),
+        tags: form.get('tags').split(',').map(t => t.trim()),
+        difficulty: form.get('difficulty'),
+        rating: parseFloat(form.get('rating')),
+        priceTaka: Number(form.get('price')),
+        thumbnailUrl: form.get('thumbnail'),
+        totalEpisodes: 0,
+        createdAt: new Date().toISOString()
+      };
+      const playbooksStore = getFromStore(storeKeys.playbooks) || [];
+      playbooksStore.unshift(newPb);
+      saveToStore(storeKeys.playbooks, playbooksStore);
+      e.target.reset();
+      renderAll();
+    });
+    panel.querySelector('#addEpisodeForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const status = panel.querySelector('#creatorValidation');
+      status.textContent = '';
+      const form = new FormData(e.target);
+      const embed = form.get('embed');
+      if (!allowedEmbedDomains.some(domain => embed.includes(domain))) {
+        status.textContent = 'Embed URL must be from youtube.com, youtu.be, medium.com, or dev.to';
+        return;
+      }
+      const playbookId = form.get('playbookId');
+      const episodes = getFromStore(storeKeys.episodes) || [];
+      const order = episodes.filter(ep => ep.playbookId === playbookId).length + 1;
+      episodes.push({ id:'ep_'+Date.now(), playbookId, title: form.get('title'), description: 'Creator submitted episode', embedUrl: embed, thumbnailUrl: form.get('thumbnail'), order, isFree: form.get('isFree') === 'on', durationSeconds: Number(form.get('duration')) });
+      saveToStore(storeKeys.episodes, episodes);
+      const playbooksStore = getFromStore(storeKeys.playbooks) || [];
+      const pb = playbooksStore.find(p => p.id === playbookId);
+      if (pb) {
+        pb.totalEpisodes = episodes.filter(ep => ep.playbookId === playbookId).length;
+        saveToStore(storeKeys.playbooks, playbooksStore);
+      }
+      e.target.reset();
+      renderAll();
+    });
+  }
+
+  function renderProfilePanel() {
+    const user = getFromStore(storeKeys.currentUser);
+    const purchases = getFromStore(storeKeys.purchases) || [];
+    const playbooks = getFromStore(storeKeys.playbooks) || [];
+    const container = document.getElementById('profilePanel');
+    container.innerHTML = `
+      <h3 class="text-xl font-semibold">Profile & Activity</h3>
+      <p class="text-sm text-slate-500">${user?.email}</p>
+      <div class="mt-4">
+        <h4 class="font-semibold">Purchases</h4>
+        <div class="space-y-3 mt-2" id="purchaseList"></div>
+      </div>
+      <button id="resetDemo" class="mt-4 bg-rose-600 text-white px-4 py-2 rounded-xl">Reset Demo Data</button>
+    `;
+    const list = container.querySelector('#purchaseList');
+    const userPurchases = purchases.filter(p => p.userId === user?.id);
+    if (!userPurchases.length) {
+      list.innerHTML = '<p class="text-sm text-slate-500">No purchases yet</p>';
+    } else {
+      userPurchases.forEach(p => {
+        const pb = playbooks.find(pb => pb.id === p.playbookId);
+        const row = document.createElement('div');
+        row.className = 'border rounded-xl p-3';
+        row.innerHTML = `<p class='font-semibold'>${pb?.title || p.playbookId}</p><p class='text-sm text-slate-500'>৳${p.amountTaka} • ${p.provider} • ${p.status}</p>`;
+        list.appendChild(row);
+      });
+    }
+    container.querySelector('#resetDemo').addEventListener('click', () => {
+      Object.values(storeKeys).forEach(key => localStorage.removeItem(key));
+      seedData(true);
+      autoLogin();
+      renderAll();
+    });
+  }
+  function applySearch() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    const playbooks = getFromStore(storeKeys.playbooks) || [];
+    const filtered = playbooks.filter(pb => pb.title.toLowerCase().includes(query) || pb.description.toLowerCase().includes(query));
+    if (query) {
+      renderRecommended(filtered);
+    } else {
+      renderRecommended();
+    }
+  }
+
+  function handleNav(view) {
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.classList.toggle('text-blue-600', btn.dataset.view === view);
+    });
+    if (view === 'search') {
+      document.getElementById('searchInput').focus();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (view === 'creator') {
+      document.getElementById('creatorPanel').scrollIntoView({ behavior: 'smooth' });
+    } else if (view === 'profile') {
+      document.getElementById('profilePanel').scrollIntoView({ behavior: 'smooth' });
+    } else {
+      document.getElementById('app').scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  function renderAll() {
+    renderNavUser();
+    renderCategories();
+    renderTrending();
+    renderRecommended();
+    renderPlaybookPreview();
+    renderEpisodePlayer();
+    renderCreatorPanel();
+    renderProfilePanel();
+  }
+
+  function initApp() {
+    seedData();
+    autoLogin();
+    renderAll();
+    document.getElementById('creatorToggle').addEventListener('click', switchUser);
+    document.getElementById('searchInput').addEventListener('input', () => applySearch());
+    document.querySelectorAll('.payment-tab').forEach(btn => btn.addEventListener('click', () => setPaymentTab(btn.dataset.provider)));
+    document.getElementById('closePayment').addEventListener('click', closePaymentModal);
+    document.getElementById('payNowBtn').addEventListener('click', () => startPayment(false));
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => handleNav(btn.dataset.view)));
+    document.addEventListener('edulylas:userSwitched', () => {
+      renderAll();
+    });
+    document.addEventListener('edulylas:unlocked', () => {
+      renderPlaybookPreview();
+      renderEpisodePlayer();
+      renderProfilePanel();
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initApp);
+  </script>
+</body>
+</html>
