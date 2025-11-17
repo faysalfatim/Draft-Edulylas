@@ -1,1168 +1,706 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduLylas Demo</title>
+  <title>EduLylas Community Playbooks</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <style>
-    :root { color-scheme: light; }
-    body {
-      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      padding-top: 64px;
-      padding-bottom: 96px;
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            inter: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            edulylas: {
+              purple: '#5A2FD8',
+              blue: '#4F9CF9',
+            }
+          }
+        }
+      }
     }
-    .scrollbar-hide::-webkit-scrollbar { display: none; }
-    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-    .modal-backdrop { background: rgba(15, 23, 42, 0.7); }
-    .tab-active { border-bottom: 2px solid #2563eb; color: #2563eb; }
-    .focus-ring:focus { outline: 2px solid #2563eb; outline-offset: 2px; }
-    .top-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 64px;
-      z-index: 1000;
-      background: #fff;
-      box-shadow: 0 1px 10px rgba(15,23,42,0.08);
-    }
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 64px;
-      z-index: 999;
-      background: #fff;
-      border-top: 1px solid #e2e8f0;
-      box-shadow: 0 -2px 10px rgba(15,23,42,0.05);
-    }
-    .playbook-card img {
-      width: 100%;
-      aspect-ratio: 16/9;
-      object-fit: cover;
-      border-radius: 1rem;
-    }
-    .episode-panel {
-      background: #f8fafc;
-      border-radius: 0.75rem;
-      padding: 1rem;
-      margin-top: 0.75rem;
-    }
-    .modal-shell {
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    @media (max-width: 640px) {
-      .top-header nav { display: none; }
-      body { padding-bottom: 140px; }
-    }
-    @media (min-width: 641px) {
-      .bottom-nav { display: none; }
-    }
-  </style>
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler.min.css" />
+  <script
+    src="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/js/tabler.min.js">
+  </script>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen">
-  <header class="top-header">
-    <div class="max-w-6xl h-full mx-auto px-4 flex items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <button id="creatorToggle" class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-semibold focus-ring" aria-label="Switch account">EL</button>
-        <div>
-          <p class="font-bold">EduLylas</p>
-          <p class="text-xs text-blue-500">#শেখারঅভিযান</p>
+<body class="font-inter bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
+  <header class="fixed top-0 inset-x-0 z-30 bg-white/90 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800 backdrop-blur">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="h-20 flex items-center gap-6">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-edulylas-purple to-edulylas-blue text-white font-bold flex items-center justify-center shadow-lg">
+            EL
+          </div>
+          <div>
+            <p class="text-lg font-semibold text-slate-900 dark:text-white">EduLylas</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Community Playbooks</p>
+          </div>
+        </div>
+        <div class="relative flex-1 max-w-xl hidden md:block">
+          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+            <i class="ti ti-search"></i>
+          </span>
+          <input id="globalSearch" type="search" placeholder="Search AI classrooms, creators, cohorts..." class="w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/70 px-12 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-edulylas-purple" autocomplete="off" />
+          <div id="searchDropdown" class="hidden absolute mt-2 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl divide-y divide-slate-100 dark:divide-slate-800"></div>
+        </div>
+        <div class="flex items-center gap-4 ml-auto">
+          <div class="relative">
+            <button id="notificationBtn" class="relative w-11 h-11 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-300 hover:text-edulylas-purple">
+              <i class="ti ti-bell"></i>
+              <span class="absolute top-2 right-2 block w-2 h-2 rounded-full bg-edulylas-blue"></span>
+            </button>
+            <div id="notificationDropdown" class="hidden absolute right-0 mt-3 w-72 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl">
+              <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800 font-semibold">Notifications</div>
+              <div id="notificationList" class="max-h-80 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800"></div>
+            </div>
+          </div>
+          <div class="relative">
+            <button id="userMenuBtn" class="flex items-center gap-3 p-2 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-edulylas-purple">
+              <div class="text-right hidden sm:block">
+                <p class="text-sm font-semibold">Camila Idris</p>
+                <p class="text-xs text-slate-500">Lead Facilitator</p>
+              </div>
+              <img src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=facearea&w=80&h=80&q=80" alt="avatar" class="w-12 h-12 rounded-2xl object-cover" />
+              <i class="ti ti-chevron-down text-sm text-slate-400"></i>
+            </button>
+            <div id="userDropdown" class="hidden absolute right-0 mt-3 w-60 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl divide-y divide-slate-100 dark:divide-slate-800">
+              <div class="p-4 text-sm space-y-3">
+                <button class="w-full text-left font-medium">Create Playbook</button>
+                <button class="w-full text-left">Profile</button>
+                <button class="w-full text-left">My Resources</button>
+                <button class="w-full text-left">Settings</button>
+                <button id="themeToggle" class="w-full text-left flex items-center justify-between">
+                  <span>Theme</span>
+                  <span class="text-xs px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800" id="themeLabel">Light</span>
+                </button>
+                <button class="w-full text-left text-rose-500">Logout</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="hidden md:block flex-1">
-        <label class="sr-only" for="searchInput">Search playbooks</label>
-        <input id="searchInput" class="w-full border border-slate-200 rounded-xl px-4 py-2 focus:ring focus:ring-blue-100" placeholder="Search topics, playbooks, creators…" />
-      </div>
-      <nav aria-label="Primary">
-        <div class="hidden sm:flex gap-4 text-sm font-semibold">
-          <button class="nav-btn focus-ring" data-view="home">Home</button>
-          <button class="nav-btn focus-ring" data-view="search">Search</button>
-          <button class="nav-btn focus-ring" data-view="creator">Create</button>
-          <button class="nav-btn focus-ring" data-view="profile">Profile</button>
-        </div>
-      </nav>
-      <div id="navUser" class="flex items-center gap-2"></div>
     </div>
   </header>
 
-  <main class="max-w-6xl mx-auto px-4 pt-6 space-y-6" id="appRoot">
-    <div class="md:hidden mt-4">
-      <label class="sr-only" for="searchInputMobile">Search playbooks</label>
-      <input id="searchInputMobile" class="w-full border border-slate-200 rounded-xl px-4 py-2 focus:ring focus:ring-blue-100" placeholder="Search topics, playbooks, creators…" />
-    </div>
-
-    <details class="bg-white rounded-2xl shadow p-4" open>
-      <summary class="font-semibold cursor-pointer">README • Demo Instructions</summary>
-      <div class="mt-3 text-sm space-y-2">
-        <p>Save this file as <strong>index.html</strong> and open it directly in Chrome/Edge. All demo data persists in <code>localStorage</code>; no server needed. For iframe embeds (YouTube, Medium, Dev.to) best results happen when you run <code>npx serve .</code> so browsers allow the secure embeds.</p>
-        <p>Auto-login user: <strong>dev@edulylas.test</strong>. Use the “EL” avatar button to switch to creator <strong>creator@edulylas.test</strong>.</p>
-        <p>Payments are simulated client-side. Unlock anything locked to see the payment flow. Purchases land in <code>edulylas_purchases</code> and unlocks in <code>edulylas_unlocks</code>. Debug panel lets you simulate webhook failures or reseed storage.</p>
-      </div>
-    </details>
-
-    <section class="flex flex-wrap gap-2" id="categoryShortcuts" aria-label="Categories"></section>
-
-    <section>
-      <div class="flex items-center justify-between mb-2">
-        <h2 class="text-lg font-semibold">Trending Playbooks</h2>
-        <span class="text-xs text-slate-500">বিনামূল্যে &amp; প্রিমিয়াম মিশ্রিত</span>
-      </div>
-      <div id="trendingCarousel" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2" aria-label="Trending playbooks"></div>
-    </section>
-
-    <section>
-      <h2 class="text-lg font-semibold mb-3">Recommended For You</h2>
-      <div id="recommendedFeed" class="space-y-4"></div>
-    </section>
-
-    <section id="playbookPreview" class="bg-white rounded-2xl shadow p-4"></section>
-    <section id="playbookDetails" class="bg-white rounded-2xl shadow p-4"></section>
-    <section id="episodePlayer" class="bg-white rounded-2xl shadow p-4"></section>
-    <section id="creatorPanel" class="hidden bg-white rounded-2xl shadow p-4"></section>
-    <section id="profilePanel" class="bg-white rounded-2xl shadow p-4"></section>
-  </main>
-
-  <nav class="bottom-nav" aria-label="Mobile navigation">
-    <div class="max-w-6xl mx-auto h-full px-6 flex items-center justify-between text-sm font-semibold text-slate-500">
-      <button class="nav-btn focus-ring flex flex-col items-center" data-view="home" aria-label="Home">
-        <span class="material-icons text-xl">home</span>
-        Home
-      </button>
-      <button class="nav-btn focus-ring flex flex-col items-center" data-view="search" aria-label="Search">
-        <span class="material-icons text-xl">search</span>
-        Search
-      </button>
-      <button class="nav-btn focus-ring flex flex-col items-center" data-view="creator" aria-label="Create">
-        <span class="material-icons text-xl">add_circle</span>
-        Create
-      </button>
-      <button class="nav-btn focus-ring flex flex-col items-center" data-view="profile" aria-label="Profile">
-        <span class="material-icons text-xl">person</span>
-        Profile
-      </button>
-    </div>
-  </nav>
-  <div id="paymentModal" class="hidden fixed inset-0 z-[1100] items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="paymentTitle">
-    <div class="modal-backdrop absolute inset-0"></div>
-    <div class="modal-shell relative bg-white rounded-2xl shadow-2xl w-11/12 max-w-xl p-6 space-y-4" tabindex="-1">
-      <button id="closePayment" class="absolute top-3 right-3 text-slate-500 focus-ring" aria-label="Close payment">✕</button>
-      <div>
-        <h3 id="paymentTitle" class="text-xl font-semibold">Unlock Playbook</h3>
-        <p id="paymentPlaybookTitle" class="text-sm text-slate-500"></p>
-      </div>
-      <div class="flex space-x-3" role="tablist">
-        <button class="payment-tab tab-active focus-ring" data-provider="card" role="tab" aria-selected="true">Card</button>
-        <button class="payment-tab focus-ring" data-provider="bkash" role="tab" aria-selected="false">bKash</button>
-        <button class="payment-tab focus-ring" data-provider="nagad" role="tab" aria-selected="false">Nagad</button>
-      </div>
-      <form id="paymentContent" class="space-y-3 text-sm" autocomplete="off"></form>
-      <div id="paymentStatus" class="text-sm" role="status"></div>
-      <button id="payNowBtn" class="w-full bg-blue-600 text-white rounded-xl py-2 font-semibold focus-ring" type="button">Pay ৳<span id="payAmountLabel"></span></button>
-    </div>
-  </div>
-
-  <div id="receiptModal" class="hidden fixed inset-0 z-[1200] items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="receiptTitle">
-    <div class="modal-backdrop absolute inset-0"></div>
-    <div class="modal-shell relative bg-white rounded-2xl shadow-2xl w-11/12 max-w-lg p-6 space-y-4" tabindex="-1">
-      <button id="closeReceipt" class="absolute top-3 right-3 text-slate-500 focus-ring" aria-label="Close receipt">✕</button>
-      <div class="text-center">
-        <p class="text-xs uppercase tracking-widest text-slate-500">EduLylas Receipt</p>
-        <h3 id="receiptTitle" class="text-xl font-semibold mt-1">Purchase Confirmed</h3>
-      </div>
-      <dl class="grid grid-cols-2 gap-3 text-sm">
-        <div><dt class="text-slate-500">Playbook</dt><dd id="receiptPlaybook" class="font-semibold"></dd></div>
-        <div><dt class="text-slate-500">Amount</dt><dd id="receiptAmount" class="font-semibold"></dd></div>
-        <div><dt class="text-slate-500">Provider</dt><dd id="receiptProvider" class="font-semibold"></dd></div>
-        <div><dt class="text-slate-500">Transaction</dt><dd id="receiptTxn" class="font-mono text-xs"></dd></div>
-        <div class="col-span-2"><dt class="text-slate-500">Date</dt><dd id="receiptDate" class="font-semibold"></dd></div>
-      </dl>
-      <div class="flex flex-wrap gap-3">
-        <button id="printReceipt" class="flex-1 border border-slate-300 rounded-xl py-2 focus-ring" type="button">Print / Save</button>
-        <button id="viewPlaybookBtn" class="flex-1 bg-blue-600 text-white rounded-xl py-2 focus-ring" type="button">View Playbook</button>
-      </div>
-    </div>
-  </div>
-
-  <button id="debugToggle" class="fixed bottom-24 right-4 z-[1300] bg-slate-900 text-white px-3 py-2 rounded-full text-sm shadow-lg focus-ring" aria-expanded="false">Debug</button>
-  <section id="debugPanel" class="hidden fixed bottom-24 right-4 z-[1200] bg-white rounded-2xl shadow-2xl w-80 p-4 space-y-3" aria-live="polite">
-    <h4 class="font-semibold text-sm">Debug Controls</h4>
-    <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="failWebhookToggle" class="focus-ring"/> Simulate webhook failure</label>
-    <button id="forceReseed" class="w-full bg-amber-500 text-white rounded-xl py-2 text-sm focus-ring">Force re-seed demo data</button>
-    <button id="refreshStorage" class="w-full border border-slate-300 rounded-xl py-2 text-sm focus-ring">Refresh localStorage view</button>
-    <pre id="storageDump" class="bg-slate-50 rounded-xl p-2 text-[11px] overflow-auto h-32"></pre>
-  </section>
-
-  <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-[1400] hidden"></div>
-  <script>
-    const storeKeys = {
-      users: 'edulylas_users',
-      playbooks: 'edulylas_playbooks',
-      episodes: 'edulylas_episodes',
-      purchases: 'edulylas_purchases',
-      unlocks: 'edulylas_unlocks',
-      comments: 'edulylas_comments',
-      currentUser: 'edulylas_current_user'
-    };
-    const allowedEmbedDomains = ['youtube.com', 'youtu.be', 'medium.com', 'dev.to'];
-    const fallbackThumbnail = 'https://via.placeholder.com/480x270?text=No+Image';
-
-    const appState = {
-      activePlaybookId: null,
-      activeEpisodeId: null,
-      pendingProvider: 'card',
-      processingPayment: false,
-      debug: { webhookFailure: false },
-      focusTrap: null,
-      nagadAttempts: 0
-    };
-
-    function uuidv4() {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-        const r = Math.random() * 16 | 0;
-        const v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-      });
-    }
-
-    function saveToStore(key, value) {
-      localStorage.setItem(key, JSON.stringify(value));
-      document.dispatchEvent(new CustomEvent('app:data:changed', { detail: { key } }));
-    }
-    function getFromStore(key) {
-      const raw = localStorage.getItem(key);
-      try { return raw ? JSON.parse(raw) : null; } catch { return null; }
-    }
-
-    function seedData(force = false) {
-      if (!force && getFromStore(storeKeys.users)) return;
-      const users = [
-        { id: 'u1', name: 'Dev Learner', email: 'dev@edulylas.test', isCreator: false, avatarUrl: 'https://i.pravatar.cc/80?img=12' },
-        { id: 'u2', name: 'OpenSource Academy', email: 'creator@edulylas.test', isCreator: true, avatarUrl: 'https://i.pravatar.cc/80?img=32' }
-      ];
-      const playbooks = [
-        { id: 'pb_python', slug: 'python-programming-playbook', title: 'Python Programming Playbook', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Beginner→Pro Python with projects. First 2 episodes free; rest locked.', tags: ['Tech','Programming'], difficulty: 'Beginner→Intermediate', rating: 4.7, priceTaka: 499, thumbnailUrl: 'https://img.youtube.com/vi/rfscVS0vtbw/hqdefault.jpg', totalEpisodes: 6, createdAt: '2025-10-01T09:00:00Z' },
-        { id: 'pb_marketing', slug: 'digital-marketing-master-playbook-2025', title: 'Digital Marketing Master Playbook 2025', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Campaign blueprints covering SEO, PPC, funnels.', tags: ['Marketing','Business'], difficulty: 'Intermediate', rating: 4.6, priceTaka: 399, thumbnailUrl: 'https://via.placeholder.com/480x270?text=Digital+Marketing', totalEpisodes: 8, createdAt: '2025-09-12T09:00:00Z' },
-        { id: 'pb_uiux', slug: 'ui-ux-design-crash-playbook', title: 'UI/UX Design Crash Playbook', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Sketch to prototype: UX research, UI systems, and usability.', tags: ['Design','Tech'], difficulty: 'Beginner', rating: 4.8, priceTaka: 349, thumbnailUrl: 'https://via.placeholder.com/480x270?text=UI%2FUX+Design', totalEpisodes: 8, createdAt: '2025-08-05T09:00:00Z' },
-        { id: 'pb_ai', slug: 'ai-machine-learning-starter-pack', title: 'AI & Machine Learning Starter Pack', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Math-light intro to AI/ML workflows and tools.', tags: ['AI/ML','Tech'], difficulty: 'Intermediate', rating: 4.9, priceTaka: 599, thumbnailUrl: 'https://via.placeholder.com/480x270?text=AI+ML', totalEpisodes: 7, createdAt: '2025-11-10T09:00:00Z' },
-        { id: 'pb_fullstack', slug: 'full-stack-web-development-2025', title: 'Full-Stack Web Development 2025', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Modern MERN stack with Edge deployments.', tags: ['Tech'], difficulty: 'Intermediate', rating: 4.5, priceTaka: 499, thumbnailUrl: 'https://via.placeholder.com/480x270?text=Full+Stack+2025', totalEpisodes: 9, createdAt: '2025-10-21T09:00:00Z' },
-        { id: 'pb_ba', slug: 'business-analytics-excel-powerbi', title: 'Business Analytics with Excel & Power BI', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Dashboards, KPIs, Power Query recipes.', tags: ['Business'], difficulty: 'Beginner', rating: 4.4, priceTaka: 349, thumbnailUrl: 'https://via.placeholder.com/480x270?text=Analytics', totalEpisodes: 6, createdAt: '2025-09-25T09:00:00Z' },
-        { id: 'pb_startup', slug: 'entrepreneurship-startup-playbook', title: 'Entrepreneurship & Startup Playbook', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Idea validation to funding decks.', tags: ['Business'], difficulty: 'All Levels', rating: 4.3, priceTaka: 299, thumbnailUrl: 'https://via.placeholder.com/480x270?text=Startup', totalEpisodes: 7, createdAt: '2025-07-18T09:00:00Z' }
-      ];
-      const episodes = [
-        { id:'ep_py_1', playbookId:'pb_python', title:'Intro to Python', description:'Overview, setup, why Python.', embedUrl:'https://www.youtube.com/embed/rfscVS0vtbw', thumbnailUrl:'https://img.youtube.com/vi/rfscVS0vtbw/hqdefault.jpg', order:1, isFree:true, durationSeconds:600 },
-        { id:'ep_py_2', playbookId:'pb_python', title:'Variables & Data Types', description:'Basics of variables, lists, dicts.', embedUrl:'https://www.youtube.com/embed/_uQrJ0TkZlc', thumbnailUrl:'https://img.youtube.com/vi/_uQrJ0TkZlc/hqdefault.jpg', order:2, isFree:true, durationSeconds:900 },
-        { id:'ep_py_3', playbookId:'pb_python', title:'Control Flow', description:'Conditionals and loops.', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Control+Flow', order:3, isFree:false, durationSeconds:1200 },
-        { id:'ep_py_4', playbookId:'pb_python', title:'Functions & Modules', description:'Modular design and functions.', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Functions', order:4, isFree:false, durationSeconds:1300 },
-        { id:'ep_py_5', playbookId:'pb_python', title:'OOP Basics', description:'Classes, objects, inheritance.', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+OOP', order:5, isFree:false, durationSeconds:1500 },
-        { id:'ep_py_6', playbookId:'pb_python', title:'Build a CLI Project', description:'Project: CLI todo app.', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+CLI+Project', order:6, isFree:false, durationSeconds:1800 },
-        { id:'ep_dm_1', playbookId:'pb_marketing', title:'Intro to Digital Marketing', description:'Marketing fundamentals.', embedUrl:'https://www.youtube.com/embed/3m3H5gqk4_k', thumbnailUrl:'https://img.youtube.com/vi/3m3H5gqk4_k/hqdefault.jpg', order:1, isFree:true, durationSeconds:720 },
-        { id:'ep_dm_2', playbookId:'pb_marketing', title:'SEO Basics', description:'Keyword research & on-page SEO.', embedUrl:'https://www.youtube.com/embed/5WpwzKJq0Ck', thumbnailUrl:'https://img.youtube.com/vi/5WpwzKJq0Ck/hqdefault.jpg', order:2, isFree:true, durationSeconds:800 },
-        { id:'ep_dm_3', playbookId:'pb_marketing', title:'Paid Ads Foundations', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Ads', order:3, isFree:false, durationSeconds:900 },
-        { id:'ep_dm_4', playbookId:'pb_marketing', title:'Funnels & Automation', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Funnels', order:4, isFree:false, durationSeconds:1000 },
-        { id:'ep_dm_5', playbookId:'pb_marketing', title:'Email Marketing', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Email', order:5, isFree:false, durationSeconds:1000 },
-        { id:'ep_dm_6', playbookId:'pb_marketing', title:'Analytics & Reporting', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Analytics', order:6, isFree:false, durationSeconds:1000 },
-        { id:'ep_dm_7', playbookId:'pb_marketing', title:'Retention Strategies', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Retention', order:7, isFree:false, durationSeconds:1000 },
-        { id:'ep_dm_8', playbookId:'pb_marketing', title:'Scaling Playbooks', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Scaling', order:8, isFree:false, durationSeconds:1000 },
-        { id:'ep_uiux_1', playbookId:'pb_uiux', title:'Design Thinking Sprint', description:'How to empathize & define problems.', embedUrl:'https://www.youtube.com/embed/3W3w2YQ1kKM', thumbnailUrl:'https://img.youtube.com/vi/3W3w2YQ1kKM/hqdefault.jpg', order:1, isFree:true, durationSeconds:780 },
-        { id:'ep_uiux_2', playbookId:'pb_uiux', title:'User Research Basics', description:'Interview frameworks.', embedUrl:'https://www.youtube.com/embed/FZgqRL0vh6U', thumbnailUrl:'https://img.youtube.com/vi/FZgqRL0vh6U/hqdefault.jpg', order:2, isFree:true, durationSeconds:900 },
-        { id:'ep_uiux_3', playbookId:'pb_uiux', title:'Wireframing Essentials', description:'Low-fi to hi-fi workflow.', embedUrl:'https://www.youtube.com/embed/6s2n0FQ8k3E', thumbnailUrl:'https://img.youtube.com/vi/6s2n0FQ8k3E/hqdefault.jpg', order:3, isFree:true, durationSeconds:860 },
-        { id:'ep_uiux_4', playbookId:'pb_uiux', title:'UI Systems & Components', description:'Atomic design crash.', embedUrl:'https://www.youtube.com/embed/_sKjKQp2kQg', thumbnailUrl:'https://img.youtube.com/vi/_sKjKQp2kQg/hqdefault.jpg', order:4, isFree:true, durationSeconds:910 },
-        { id:'ep_uiux_5', playbookId:'pb_uiux', title:'Prototyping in Figma', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Prototype', order:5, isFree:false, durationSeconds:1000 },
-        { id:'ep_uiux_6', playbookId:'pb_uiux', title:'UX Writing', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+UX+Writing', order:6, isFree:false, durationSeconds:900 },
-        { id:'ep_uiux_7', playbookId:'pb_uiux', title:'Usability Testing', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Testing', order:7, isFree:false, durationSeconds:1000 },
-        { id:'ep_uiux_8', playbookId:'pb_uiux', title:'Design Handoff', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Handoff', order:8, isFree:false, durationSeconds:950 },
-        { id:'ep_ai_1', playbookId:'pb_ai', title:'AI/ML Landscape', description:'Intro to AI & ML.', embedUrl:'https://www.youtube.com/embed/GwIo3gDZCVQ', thumbnailUrl:'https://img.youtube.com/vi/GwIo3gDZCVQ/hqdefault.jpg', order:1, isFree:true, durationSeconds:900 },
-        { id:'ep_ai_2', playbookId:'pb_ai', title:'Data Prep Pipelines', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Data', order:2, isFree:false, durationSeconds:1100 },
-        { id:'ep_fullstack_1', playbookId:'pb_fullstack', title:'Full-Stack Foundations', description:'MERN overview.', embedUrl:'https://www.youtube.com/embed/3JluqTojuME', thumbnailUrl:'https://img.youtube.com/vi/3JluqTojuME/hqdefault.jpg', order:1, isFree:true, durationSeconds:960 },
-        { id:'ep_ba_1', playbookId:'pb_ba', title:'Analytics Kickoff', description:'Excel dashboards.', embedUrl:'https://www.youtube.com/embed/mhQGZbV0BX4', thumbnailUrl:'https://img.youtube.com/vi/mhQGZbV0BX4/hqdefault.jpg', order:1, isFree:true, durationSeconds:840 },
-        { id:'ep_startup_1', playbookId:'pb_startup', title:'Startup Mindset', description:'Intro to lean loops.', embedUrl:'https://www.youtube.com/embed/rxjBWkg3wG8', thumbnailUrl:'https://img.youtube.com/vi/rxjBWkg3wG8/hqdefault.jpg', order:1, isFree:true, durationSeconds:780 }
-      ];
-      const comments = [
-        { id:'c1', userId:'u1', episodeId:'ep_py_1', content:'Great intro — clear and fast!', createdAt:'2025-11-01T10:00:00Z' },
-        { id:'c2', userId:'u1', episodeId:'ep_dm_2', content:'SEO tips were practical.', createdAt:'2025-11-02T11:00:00Z' }
-      ];
-      const purchases = [
-        { id:'p1', userId:'u1', playbookId:'pb_python', amountTaka:499, provider:'card', providerPaymentId:'sim_init_001', status:'completed', createdAt:'2025-11-03T12:00:00Z' }
-      ];
-      const unlocks = [
-        { id:'unlock_1', userId:'u1', playbookId:'pb_python', unlockedAt:'2025-11-03T12:00:01Z' }
-      ];
-      saveToStore(storeKeys.users, users);
-      saveToStore(storeKeys.playbooks, playbooks);
-      saveToStore(storeKeys.episodes, episodes);
-      saveToStore(storeKeys.comments, comments);
-      saveToStore(storeKeys.purchases, purchases);
-      saveToStore(storeKeys.unlocks, unlocks);
-    }
-    function autoLogin() {
-      let current = getFromStore(storeKeys.currentUser);
-      const users = getFromStore(storeKeys.users) || [];
-      if (!current) {
-        const defaultUser = users.find(u => u.email === 'dev@edulylas.test');
-        if (defaultUser) {
-          current = { id: defaultUser.id, email: defaultUser.email, name: defaultUser.name, isCreator: defaultUser.isCreator };
-          saveToStore(storeKeys.currentUser, current);
-        }
-      }
-      return current;
-    }
-
-    function switchUser() {
-      const current = getFromStore(storeKeys.currentUser);
-      const users = getFromStore(storeKeys.users) || [];
-      const next = current && current.email === 'dev@edulylas.test'
-        ? users.find(u => u.email === 'creator@edulylas.test')
-        : users.find(u => u.email === 'dev@edulylas.test');
-      if (next) {
-        saveToStore(storeKeys.currentUser, { id: next.id, email: next.email, name: next.name, isCreator: next.isCreator });
-        document.dispatchEvent(new CustomEvent('edulylas:userSwitched'));
-      }
-    }
-
-    function formatDuration(seconds) {
-      const min = Math.floor(seconds / 60);
-      const sec = seconds % 60;
-      return `${min}m ${sec.toString().padStart(2,'0')}s`;
-    }
-
-    function userHasUnlocked(playbookId, userId) {
-      const unlocks = getFromStore(storeKeys.unlocks) || [];
-      return unlocks.some(u => u.playbookId === playbookId && u.userId === userId);
-    }
-
-    function getThumbnail(item) {
-      return item?.thumbnailUrl || fallbackThumbnail;
-    }
-
-    function renderNavUser() {
-      const container = document.getElementById('navUser');
-      const current = getFromStore(storeKeys.currentUser);
-      if (!current) return;
-      const users = getFromStore(storeKeys.users) || [];
-      const userObj = users.find(u => u.id === current.id);
-      container.innerHTML = `
-        <div class="text-right">
-          <p class="text-sm font-semibold">${current.name}</p>
-          <p class="text-xs text-slate-500">${current.email}</p>
+  <div class="flex">
+    <aside class="hidden lg:flex fixed top-20 bottom-0 w-72 border-r border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/70 backdrop-blur overflow-y-auto">
+      <div class="px-6 py-8 space-y-8 w-full">
+        <div>
+          <p class="text-xs uppercase tracking-widest text-slate-400 mb-3">Navigation</p>
+          <nav class="space-y-2" id="mainNav"></nav>
         </div>
-        <img src="${userObj?.avatarUrl || fallbackThumbnail}" alt="${current.name} avatar" class="w-10 h-10 rounded-full border" loading="lazy"/>
-      `;
-    }
-
-    function renderCategories() {
-      const categories = ['Tech','Business','Marketing','Design','AI/ML','Freelancing'];
-      const row = document.getElementById('categoryShortcuts');
-      row.innerHTML = '';
-      categories.forEach(cat => {
-        const btn = document.createElement('button');
-        btn.textContent = cat;
-        btn.className = 'px-4 py-2 rounded-full border border-slate-200 bg-white text-sm focus-ring';
-        btn.addEventListener('click', () => filterByCategory(cat));
-        row.appendChild(btn);
-      });
-    }
-
-    function filterByCategory(cat) {
-      const feed = document.getElementById('recommendedFeed');
-      const cards = feed.querySelectorAll('[data-tags]');
-      cards.forEach(card => {
-        const tags = card.dataset.tags.split(',');
-        card.style.display = tags.includes(cat) ? 'block' : 'none';
-      });
-    }
-
-    function renderPlaybookCard(pb) {
-      const freeCount = (getFromStore(storeKeys.episodes) || []).filter(ep => ep.playbookId === pb.id && ep.isFree).length;
-      const card = document.createElement('article');
-      card.className = 'playbook-card min-w-[240px] bg-white rounded-2xl shadow p-3 cursor-pointer hover:-translate-y-1 transition transform';
-      card.innerHTML = `
-        <div class="rounded-xl overflow-hidden">
-          <img src="${getThumbnail(pb)}" alt="${pb.title} thumbnail" loading="lazy">
+        <div>
+          <p class="text-xs uppercase tracking-widest text-slate-400 mb-3">Recently Viewed</p>
+          <div id="recentList" class="space-y-3 text-sm"></div>
         </div>
-        <div class="mt-2 space-y-1">
-          <p class="text-xs uppercase text-slate-500">${pb.creatorName}</p>
-          <h3 class="font-semibold">${pb.title}</h3>
-          <p class="text-xs text-blue-500">${pb.tags.join(', ')}</p>
-          <span class="inline-flex items-center text-xs mt-1 px-2 py-1 rounded-full bg-slate-100">${freeCount} Free • ${pb.totalEpisodes - freeCount} Paid</span>
-        </div>`;
-      card.addEventListener('click', () => {
-        appState.activePlaybookId = pb.id;
-        const firstEpisode = (getFromStore(storeKeys.episodes) || []).find(ep => ep.playbookId === pb.id);
-        appState.activeEpisodeId = firstEpisode?.id || null;
-        renderAll();
-        document.getElementById('playbookPreview').scrollIntoView({ behavior: 'smooth' });
-      });
-      return card;
-    }
+        <div>
+          <p class="text-xs uppercase tracking-widest text-slate-400 mb-3">Enrolled</p>
+          <div id="enrolledList" class="space-y-3 text-sm"></div>
+        </div>
+        <div>
+          <p class="text-xs uppercase tracking-widest text-slate-400 mb-3">Recommended</p>
+          <div id="recommendedList" class="space-y-3 text-sm"></div>
+        </div>
+      </div>
+    </aside>
 
-    function renderTrending() {
-      const playbooks = getFromStore(storeKeys.playbooks) || [];
-      const trending = playbooks.slice(0, 4);
-      const container = document.getElementById('trendingCarousel');
-      container.innerHTML = '';
-      trending.forEach(pb => container.appendChild(renderPlaybookCard(pb)));
-    }
-
-    function renderRecommended(listOverride) {
-      const playbooks = getFromStore(storeKeys.playbooks) || [];
-      const recommendedIds = ['pb_fullstack','pb_ba','pb_startup'];
-      const container = document.getElementById('recommendedFeed');
-      container.innerHTML = '';
-      const data = listOverride?.length ? listOverride : playbooks.filter(pb => recommendedIds.includes(pb.id));
-      data.forEach(pb => {
-        const card = document.createElement('article');
-        card.className = 'playbook-card bg-white rounded-2xl shadow flex flex-col md:flex-row gap-4 p-4 border border-transparent hover:border-blue-100 cursor-pointer';
-        card.dataset.tags = pb.tags.join(',');
-        card.innerHTML = `
-          <div class="md:w-48 w-full rounded-xl overflow-hidden">
-            <img src="${getThumbnail(pb)}" alt="${pb.title} cover" loading="lazy">
+    <main class="w-full pt-24 pb-20 lg:ml-72">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 space-y-12">
+        <section class="bg-gradient-to-br from-slate-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-950 dark:to-indigo-950 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-lg p-6 sm:p-10 flex flex-col lg:flex-row gap-10">
+          <div class="flex-1 space-y-6">
+            <p class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-edulylas-purple">
+              <span class="w-2 h-2 rounded-full bg-edulylas-blue animate-pulse"></span>
+              Live community drop
+            </p>
+            <h1 class="text-3xl sm:text-4xl font-semibold text-slate-900 dark:text-white">Design, remix, and launch collaborative AI classrooms with playbooks curated by educators worldwide.</h1>
+            <p class="text-base text-slate-600 dark:text-slate-300">Mix and match paid, free, and hybrid playbooks from 42+ regions. Keep progress synced, invite co-creators, and track weekly drops across the network.</p>
+            <div class="flex flex-wrap gap-4">
+              <button class="px-6 py-3 rounded-2xl bg-gradient-to-r from-edulylas-purple to-edulylas-blue text-white font-semibold shadow-md">Explore Playbooks</button>
+              <button class="px-6 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 font-semibold">Share Your Flow</button>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+              <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70">
+                <p class="text-2xl font-semibold">184</p>
+                <p class="text-slate-500">Community playbooks</p>
+              </div>
+              <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70">
+                <p class="text-2xl font-semibold">62</p>
+                <p class="text-slate-500">Active cohorts</p>
+              </div>
+              <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70">
+                <p class="text-2xl font-semibold">1.2k</p>
+                <p class="text-slate-500">Creators sharing</p>
+              </div>
+              <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70">
+                <p class="text-2xl font-semibold">8.7k</p>
+                <p class="text-slate-500">Learners enrolled</p>
+              </div>
+            </div>
           </div>
-          <div class="flex-1 space-y-1">
-            <div class="flex items-center justify-between gap-3">
-              <h3 class="text-lg font-semibold">${pb.title}</h3>
-              <span class="text-sm font-bold text-blue-600">৳${pb.priceTaka}</span>
-            </div>
-            <p class="text-sm text-slate-600">${pb.description}</p>
-            <div class="text-xs text-yellow-500">⭐ ${pb.rating}</div>
-            <div class="flex gap-2 flex-wrap pt-1">
-              ${pb.tags.map(tag => `<span class="px-2 py-1 bg-slate-100 rounded-full text-xs">${tag}</span>`).join('')}
-            </div>
-          </div>`;
-        card.addEventListener('click', () => {
-          appState.activePlaybookId = pb.id;
-          const firstEpisode = (getFromStore(storeKeys.episodes) || []).find(ep => ep.playbookId === pb.id);
-          appState.activeEpisodeId = firstEpisode?.id || null;
-          renderAll();
-        });
-        container.appendChild(card);
-      });
-    }
-
-    function buildEpisodeList(pb, unlocked) {
-      const episodes = (getFromStore(storeKeys.episodes) || []).filter(ep => ep.playbookId === pb.id).sort((a,b) => a.order - b.order);
-      const list = document.createElement('ul');
-      list.className = 'episodes-list divide-y divide-slate-200';
-      episodes.forEach(ep => {
-        const li = document.createElement('li');
-        const locked = !ep.isFree && !unlocked;
-        li.className = 'py-3';
-        li.innerHTML = `
-          <button class="episode-toggle w-full text-left flex items-center gap-3 focus-ring" data-episode-id="${ep.id}" data-playbook-id="${pb.id}" data-locked="${locked}" aria-expanded="false">
-            <img src="${getThumbnail(ep)}" alt="${ep.title}" class="w-20 h-12 rounded-lg object-cover" loading="lazy"/>
-            <div class="flex-1">
-              <div class="flex justify-between gap-2">
-                <span class="font-semibold">${ep.order}. ${ep.title}</span>
-                <span class="text-xs text-slate-500">${formatDuration(ep.durationSeconds)}</span>
-              </div>
-              <p class="text-sm text-slate-500">${ep.description}</p>
-              <span class="text-xs ${ep.isFree ? 'text-green-600' : 'text-rose-500'}">${ep.isFree ? 'বিনামূল্যে' : 'Locked প্রিমিয়াম'}</span>
-            </div>
-            ${locked ? '<span class="material-icons text-rose-500" aria-hidden="true">lock</span>' : '<span class="material-icons text-slate-400">expand_more</span>'}
-          </button>`;
-        list.appendChild(li);
-      });
-      return list;
-    }
-
-    function normalizeYoutubeUrl(url) {
-      if (!url) return '';
-      try {
-        const parsed = new URL(url);
-        if (parsed.hostname.includes('youtu.be')) {
-          const id = parsed.pathname.replace('/', '');
-          return `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`;
-        }
-        if (parsed.hostname.includes('youtube.com')) {
-          const id = parsed.searchParams.get('v') || parsed.pathname.split('/').pop();
-          return `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`;
-        }
-        return url;
-      } catch {
-        return url;
-      }
-    }
-    function renderEmbed(episode) {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'space-y-2';
-      const url = episode.embedUrl?.trim();
-      if (!url) {
-        wrapper.innerHTML = '<p class="text-sm text-slate-600">No embedded preview available yet.</p>';
-        return wrapper;
-      }
-      const domain = url.includes('youtube') || url.includes('youtu.be') ? 'youtube' :
-        url.includes('medium.com') ? 'medium' :
-        url.includes('dev.to') ? 'devto' :
-        url.includes('github.com') ? 'github' : 'other';
-      if (domain === 'youtube') {
-        const iframe = document.createElement('iframe');
-        iframe.src = normalizeYoutubeUrl(url);
-        iframe.width = '100%';
-        iframe.height = '315';
-        iframe.title = episode.title;
-        iframe.className = 'rounded-xl w-full';
-        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-        iframe.allowFullscreen = true;
-        wrapper.appendChild(iframe);
-      } else if (domain === 'medium' || domain === 'devto') {
-        const iframe = document.createElement('iframe');
-        iframe.src = url;
-        iframe.width = '100%';
-        iframe.height = '400';
-        iframe.className = 'rounded-xl w-full border';
-        iframe.title = `Embedded article for ${episode.title}`;
-        iframe.allow = 'clipboard-write';
-        iframe.allowFullscreen = true;
-        wrapper.appendChild(iframe);
-      } else if (domain === 'github') {
-        wrapper.innerHTML = `
-          <div class="border rounded-xl p-4 flex flex-col gap-2 bg-white">
-            <div class="flex items-center gap-2">
-              <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" class="w-8 h-8"/>
-              <div>
-                <p class="font-semibold">GitHub Repository</p>
-                <p class="text-xs text-slate-500 truncate">${url}</p>
+          <div class="flex-1">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xl">
+              <img id="heroSpotlight" src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=900&q=80" class="w-full h-64 object-cover" alt="hero" />
+              <div class="p-6 space-y-4">
+                <p class="text-sm font-semibold text-edulylas-purple">Spotlight cohort</p>
+                <p class="text-xl font-semibold">AI Studio Leadership Week</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400">15 labs • Hybrid access • Tools: Notion, Figma, Gamma, Canva</p>
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-2xl overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=facearea&w=120&h=120&q=80" class="w-full h-full object-cover" alt="creator" />
+                  </div>
+                  <div>
+                    <p class="text-sm font-semibold">Studio Nova</p>
+                    <p class="text-xs text-slate-500">Coaches in São Paulo + Lagos</p>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between text-xs text-slate-500">
+                  <span>Progress</span>
+                  <span class="font-semibold">68%</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800">
+                  <div class="h-full rounded-full bg-gradient-to-r from-edulylas-purple to-edulylas-blue" style="width: 68%"></div>
+                </div>
               </div>
             </div>
-            <p class="text-sm text-slate-600">Preview unavailable in demo. Use the button below to open on GitHub.</p>
-            <a href="${url}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-blue-600 font-semibold">Open on GitHub<span class="material-icons text-base">open_in_new</span></a>
-          </div>`;
-      } else {
-        wrapper.innerHTML = `
-          <div class="border rounded-xl p-4">
-            <p class="text-sm text-slate-600">Preview unavailable. Open externally to view the resource.</p>
-          </div>`;
-      }
-      const external = document.createElement('a');
-      external.href = url;
-      external.target = '_blank';
-      external.rel = 'noopener';
-      external.className = 'inline-flex items-center gap-1 text-sm text-blue-600 font-semibold';
-      external.textContent = 'Open externally';
-      external.insertAdjacentHTML('beforeend', '<span class="material-icons text-base">open_in_new</span>');
-      wrapper.appendChild(external);
-      return wrapper;
-    }
-
-    function renderEpisodePanel(episode) {
-      const panel = document.createElement('div');
-      panel.className = 'episode-panel';
-      panel.role = 'region';
-      panel.dataset.episodePanel = episode.id;
-      panel.innerHTML = `
-        <p class="text-sm text-slate-600 mb-2">${episode.description || 'No description yet.'}</p>`;
-      panel.appendChild(renderEmbed(episode));
-      return panel;
-    }
-
-    function renderPlaybookPreview() {
-      const playbooks = getFromStore(storeKeys.playbooks) || [];
-      const episodes = getFromStore(storeKeys.episodes) || [];
-      const currentUser = getFromStore(storeKeys.currentUser);
-      const pb = playbooks.find(p => p.id === appState.activePlaybookId) || playbooks[0];
-      if (!pb) return;
-      appState.activePlaybookId = pb.id;
-      const unlocked = userHasUnlocked(pb.id, currentUser?.id);
-      const pbEpisodes = episodes.filter(ep => ep.playbookId === pb.id);
-      const total = pb.totalEpisodes || pbEpisodes.length;
-      const unlockedEpisodes = pbEpisodes.filter(ep => ep.isFree || unlocked).length;
-      const progress = total ? Math.round((unlockedEpisodes / total) * 100) : 0;
-      const container = document.getElementById('playbookPreview');
-      container.innerHTML = `
-        <div class="flex flex-col md:flex-row gap-4">
-          <div class="md:w-60 w-full rounded-2xl overflow-hidden">
-            <img src="${getThumbnail(pb)}" alt="${pb.title}" class="w-full h-auto" loading="lazy"/>
           </div>
-          <div class="flex-1 space-y-3">
-            <div class="flex flex-wrap justify-between gap-2">
-              <div>
-                <p class="text-xs uppercase text-slate-500">${pb.creatorName}</p>
-                <h3 class="text-2xl font-bold">${pb.title}</h3>
-              </div>
-              <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-sm">${pb.difficulty}</span>
-            </div>
-            <p class="text-sm text-slate-600">${pb.description}</p>
-            <div class="flex gap-2 flex-wrap">
-              ${pb.tags.map(tag => `<span class='text-xs bg-slate-100 rounded-full px-3 py-1'>${tag}</span>`).join('')}
-            </div>
+        </section>
+
+        <section>
+          <div class="flex items-center justify-between mb-6">
             <div>
-              <div class="w-full bg-slate-200 rounded-full h-2" aria-hidden="true">
-                <div class="bg-blue-500 h-2 rounded-full" style="width:${progress}%"></div>
+              <p class="text-sm uppercase tracking-widest text-edulylas-purple">Weekly Drop</p>
+              <h2 class="text-2xl font-semibold">Fresh mixes curated by the community</h2>
+            </div>
+            <div class="flex gap-3">
+              <button id="weeklyPrev" class="w-11 h-11 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center justify-center"><i class="ti ti-chevron-left"></i></button>
+              <button id="weeklyNext" class="w-11 h-11 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center justify-center"><i class="ti ti-chevron-right"></i></button>
+            </div>
+          </div>
+          <div class="relative">
+            <div id="weeklyTrack" class="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4"></div>
+          </div>
+        </section>
+
+        <section>
+          <div class="flex flex-col gap-3 mb-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm uppercase tracking-widest text-edulylas-purple">Community Playbooks</p>
+                <h2 class="text-2xl font-semibold">Browse free, paid, and hybrid flows</h2>
               </div>
-              <p class="text-xs mt-1 text-slate-500" aria-live="polite">${unlockedEpisodes}/${total} episodes available (${progress}%)</p>
-            </div>
-            <div class="flex flex-wrap gap-3 items-center justify-between">
-              <p class="text-lg font-semibold">Unlock all episodes for <span class="text-blue-600">৳${pb.priceTaka}</span></p>
-              <button ${unlocked ? 'disabled' : ''} class="px-4 py-2 rounded-xl font-semibold ${unlocked ? 'bg-slate-200 text-slate-500 cursor-not-allowed' : 'bg-blue-600 text-white'}" data-playbook="${pb.id}" aria-label="Unlock full playbook">${unlocked ? 'Already unlocked' : 'Unlock Full Playbook • ৳'+pb.priceTaka}</button>
+              <div class="flex gap-3 text-sm font-semibold">
+                <button class="px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-700" data-filter="all">All</button>
+                <button class="px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-700" data-filter="free">Free</button>
+                <button class="px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-700" data-filter="paid">Paid</button>
+                <button class="px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-700" data-filter="hybrid">Hybrid</button>
+              </div>
             </div>
           </div>
-        </div>`;
-      const actionBtn = container.querySelector('button[data-playbook]');
-      if (actionBtn && !unlocked) {
-        actionBtn.addEventListener('click', () => openPaymentModal(pb));
-      }
-      const episodeWrapper = document.createElement('div');
-      episodeWrapper.className = 'mt-6';
-      episodeWrapper.innerHTML = '<h4 class="font-semibold mb-2">Episode Preview</h4>';
-      episodeWrapper.appendChild(buildEpisodeList(pb, unlocked));
-      container.appendChild(episodeWrapper);
-    }
+          <div id="communityGrid" class="grid gap-6 md:grid-cols-2 xl:grid-cols-3"></div>
+        </section>
 
-    function renderPlaybookDetails() {
-      const playbooks = getFromStore(storeKeys.playbooks) || [];
-      const episodes = getFromStore(storeKeys.episodes) || [];
-      const pb = playbooks.find(p => p.id === appState.activePlaybookId) || playbooks[0];
-      if (!pb) return;
-      const pbEpisodes = episodes.filter(ep => ep.playbookId === pb.id).sort((a,b) => a.order - b.order);
-      const detail = document.getElementById('playbookDetails');
-      detail.innerHTML = `
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <h3 class="text-xl font-semibold">Playbook Details</h3>
-          <span class="text-sm text-slate-500">Rating ⭐ ${pb.rating}</span>
-        </div>
-        <p class="text-sm text-slate-600 mt-2">${pb.description}</p>
-        <div class="mt-3 flex flex-wrap gap-2">
-          ${pb.tags.map(tag => `<span class='px-3 py-1 rounded-full bg-slate-100 text-xs'>${tag}</span>`).join('')}
-        </div>
-        <div class="mt-4 space-y-2">
-          ${pbEpisodes.map(ep => `<div class='flex items-center justify-between border rounded-xl px-3 py-2 text-sm'>
-            <span>${ep.order}. ${ep.title}</span>
-            <span>${ep.isFree ? 'বিনামূল্যে' : '🔒'}</span>
-          </div>`).join('')}
-        </div>`;
-    }
-
-    function renderEpisodePlayer() {
-      const container = document.getElementById('episodePlayer');
-      const episodes = getFromStore(storeKeys.episodes) || [];
-      const playbooks = getFromStore(storeKeys.playbooks) || [];
-      const currentEpisode = episodes.find(ep => ep.id === appState.activeEpisodeId) || episodes.find(ep => ep.playbookId === appState.activePlaybookId);
-      if (!currentEpisode) {
-        container.innerHTML = '<p class="text-sm text-slate-500">Select an episode to preview.</p>';
-        return;
-      }
-      const playbook = playbooks.find(pb => pb.id === currentEpisode.playbookId);
-      container.innerHTML = `
-        <div class="flex items-center justify-between gap-2">
-          <div>
-            <p class="text-xs uppercase text-slate-500">Now previewing</p>
-            <h3 class="text-xl font-semibold">${currentEpisode.title}</h3>
-            <p class="text-sm text-slate-500">${playbook?.title || ''}</p>
+        <section id="playbookDetail" class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl shadow-lg overflow-hidden">
+          <div class="grid lg:grid-cols-2">
+            <div class="p-6 lg:p-10 space-y-5 border-r border-slate-100 dark:border-slate-800">
+              <p class="text-sm uppercase tracking-widest text-edulylas-purple">Playbook</p>
+              <h2 id="detailTitle" class="text-3xl font-semibold"></h2>
+              <p id="detailAuthor" class="text-slate-500 dark:text-slate-400"></p>
+              <p id="detailSummary" class="text-slate-600 dark:text-slate-300"></p>
+              <div class="flex flex-wrap gap-3" id="detailTags"></div>
+              <div class="flex gap-4 text-sm">
+                <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+                  <p class="text-xs uppercase text-slate-400">Access</p>
+                  <p id="detailAccess" class="font-semibold"></p>
+                </div>
+                <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+                  <p class="text-xs uppercase text-slate-400">Duration</p>
+                  <p id="detailDuration" class="font-semibold"></p>
+                </div>
+                <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+                  <p class="text-xs uppercase text-slate-400">Level</p>
+                  <p id="detailLevel" class="font-semibold"></p>
+                </div>
+              </div>
+              <button class="px-6 py-3 rounded-2xl bg-gradient-to-r from-edulylas-purple to-edulylas-blue text-white font-semibold">Access this playbook</button>
+            </div>
+            <div class="bg-slate-50 dark:bg-slate-950 p-6 lg:p-10 space-y-5" id="detailModules">
+              <p class="text-sm uppercase tracking-widest text-edulylas-purple">Modules</p>
+            </div>
           </div>
-          <span class="text-xs text-slate-500">${formatDuration(currentEpisode.durationSeconds)}</span>
-        </div>`;
-      container.appendChild(renderEpisodePanel(currentEpisode));
-    }
+        </section>
+      </div>
+    </main>
+  </div>
 
-    function renderCreatorPanel() {
-      const current = getFromStore(storeKeys.currentUser);
-      const panel = document.getElementById('creatorPanel');
-      panel.classList.toggle('hidden', !current?.isCreator);
-      if (!current?.isCreator) return;
-      panel.innerHTML = `
-        <h3 class="text-xl font-semibold">Creator Console</h3>
-        <p class="text-sm text-slate-500">Submit new playbooks or schedule episodes.</p>
-        <form id="createPlaybookForm" class="grid md:grid-cols-2 gap-4 mt-4">
-          <label class="text-sm">Title<input name="title" required class="mt-1 border rounded-xl px-3 py-2 w-full" placeholder="Playbook title"/></label>
-          <label class="text-sm">Difficulty<input name="difficulty" class="mt-1 border rounded-xl px-3 py-2 w-full" placeholder="Beginner"/></label>
-          <label class="text-sm md:col-span-2">Description<textarea name="description" class="mt-1 border rounded-xl px-3 py-2 w-full" rows="2"></textarea></label>
-          <label class="text-sm">Tags<input name="tags" class="mt-1 border rounded-xl px-3 py-2 w-full" placeholder="Tech, Programming"/></label>
-          <label class="text-sm">Price (৳)<input name="price" type="number" class="mt-1 border rounded-xl px-3 py-2 w-full"/></label>
-          <label class="text-sm">Thumbnail URL<input name="thumbnail" class="mt-1 border rounded-xl px-3 py-2 w-full"/></label>
-          <label class="text-sm">Rating<input name="rating" type="number" step="0.1" class="mt-1 border rounded-xl px-3 py-2 w-full"/></label>
-          <button class="md:col-span-2 bg-slate-900 text-white rounded-xl py-2">Add Playbook</button>
-        </form>
-        <hr class="my-6"/>
-        <form id="addEpisodeForm" class="grid md:grid-cols-2 gap-4">
-          <label class="text-sm">Playbook<select name="playbookId" class="mt-1 border rounded-xl px-3 py-2 w-full"></select></label>
-          <label class="text-sm">Title<input name="title" required class="mt-1 border rounded-xl px-3 py-2 w-full"/></label>
-          <label class="text-sm md:col-span-2">Embed URL<input name="embed" required class="mt-1 border rounded-xl px-3 py-2 w-full" placeholder="https://www.youtube.com/watch?v=..."/></label>
-          <label class="text-sm">Thumbnail URL<input name="thumbnail" class="mt-1 border rounded-xl px-3 py-2 w-full"/></label>
-          <label class="text-sm">Duration (seconds)<input name="duration" type="number" class="mt-1 border rounded-xl px-3 py-2 w-full"/></label>
-          <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="isFree"/> Free episode</label>
-          <button class="md:col-span-2 bg-blue-600 text-white rounded-xl py-2">Add Episode</button>
-          <p id="creatorValidation" class="md:col-span-2 text-sm text-rose-500"></p>
-        </form>`;
-      const select = panel.querySelector('select[name="playbookId"]');
-      const playbooks = getFromStore(storeKeys.playbooks).filter(pb => pb.creatorId === current.id || current.email === 'creator@edulylas.test');
-      playbooks.forEach(pb => {
-        const option = document.createElement('option');
-        option.value = pb.id;
-        option.textContent = pb.title;
-        select.appendChild(option);
-      });
-      panel.querySelector('#createPlaybookForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const form = new FormData(e.target);
-        const newPb = {
-          id: 'pb_'+Date.now(),
-          slug: form.get('title').toLowerCase().replace(/\s+/g,'-'),
-          title: form.get('title'),
-          creatorId: current.id,
-          creatorName: current.name,
-          description: form.get('description'),
-          tags: form.get('tags').split(',').map(t => t.trim()),
-          difficulty: form.get('difficulty'),
-          rating: parseFloat(form.get('rating')) || 4.5,
-          priceTaka: Number(form.get('price')) || 299,
-          thumbnailUrl: form.get('thumbnail'),
-          totalEpisodes: 0,
-          createdAt: new Date().toISOString()
-        };
-        const playbooksStore = getFromStore(storeKeys.playbooks) || [];
-        playbooksStore.unshift(newPb);
-        saveToStore(storeKeys.playbooks, playbooksStore);
-        e.target.reset();
-        renderAll();
-      });
-      panel.querySelector('#addEpisodeForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const status = panel.querySelector('#creatorValidation');
-        status.textContent = '';
-        const form = new FormData(e.target);
-        const embed = form.get('embed');
-        if (!allowedEmbedDomains.some(domain => embed.includes(domain))) {
-          status.textContent = 'Embed URL must be from youtube.com, youtu.be, medium.com, or dev.to';
-          return;
-        }
-        const playbookId = form.get('playbookId');
-        const episodes = getFromStore(storeKeys.episodes) || [];
-        const order = episodes.filter(ep => ep.playbookId === playbookId).length + 1;
-        episodes.push({ id:'ep_'+Date.now(), playbookId, title: form.get('title'), description: 'Creator submitted episode', embedUrl: embed, thumbnailUrl: form.get('thumbnail'), order, isFree: form.get('isFree') === 'on', durationSeconds: Number(form.get('duration')) });
-        saveToStore(storeKeys.episodes, episodes);
-        const playbooksStore = getFromStore(storeKeys.playbooks) || [];
-        const pb = playbooksStore.find(p => p.id === playbookId);
-        if (pb) {
-          pb.totalEpisodes = episodes.filter(ep => ep.playbookId === playbookId).length;
-          saveToStore(storeKeys.playbooks, playbooksStore);
-        }
-        e.target.reset();
-        renderAll();
-      });
-    }
-    function renderProfilePanel() {
-      const user = getFromStore(storeKeys.currentUser);
-      const purchases = getFromStore(storeKeys.purchases) || [];
-      const playbooks = getFromStore(storeKeys.playbooks) || [];
-      const container = document.getElementById('profilePanel');
-      container.innerHTML = `
-        <h3 class="text-xl font-semibold">Profile & Activity</h3>
-        <p class="text-sm text-slate-500">${user?.email || 'Not signed in'}</p>
-        <div class="mt-4">
-          <h4 class="font-semibold">Purchases</h4>
-          <div class="space-y-3 mt-2" id="purchaseList"></div>
+  <template id="sidebarItemTemplate">
+    <a href="#" class="flex items-start gap-3 p-3 rounded-2xl border border-transparent hover:border-edulylas-purple/40">
+      <div>
+        <p class="font-medium"></p>
+        <p class="text-xs text-slate-500"></p>
+      </div>
+    </a>
+  </template>
+
+  <template id="playbookCardTemplate">
+    <article class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-md flex flex-col overflow-hidden cursor-pointer transition-transform hover:-translate-y-1" data-playbook-id="">
+      <div class="relative">
+        <img class="w-full h-48 object-cover" alt="playbook cover" />
+        <span class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-semibold bg-white/80 dark:bg-slate-900/80" data-access></span>
+      </div>
+      <div class="p-6 space-y-4 flex-1">
+        <div>
+          <p class="text-sm text-slate-500" data-region></p>
+          <h3 class="text-xl font-semibold" data-title></h3>
         </div>
-        <button id="resetDemo" class="mt-4 bg-rose-600 text-white px-4 py-2 rounded-xl focus-ring">Reset Demo Data</button>
-      `;
-      const list = container.querySelector('#purchaseList');
-      const userPurchases = purchases.filter(p => p.userId === user?.id);
-      if (!userPurchases.length) {
-        list.innerHTML = '<p class="text-sm text-slate-500">No purchases yet</p>';
-      } else {
-        userPurchases.forEach(p => {
-          const pb = playbooks.find(pb => pb.id === p.playbookId);
-          const row = document.createElement('div');
-          row.className = 'border rounded-xl p-3';
-          row.innerHTML = `<p class='font-semibold'>${pb?.title || p.playbookId}</p><p class='text-sm text-slate-500'>৳${p.amountTaka} • ${p.provider} • ${p.status}</p><p class='text-xs text-slate-400 font-mono'>${p.providerPaymentId}</p>`;
-          list.appendChild(row);
-        });
+        <p class="text-sm text-slate-600 dark:text-slate-400" data-summary></p>
+        <div class="flex items-center justify-between text-sm">
+          <div class="flex items-center gap-2" data-author></div>
+          <span data-price class="font-semibold"></span>
+        </div>
+        <div class="flex flex-wrap gap-2 text-xs" data-tags></div>
+      </div>
+    </article>
+  </template>
+
+  <template id="notificationTemplate">
+    <div class="p-4 text-sm space-y-1">
+      <p class="font-semibold"></p>
+      <p class="text-slate-500"></p>
+    </div>
+  </template>
+
+  <script>
+    const playbooks = [
+      {
+        id: 'pb-sahara',
+        title: 'Sahara STEAM Dispatch',
+        summary: 'Co-design climate storytelling labs blending Earth data, Midjourney prompts, and hands-on prototyping.',
+        cover: 'https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=900&q=80',
+        region: 'Dakar • Marrakech',
+        author: { name: 'Asha Diallo', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=facearea&w=120&h=120&q=80', title: 'Community Lead' },
+        price: 'Free',
+        access: 'free',
+        duration: '4 weeks',
+        level: 'Intermediate',
+        tags: ['Storytelling', 'Climate', 'AI Art'],
+        modules: ['Signal scans & speculative prompts', 'Community interviews & data walls', 'Midjourney narrative boards', 'Prototype showcase & feedback']
+      },
+      {
+        id: 'pb-holo',
+        title: 'HoloCampus Navigator',
+        summary: 'Launch immersive hologram classrooms and empower learners to remix AI agents with local contexts.',
+        cover: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=900&q=80',
+        region: 'Seoul • Austin',
+        author: { name: 'Min Park', avatar: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=facearea&w=120&h=120&q=80', title: 'XR Fellow' },
+        price: '$38',
+        access: 'paid',
+        duration: '3 weeks',
+        level: 'Advanced',
+        tags: ['XR', 'AI Agents', 'Labs'],
+        modules: ['Spatial onboarding + safety', 'Agent remix sprint', 'Cohort build review', 'Hybrid pitch night']
+      },
+      {
+        id: 'pb-fjord',
+        title: 'Fjord Literacy Studio',
+        summary: 'Blended literacy pods where students craft AI-assisted radio stories with fjord ecosystems.',
+        cover: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80',
+        region: 'Oslo • Reykjavík',
+        author: { name: 'Liv Sønder', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=facearea&w=120&h=120&q=80', title: 'Youth Studio' },
+        price: 'Hybrid',
+        access: 'hybrid',
+        duration: '6 weeks',
+        level: 'Beginner',
+        tags: ['Literacy', 'Audio', 'Community'],
+        modules: ['Soundwalk & AI annotation', 'Script remix jam', 'Community radio takeover', 'Impact retros']
+      },
+      {
+        id: 'pb-metropolis',
+        title: 'Metropolis Service Jam',
+        summary: 'Civic design sprint pairing city labs with students to redesign mobility using GPT copilots.',
+        cover: 'https://images.unsplash.com/photo-1482192597420-4817fdd7e8b0?auto=format&fit=crop&w=900&q=80',
+        region: 'Manila • Nairobi',
+        author: { name: 'City Syndicate', avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=facearea&w=120&h=120&q=80', title: 'Civic Lab' },
+        price: '$12',
+        access: 'paid',
+        duration: '2 weeks',
+        level: 'Intermediate',
+        tags: ['Civic', 'Mobility', 'GPT'],
+        modules: ['Field sensing missions', 'Blueprint prototyping', 'Policy debate hallway', 'City hall demo']
+      },
+      {
+        id: 'pb-tide',
+        title: 'Tidepool BioHack Residency',
+        summary: 'Open-source biology residency mixing AI lab notebooks with citizen-science field trips.',
+        cover: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80',
+        region: 'Lisbon • Florianópolis',
+        author: { name: 'Orbit Lab', avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=facearea&w=120&h=120&q=80', title: 'Bio Collective' },
+        price: 'Free',
+        access: 'free',
+        duration: '5 weeks',
+        level: 'Advanced',
+        tags: ['Biology', 'Fieldwork', 'AI Logs'],
+        modules: ['Wet lab onboarding', 'AI journaling rituals', 'Citizen field capture', 'Residency showcase']
+      },
+      {
+        id: 'pb-orbit',
+        title: 'Orbit Finance Fellowship',
+        summary: 'Peer-led cohort for teens to build transparent micro-funds with AI compliance copilots.',
+        cover: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=80',
+        region: 'Toronto • Accra',
+        author: { name: 'Nia Torres', avatar: 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=facearea&w=120&h=120&q=80', title: 'Financial Mentor' },
+        price: '$18',
+        access: 'hybrid',
+        duration: '4 weeks',
+        level: 'Intermediate',
+        tags: ['Finance', 'Transparency', 'AI Review'],
+        modules: ['Trust frameworks', 'Micro-fund design sprint', 'Compliance copilots', 'Demo day']
+      },
+      {
+        id: 'pb-pulse',
+        title: 'PulseCare Studio',
+        summary: 'Healthcare educators co-create chatbot bedside training with hospital partners.',
+        cover: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=900&q=80',
+        region: 'Chicago • Mumbai',
+        author: { name: 'Noor Patel', avatar: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=facearea&w=120&h=120&q=80', title: 'Clinical Designer' },
+        price: 'Free',
+        access: 'free',
+        duration: '3 weeks',
+        level: 'Advanced',
+        tags: ['Healthcare', 'Chatbots', 'Simulation'],
+        modules: ['Ward immersion & need finding', 'GPT bedside flows', 'Simulation testing', 'Nurse council review']
+      },
+      {
+        id: 'pb-harbor',
+        title: 'Harbor Youth Exchange',
+        summary: 'Public youth labs remixing maritime data for storytelling and entrepreneurship.',
+        cover: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=900&q=80',
+        region: 'Rotterdam • Cape Town',
+        author: { name: 'Blue Commons', avatar: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=facearea&w=120&h=120&q=80', title: 'Harbor Lab' },
+        price: '$9',
+        access: 'paid',
+        duration: '3 weeks',
+        level: 'Beginner',
+        tags: ['Youth', 'Data', 'Storytelling'],
+        modules: ['Data sonification lab', 'Community interviews', 'AI venture canvas', 'Dockside pitch']
       }
-      container.querySelector('#resetDemo').addEventListener('click', () => {
-        Object.values(storeKeys).forEach(key => localStorage.removeItem(key));
-        seedData(true);
-        autoLogin();
-        renderAll();
+    ];
+
+    const weeklyDrop = [
+      { title: 'Studio Residency Sampler', host: 'Orbit Lab', members: 42, cover: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80', description: 'Blend wet labs with AI journaling prompts and residencies.' },
+      { title: 'XR + Civic Mobility', host: 'City Syndicate', members: 58, cover: 'https://images.unsplash.com/photo-1482192597420-4817fdd7e8b0?auto=format&fit=crop&w=900&q=80', description: 'Pair city labs with hologram classrooms for policy jams.' },
+      { title: 'Fjord Audio Residency', host: 'Liv Sønder', members: 36, cover: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80', description: 'AI-supported radio storytelling with fjord ecosystems.' },
+      { title: 'PulseCare Teams', host: 'Noor Patel', members: 65, cover: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=900&q=80', description: 'Simulate bedside chats with GPT-powered copilots.' }
+    ];
+
+    const navLinks = [
+      { label: 'Home', icon: 'ti ti-sparkles' },
+      { label: 'Search', icon: 'ti ti-search' },
+      { label: 'Create', icon: 'ti ti-plus' },
+      { label: 'Account', icon: 'ti ti-user' },
+      { label: 'Analytics', icon: 'ti ti-chart-line' }
+    ];
+
+    const recentPlaybooks = [
+      { title: 'River Commons Residency', meta: 'Unlocked 2 days ago' },
+      { title: 'North Star Media Lab', meta: 'Module 3 in progress' },
+      { title: 'Aero Bot Bootcamp', meta: 'Shared with mentors' }
+    ];
+
+    const enrolledPlaybooks = [
+      { title: 'PulseCare Studio', meta: 'Due today' },
+      { title: 'Metropolis Service Jam', meta: 'Sync Friday' },
+      { title: 'Orbit Finance Fellowship', meta: 'New feedback' }
+    ];
+
+    const recommendedPlaybooks = [
+      { title: 'HoloCampus Navigator', meta: 'Matches XR interest' },
+      { title: 'Sahara STEAM Dispatch', meta: 'Trending free drop' },
+      { title: 'Harbor Youth Exchange', meta: 'Community pick' }
+    ];
+
+    const notifications = [
+      { title: 'Liv Sønder invited you to co-create Fjord Literacy Studio', detail: 'Review the shared board before Monday.' },
+      { title: 'New notes from Min Park', detail: 'XR checkpoints added to HoloCampus Navigator.' },
+      { title: 'Orbit Lab granted hybrid scholarships', detail: '3 new learners joined your cohort.' }
+    ];
+
+    const weeklyTrack = document.getElementById('weeklyTrack');
+    const weeklyPrev = document.getElementById('weeklyPrev');
+    const weeklyNext = document.getElementById('weeklyNext');
+    const communityGrid = document.getElementById('communityGrid');
+    const searchDropdown = document.getElementById('searchDropdown');
+    const globalSearch = document.getElementById('globalSearch');
+    const detailTitle = document.getElementById('detailTitle');
+    const detailAuthor = document.getElementById('detailAuthor');
+    const detailSummary = document.getElementById('detailSummary');
+    const detailTags = document.getElementById('detailTags');
+    const detailAccess = document.getElementById('detailAccess');
+    const detailDuration = document.getElementById('detailDuration');
+    const detailLevel = document.getElementById('detailLevel');
+    const detailModules = document.getElementById('detailModules');
+
+    function renderNav() {
+      const nav = document.getElementById('mainNav');
+      nav.innerHTML = '';
+      navLinks.forEach(link => {
+        const item = document.createElement('button');
+        item.className = 'w-full flex items-center gap-3 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-edulylas-purple text-sm font-medium';
+        item.innerHTML = `<i class="${link.icon} text-slate-400"></i><span>${link.label}</span>`;
+        nav.appendChild(item);
       });
     }
 
-    function applySearch(value) {
-      const query = value.toLowerCase();
-      const playbooks = getFromStore(storeKeys.playbooks) || [];
-      const filtered = playbooks.filter(pb => pb.title.toLowerCase().includes(query) || pb.description.toLowerCase().includes(query));
-      renderRecommended(query ? filtered : null);
-    }
-
-    function handleNav(view) {
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.toggle('text-blue-600', btn.dataset.view === view);
-        btn.setAttribute('aria-current', btn.dataset.view === view ? 'page' : 'false');
+    function renderSidebarList(id, list) {
+      const container = document.getElementById(id);
+      const template = document.getElementById('sidebarItemTemplate');
+      container.innerHTML = '';
+      list.forEach(item => {
+        const clone = template.content.cloneNode(true);
+        clone.querySelector('p.font-medium').textContent = item.title;
+        clone.querySelector('p.text-xs').textContent = item.meta;
+        container.appendChild(clone);
       });
-      if (view === 'search') {
-        document.getElementById('searchInput').focus();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else if (view === 'creator') {
-        document.getElementById('creatorPanel').scrollIntoView({ behavior: 'smooth' });
-      } else if (view === 'profile') {
-        document.getElementById('profilePanel').scrollIntoView({ behavior: 'smooth' });
-      } else {
-        document.getElementById('appRoot').scrollIntoView({ behavior: 'smooth' });
-      }
     }
 
-    function openPaymentModal(pb) {
-      if (!pb) return;
-      document.getElementById('paymentPlaybookTitle').textContent = `${pb.title} • ৳${pb.priceTaka}`;
-      document.getElementById('payAmountLabel').textContent = pb.priceTaka;
-      document.getElementById('paymentModal').classList.remove('hidden');
-      document.getElementById('paymentModal').classList.add('flex');
-      document.getElementById('paymentModal').dataset.playbookId = pb.id;
-      setPaymentTab('card');
-      trapFocus(document.querySelector('#paymentModal .modal-shell'));
-    }
-
-    function closePaymentModal() {
-      document.getElementById('paymentModal').classList.add('hidden');
-      document.getElementById('paymentModal').classList.remove('flex');
-      document.getElementById('paymentStatus').textContent = '';
-      releaseFocus();
-    }
-
-    function openReceiptModal(details) {
-      document.getElementById('receiptPlaybook').textContent = details.playbook;
-      document.getElementById('receiptAmount').textContent = `৳${details.amount}`;
-      document.getElementById('receiptProvider').textContent = details.provider;
-      document.getElementById('receiptTxn').textContent = details.txn;
-      document.getElementById('receiptDate').textContent = new Date(details.date).toLocaleString();
-      document.getElementById('receiptModal').classList.remove('hidden');
-      document.getElementById('receiptModal').classList.add('flex');
-      trapFocus(document.querySelector('#receiptModal .modal-shell'));
-    }
-
-    function closeReceiptModal() {
-      document.getElementById('receiptModal').classList.add('hidden');
-      document.getElementById('receiptModal').classList.remove('flex');
-      releaseFocus();
-    }
-
-    function setPaymentTab(provider) {
-      appState.pendingProvider = provider;
-      document.querySelectorAll('.payment-tab').forEach(btn => {
-        btn.classList.toggle('tab-active', btn.dataset.provider === provider);
-        btn.setAttribute('aria-selected', btn.dataset.provider === provider);
-      });
-      const content = document.getElementById('paymentContent');
-      if (provider === 'card') {
-        content.innerHTML = `
-          <label class="block text-sm">Card number
-            <input id="cardNumber" class="w-full border rounded-lg px-3 py-2 mt-1" placeholder="4242 4242 4242 4242" inputmode="numeric" autocomplete="cc-number" required />
-          </label>
-          <div class="flex gap-3">
-            <label class="flex-1 text-sm">Expiry (MM/YY)
-              <input id="cardExpiry" class="w-full border rounded-lg px-3 py-2 mt-1" placeholder="12/29" inputmode="numeric" autocomplete="cc-exp" required />
-            </label>
-            <label class="flex-1 text-sm">CVC
-              <input id="cardCvc" class="w-full border rounded-lg px-3 py-2 mt-1" placeholder="123" inputmode="numeric" autocomplete="cc-csc" required />
-            </label>
+    function renderWeeklyDrop() {
+      weeklyTrack.innerHTML = '';
+      weeklyDrop.forEach(drop => {
+        const card = document.createElement('article');
+        card.className = 'min-w-[260px] snap-start bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-md overflow-hidden';
+        card.innerHTML = `
+          <img src="${drop.cover}" alt="${drop.title}" class="w-full h-40 object-cover" />
+          <div class="p-5 space-y-3">
+            <p class="text-xs uppercase tracking-widest text-edulylas-purple">Weekly drop</p>
+            <h3 class="text-lg font-semibold">${drop.title}</h3>
+            <p class="text-sm text-slate-500">${drop.description}</p>
+            <div class="flex items-center justify-between text-sm">
+              <span>${drop.host}</span>
+              <span>${drop.members} members</span>
+            </div>
           </div>`;
-        bindCardMasks();
-      } else if (provider === 'bkash') {
-        content.innerHTML = `
-          <label class="block text-sm">bKash Number
-            <input id="bkashNumber" class="w-full border rounded-lg px-3 py-2 mt-1" placeholder="01XXXXXXXXX" inputmode="numeric" required />
-          </label>
-          <p class="text-xs text-slate-500">Approve inside your bKash app, then tap pay.</p>`;
-      } else {
-        content.innerHTML = `
-          <label class="block text-sm">Nagad Number
-            <input id="nagadNumber" class="w-full border rounded-lg px-3 py-2 mt-1" placeholder="01XXXXXXXXX" inputmode="numeric" required />
-          </label>
-          <p class="text-xs text-amber-600">First attempt may fail—use retry to simulate OTP timeout.</p>`;
-      }
-    }
-
-    function bindCardMasks() {
-      const cardInput = document.getElementById('cardNumber');
-      cardInput.addEventListener('input', () => {
-        let value = cardInput.value.replace(/\D/g, '').slice(0,16);
-        cardInput.value = value.replace(/(\d{4})(?=\d)/g, '$1 ').trim();
-      });
-      const expiryInput = document.getElementById('cardExpiry');
-      expiryInput.addEventListener('input', () => {
-        let value = expiryInput.value.replace(/\D/g,'').slice(0,4);
-        if (value.length > 2) value = `${value.slice(0,2)}/${value.slice(2)}`;
-        expiryInput.value = value;
-      });
-      const cvcInput = document.getElementById('cardCvc');
-      cvcInput.addEventListener('input', () => {
-        cvcInput.value = cvcInput.value.replace(/\D/g,'').slice(0,4);
+        weeklyTrack.appendChild(card);
       });
     }
 
-    function validateCardForm() {
-      const number = document.getElementById('cardNumber').value.replace(/\s/g,'');
-      const expiry = document.getElementById('cardExpiry').value;
-      const cvc = document.getElementById('cardCvc').value;
-      if (!luhnCheck(number)) return 'Invalid card number';
-      const [mm, yy] = expiry.split('/');
-      if (!mm || !yy) return 'Invalid expiry';
-      const expDate = new Date(`20${yy}`, Number(mm)-1, 1);
-      if (expDate < new Date()) return 'Card expired';
-      if (cvc.length < 3) return 'Invalid CVC';
-      return null;
-    }
-
-    function luhnCheck(number) {
-      let sum = 0; let shouldDouble = false;
-      for (let i = number.length - 1; i >= 0; i--) {
-        let digit = parseInt(number.charAt(i), 10);
-        if (shouldDouble) {
-          digit *= 2;
-          if (digit > 9) digit -= 9;
-        }
-        sum += digit;
-        shouldDouble = !shouldDouble;
-      }
-      return sum % 10 === 0;
-    }
-
-    function showToast(message, isError = false) {
-      const toast = document.getElementById('toast');
-      toast.textContent = message;
-      toast.className = `fixed top-20 left-1/2 -translate-x-1/2 z-[1400] px-4 py-2 rounded-xl shadow-lg text-sm ${isError ? 'bg-rose-600 text-white' : 'bg-emerald-600 text-white'}`;
-      toast.classList.remove('hidden');
-      setTimeout(() => toast.classList.add('hidden'), 3000);
-    }
-    function startPayment() {
-      if (appState.processingPayment) return;
-      const playbookId = document.getElementById('paymentModal').dataset.playbookId;
-      const playbook = (getFromStore(storeKeys.playbooks) || []).find(pb => pb.id === playbookId);
-      if (!playbook) return;
-      const user = getFromStore(storeKeys.currentUser);
-      if (!user) {
-        showToast('Please login first', true);
-        return;
-      }
-      if (userHasUnlocked(playbook.id, user.id)) {
-        showToast('Playbook already unlocked', false);
-        closePaymentModal();
-        return;
-      }
-      const provider = appState.pendingProvider;
-      if (provider === 'card') {
-        const error = validateCardForm();
-        if (error) {
-          showToast(error, true);
-          return;
-        }
-      }
-      appState.processingPayment = true;
-      document.getElementById('payNowBtn').setAttribute('disabled', 'true');
-      document.getElementById('paymentStatus').innerHTML = '<div class="text-sm text-blue-600">Verifying payment…</div>';
-      const purchase = {
-        id: 'purchase_'+Date.now(),
-        userId: user.id,
-        playbookId: playbook.id,
-        amountTaka: playbook.priceTaka,
-        provider,
-        providerPaymentId: 'sim_'+uuidv4(),
-        status: 'pending',
-        createdAt: new Date().toISOString()
-      };
-      processPurchase(purchase)
-        .then(record => {
-          appState.processingPayment = false;
-          document.getElementById('payNowBtn').removeAttribute('disabled');
-          document.getElementById('paymentStatus').innerHTML = '<div class="text-sm text-emerald-600">Payment verified.</div>';
-          closePaymentModal();
-          openReceiptModal({ playbook: playbook.title, amount: record.amountTaka, provider: provider.toUpperCase(), txn: record.providerPaymentId, date: record.createdAt });
-          showToast('Playbook unlocked!');
-        })
-        .catch(err => {
-          appState.processingPayment = false;
-          document.getElementById('payNowBtn').removeAttribute('disabled');
-          document.getElementById('paymentStatus').innerHTML = `<div class="text-sm text-rose-600">${err.message || 'Payment failed. Please retry.'}</div>`;
-          showToast(err.message || 'Payment failed. Retry?', true);
+    function renderCommunity(filter = 'all') {
+      communityGrid.innerHTML = '';
+      const template = document.getElementById('playbookCardTemplate');
+      playbooks
+        .filter(pb => filter === 'all' ? true : pb.access === filter)
+        .forEach(pb => {
+          const clone = template.content.cloneNode(true);
+          const article = clone.querySelector('article');
+          article.dataset.playbookId = pb.id;
+          const img = clone.querySelector('img');
+          img.src = pb.cover;
+          img.alt = pb.title;
+          clone.querySelector('[data-access]').textContent = pb.access.toUpperCase();
+          clone.querySelector('[data-region]').textContent = pb.region;
+          clone.querySelector('[data-title]').textContent = pb.title;
+          clone.querySelector('[data-summary]').textContent = pb.summary;
+          clone.querySelector('[data-author]').innerHTML = `<img src="${pb.author.avatar}" class="w-8 h-8 rounded-2xl object-cover" alt="${pb.author.name}"><span>${pb.author.name}</span>`;
+          clone.querySelector('[data-price]').textContent = pb.price;
+          const tagWrap = clone.querySelector('[data-tags]');
+          pb.tags.forEach(tag => {
+            const span = document.createElement('span');
+            span.className = 'px-3 py-1 rounded-full border border-slate-200 dark:border-slate-700';
+            span.textContent = tag;
+            tagWrap.appendChild(span);
+          });
+          communityGrid.appendChild(clone);
         });
     }
 
-    // UPDATED: processPurchase - transactional unlock + uuid
-    function processPurchase(purchase) {
-      return new Promise((resolve, reject) => {
-        const unlocks = getFromStore(storeKeys.unlocks) || [];
-        if (unlocks.some(u => u.playbookId === purchase.playbookId && u.userId === purchase.userId)) {
-          reject(new Error('Already unlocked'));
-          return;
-        }
-        const purchases = getFromStore(storeKeys.purchases) || [];
-        purchases.push(purchase);
-        saveToStore(storeKeys.purchases, purchases);
-        const simulateVerification = new Promise((res, rej) => {
-          setTimeout(() => {
-            if (appState.debug.webhookFailure && appState.nagadAttempts === 0) {
-              rej(new Error('Webhook verification failed. Retry?'));
-            } else if (purchase.provider === 'nagad' && appState.nagadAttempts === 0) {
-              appState.nagadAttempts += 1;
-              rej(new Error('Nagad OTP expired. Try again.'));
-            } else {
-              res(true);
-            }
-          }, 1500);
-        });
-        simulateVerification.then(() => {
-          purchase.status = 'completed';
-          const updatedPurchases = purchases.map(p => p.id === purchase.id ? purchase : p);
-          saveToStore(storeKeys.purchases, updatedPurchases);
-          const unlockRecord = { id: 'unlock_'+uuidv4(), userId: purchase.userId, playbookId: purchase.playbookId, unlockedAt: new Date().toISOString() };
-          unlocks.push(unlockRecord);
-          saveToStore(storeKeys.unlocks, unlocks);
-          document.dispatchEvent(new CustomEvent('purchase:completed', { detail: { purchase } }));
-          resolve(purchase);
-        }).catch(err => {
-          purchase.status = 'failed';
-          const updatedPurchases = purchases.map(p => p.id === purchase.id ? purchase : p);
-          saveToStore(storeKeys.purchases, updatedPurchases);
-          reject(err);
-        });
+    function updateDetail(playbook) {
+      detailTitle.textContent = playbook.title;
+      detailAuthor.textContent = `${playbook.author.name} • ${playbook.region}`;
+      detailSummary.textContent = playbook.summary;
+      detailTags.innerHTML = '';
+      playbook.tags.forEach(tag => {
+        const span = document.createElement('span');
+        span.className = 'px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-xs';
+        span.textContent = tag;
+        detailTags.appendChild(span);
+      });
+      detailAccess.textContent = playbook.access.toUpperCase();
+      detailDuration.textContent = playbook.duration;
+      detailLevel.textContent = playbook.level;
+      const modulesWrapper = detailModules;
+      modulesWrapper.innerHTML = '<p class="text-sm uppercase tracking-widest text-edulylas-purple">Modules</p>';
+      playbook.modules.forEach((module, index) => {
+        const row = document.createElement('div');
+        row.className = 'flex items-start gap-4 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/40 dark:bg-slate-900/40';
+        row.innerHTML = `<div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-edulylas-purple/20 to-edulylas-blue/20 flex items-center justify-center font-semibold">${index + 1}</div><div class="text-sm">${module}</div>`;
+        modulesWrapper.appendChild(row);
       });
     }
 
-    function trapFocus(modal) {
-      const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      function handle(e) {
-        if (e.key === 'Tab') {
-          if (e.shiftKey && document.activeElement === first) {
-            e.preventDefault();
-            last.focus();
-          } else if (!e.shiftKey && document.activeElement === last) {
-            e.preventDefault();
-            first.focus();
+    function attachCardClicks() {
+      communityGrid.querySelectorAll('article').forEach(article => {
+        article.addEventListener('click', () => {
+          const selected = playbooks.find(pb => pb.id === article.dataset.playbookId);
+          if (selected) {
+            updateDetail(selected);
+            article.classList.add('ring-2', 'ring-edulylas-purple');
+            communityGrid.querySelectorAll('article').forEach(card => {
+              if (card !== article) card.classList.remove('ring-2', 'ring-edulylas-purple');
+            });
           }
-        } else if (e.key === 'Escape') {
-          closePaymentModal();
-          closeReceiptModal();
+        });
+      });
+    }
+
+    function setupFilters() {
+      document.querySelectorAll('[data-filter]').forEach(button => {
+        button.addEventListener('click', () => {
+          document.querySelectorAll('[data-filter]').forEach(btn => btn.classList.remove('bg-slate-900', 'text-white', 'dark:bg-white/10'));
+          button.classList.add('bg-slate-900', 'text-white', 'dark:bg-white/10');
+          renderCommunity(button.dataset.filter);
+          attachCardClicks();
+          const first = communityGrid.querySelector('article');
+          if (first) {
+            const pb = playbooks.find(item => item.id === first.dataset.playbookId);
+            updateDetail(pb);
+            first.classList.add('ring-2', 'ring-edulylas-purple');
+          }
+        });
+      });
+    }
+
+    function renderNotifications() {
+      const container = document.getElementById('notificationList');
+      const template = document.getElementById('notificationTemplate');
+      container.innerHTML = '';
+      notifications.forEach(note => {
+        const clone = template.content.cloneNode(true);
+        clone.querySelector('p.font-semibold').textContent = note.title;
+        clone.querySelector('p.text-slate-500').textContent = note.detail;
+        container.appendChild(clone);
+      });
+    }
+
+    function setupSearch() {
+      const buildDropdown = (items) => {
+        searchDropdown.innerHTML = '';
+        if (!items.length) {
+          searchDropdown.classList.add('hidden');
+          return;
         }
-      }
-      modal.addEventListener('keydown', handle);
-      appState.focusTrap = { modal, handle };
-      first?.focus();
+        items.forEach(item => {
+          const button = document.createElement('button');
+          button.className = 'w-full text-left px-4 py-3 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 flex flex-col';
+          button.innerHTML = `<span class="font-semibold">${item.title}</span><span class="text-xs text-slate-500">${item.region}</span>`;
+          button.addEventListener('click', () => {
+            updateDetail(item);
+            searchDropdown.classList.add('hidden');
+            globalSearch.value = item.title;
+          });
+          searchDropdown.appendChild(button);
+        });
+        searchDropdown.classList.remove('hidden');
+      };
+
+      globalSearch.addEventListener('input', (event) => {
+        const value = event.target.value.toLowerCase();
+        if (!value) {
+          searchDropdown.classList.add('hidden');
+          return;
+        }
+        const matches = playbooks.filter(pb => pb.title.toLowerCase().includes(value) || pb.tags.some(tag => tag.toLowerCase().includes(value)));
+        buildDropdown(matches.slice(0, 5));
+      });
     }
 
-    function releaseFocus() {
-      if (appState.focusTrap) {
-        appState.focusTrap.modal.removeEventListener('keydown', appState.focusTrap.handle);
-        appState.focusTrap = null;
-      }
-    }
+    function setupDropdowns() {
+      const notificationBtn = document.getElementById('notificationBtn');
+      const notificationDropdown = document.getElementById('notificationDropdown');
+      const userMenuBtn = document.getElementById('userMenuBtn');
+      const userDropdown = document.getElementById('userDropdown');
 
-    function toggleEpisodePanel(button) {
-      const episodeId = button.dataset.episodeId;
-      const locked = button.dataset.locked === 'true';
-      const playbookId = button.dataset.playbookId;
-      const playbook = (getFromStore(storeKeys.playbooks) || []).find(pb => pb.id === playbookId);
-      if (locked) {
-        openPaymentModal(playbook);
-        return;
-      }
-      const list = button.closest('.episodes-list');
-      const existingPanel = list.querySelector('.episode-panel');
-      list.querySelectorAll('.episode-toggle').forEach(toggle => toggle.setAttribute('aria-expanded', 'false'));
-      if (existingPanel) existingPanel.remove();
-      if (existingPanel && existingPanel.dataset.episodePanel === episodeId) {
-        return;
-      }
-      const episodes = getFromStore(storeKeys.episodes) || [];
-      const episode = episodes.find(ep => ep.id === episodeId);
-      if (!episode) return;
-      const panel = renderEpisodePanel(episode);
-      const parentLi = button.closest('li');
-      parentLi.insertAdjacentElement('afterend', panel);
-      button.setAttribute('aria-expanded', 'true');
-      appState.activeEpisodeId = episode.id;
-      renderEpisodePlayer();
-    }
+      notificationBtn.addEventListener('click', () => {
+        notificationDropdown.classList.toggle('hidden');
+      });
 
-    function initEpisodeDelegation() {
+      userMenuBtn.addEventListener('click', () => {
+        userDropdown.classList.toggle('hidden');
+      });
+
       document.addEventListener('click', (event) => {
-        const toggle = event.target.closest('.episode-toggle');
-        if (toggle) {
-          toggleEpisodePanel(toggle);
+        if (!notificationBtn.contains(event.target) && !notificationDropdown.contains(event.target)) {
+          notificationDropdown.classList.add('hidden');
+        }
+        if (!userMenuBtn.contains(event.target) && !userDropdown.contains(event.target)) {
+          userDropdown.classList.add('hidden');
+        }
+        if (!document.getElementById('globalSearch').contains(event.target) && !searchDropdown.contains(event.target)) {
+          searchDropdown.classList.add('hidden');
         }
       });
     }
 
-    function updateDebugPanel() {
-      document.getElementById('storageDump').textContent = JSON.stringify(localStorage, null, 2);
-      document.getElementById('failWebhookToggle').checked = appState.debug.webhookFailure;
-    }
+    function setupTheme() {
+      const themeToggle = document.getElementById('themeToggle');
+      const themeLabel = document.getElementById('themeLabel');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const savedTheme = localStorage.getItem('edulylas-theme');
+      const root = document.documentElement;
 
-    function initDebugPanel() {
-      const toggleBtn = document.getElementById('debugToggle');
-      const panel = document.getElementById('debugPanel');
-      toggleBtn.addEventListener('click', () => {
-        const expanded = toggleBtn.getAttribute('aria-expanded') === 'true';
-        toggleBtn.setAttribute('aria-expanded', String(!expanded));
-        panel.classList.toggle('hidden');
-        if (!expanded) {
-          updateDebugPanel();
+      const applyTheme = (mode) => {
+        if (mode === 'dark') {
+          root.classList.add('dark');
+          themeLabel.textContent = 'Dark';
+        } else {
+          root.classList.remove('dark');
+          themeLabel.textContent = 'Light';
         }
+        localStorage.setItem('edulylas-theme', mode);
+      };
+
+      applyTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
+
+      themeToggle.addEventListener('click', () => {
+        const next = root.classList.contains('dark') ? 'light' : 'dark';
+        applyTheme(next);
       });
-      document.getElementById('failWebhookToggle').addEventListener('change', (e) => {
-        appState.debug.webhookFailure = e.target.checked;
-      });
-      document.getElementById('forceReseed').addEventListener('click', () => {
-        Object.values(storeKeys).forEach(key => localStorage.removeItem(key));
-        seedData(true);
-        autoLogin();
-        renderAll();
-        updateDebugPanel();
-      });
-      document.getElementById('refreshStorage').addEventListener('click', updateDebugPanel);
     }
 
-    function renderAll() {
-      renderNavUser();
-      renderCategories();
-      renderTrending();
-      renderRecommended();
-      renderPlaybookPreview();
-      renderPlaybookDetails();
-      renderEpisodePlayer();
-      renderCreatorPanel();
-      renderProfilePanel();
+    function setupWeeklyControls() {
+      weeklyPrev.addEventListener('click', () => {
+        weeklyTrack.scrollBy({ left: -320, behavior: 'smooth' });
+      });
+      weeklyNext.addEventListener('click', () => {
+        weeklyTrack.scrollBy({ left: 320, behavior: 'smooth' });
+      });
     }
 
-    function initApp() {
-      seedData();
-      autoLogin();
-      renderAll();
-      document.getElementById('creatorToggle').addEventListener('click', switchUser);
-      document.getElementById('searchInput').addEventListener('input', (e) => applySearch(e.target.value));
-      document.getElementById('searchInputMobile').addEventListener('input', (e) => {
-        document.getElementById('searchInput').value = e.target.value;
-        applySearch(e.target.value);
-      });
-      document.querySelectorAll('.payment-tab').forEach(btn => btn.addEventListener('click', () => setPaymentTab(btn.dataset.provider)));
-      document.getElementById('closePayment').addEventListener('click', closePaymentModal);
-      document.getElementById('closeReceipt').addEventListener('click', closeReceiptModal);
-      document.getElementById('payNowBtn').addEventListener('click', () => startPayment());
-      document.getElementById('printReceipt').addEventListener('click', () => window.print());
-      document.getElementById('viewPlaybookBtn').addEventListener('click', () => {
-        closeReceiptModal();
-        document.getElementById('playbookPreview').scrollIntoView({ behavior: 'smooth' });
-      });
-      document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => handleNav(btn.dataset.view)));
-      document.addEventListener('edulylas:userSwitched', () => {
-        renderAll();
-      });
-      document.addEventListener('purchase:completed', () => {
-        renderPlaybookPreview();
-        renderEpisodePlayer();
-        renderProfilePanel();
-      });
-      initEpisodeDelegation();
-      initDebugPanel();
+    function init() {
+      renderNav();
+      renderSidebarList('recentList', recentPlaybooks);
+      renderSidebarList('enrolledList', enrolledPlaybooks);
+      renderSidebarList('recommendedList', recommendedPlaybooks);
+      renderNotifications();
+      renderWeeklyDrop();
+      renderCommunity();
+      attachCardClicks();
+      setupFilters();
+      setupSearch();
+      setupDropdowns();
+      setupTheme();
+      setupWeeklyControls();
+      updateDetail(playbooks[0]);
+      const firstCard = communityGrid.querySelector('article');
+      if (firstCard) firstCard.classList.add('ring-2', 'ring-edulylas-purple');
     }
 
-    document.addEventListener('DOMContentLoaded', initApp);
+    document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
