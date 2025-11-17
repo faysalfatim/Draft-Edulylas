@@ -9,44 +9,202 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-omM8GxeqD6oZX6mE6xPD58Ll35H5TADaBrZEcD3xKhsR4HIX66vepQP9enZ5bY3bT5pGud2wE8xmPKXWq5rCGg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
-    :root { color-scheme: light; }
+    :root {
+      color-scheme: light;
+      --primary: #5b2be0;
+      --primary-dark: #4020ad;
+      --accent: #00b0ff;
+      --soft-bg: #f5f3ff;
+      --card-border: rgba(91, 43, 224, 0.08);
+    }
+    * { box-sizing: border-box; }
     body {
       font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      padding-top: 64px;
-      padding-bottom: 96px;
+      padding-top: 72px;
+      padding-bottom: 120px;
+      background: linear-gradient(180deg, #f7f5ff 0%, #ffffff 60%);
+      color: #0f172a;
     }
+    a { color: var(--primary); }
     .scrollbar-hide::-webkit-scrollbar { display: none; }
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-    .modal-backdrop { background: rgba(15, 23, 42, 0.7); }
-    .tab-active { border-bottom: 2px solid #2563eb; color: #2563eb; }
-    .focus-ring:focus { outline: 2px solid #2563eb; outline-offset: 2px; }
+    .focus-ring:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
     .top-header {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
-      height: 64px;
+      height: 72px;
       z-index: 1000;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(15,23,42,0.08);
+    }
+    .top-header .logo-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 20% 20%, var(--accent), var(--primary));
+      color: white;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 25px rgba(91,43,224,0.35);
+    }
+    .search-shell {
+      position: relative;
+      flex: 1;
+      max-width: 420px;
+    }
+    .search-shell input {
+      width: 100%;
+      padding: 0.6rem 0.75rem 0.6rem 2.5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: white;
+      transition: box-shadow 0.2s ease;
+    }
+    .search-shell input:focus {
+      box-shadow: 0 0 0 3px rgba(91,43,224,0.15);
+    }
+    .search-shell .material-icons {
+      position: absolute;
+      left: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      font-size: 1.2rem;
+    }
+    .search-dropdown {
+      position: absolute;
+      top: 115%;
+      left: 0;
+      right: 0;
       background: #fff;
-      box-shadow: 0 1px 10px rgba(15,23,42,0.08);
+      border-radius: 1rem;
+      border: 1px solid rgba(148,163,184,0.2);
+      box-shadow: 0 20px 45px rgba(15,23,42,0.12);
+      padding: 0.5rem;
+      display: none;
+      max-height: 260px;
+      overflow-y: auto;
+      z-index: 1200;
+    }
+    .search-dropdown.active { display: block; }
+    .search-dropdown button {
+      width: 100%;
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: background 0.15s ease;
+    }
+    .search-dropdown button:hover {
+      background: rgba(91,43,224,0.08);
+    }
+    .dropdown-panel {
+      position: absolute;
+      top: 110%;
+      right: 0;
+      min-width: 220px;
+      padding: 0.75rem;
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 20px 40px rgba(15,23,42,0.15);
+      border: 1px solid rgba(91,43,224,0.12);
+      display: none;
+      z-index: 1100;
+    }
+    .dropdown-panel.active { display: block; }
+    .dropdown-panel button {
+      width: 100%;
+      text-align: left;
+      border-radius: 0.75rem;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.9rem;
     }
     .bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 64px;
+      height: 68px;
       z-index: 999;
       background: #fff;
-      border-top: 1px solid #e2e8f0;
-      box-shadow: 0 -2px 10px rgba(15,23,42,0.05);
+      border-top: 1px solid rgba(148,163,184,0.35);
+      box-shadow: 0 -10px 30px rgba(15,23,42,0.08);
     }
-    .playbook-card img {
+    .hero-panel {
+      background: radial-gradient(circle at top right, rgba(91,43,224,0.15), rgba(91,43,224,0));
+      border-radius: 2rem;
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem;
+      align-items: center;
+      box-shadow: 0 25px 70px rgba(91,43,224,0.12);
+    }
+    .hero-panel h1 { font-size: clamp(2rem, 4vw, 3rem); }
+    .hero-media {
+      position: relative;
+    }
+    .hero-media img {
       width: 100%;
-      aspect-ratio: 16/9;
+      border-radius: 1.5rem;
+      box-shadow: 0 30px 80px rgba(15,23,42,0.25);
       object-fit: cover;
-      border-radius: 1rem;
+    }
+    .hero-floating-card {
+      position: absolute;
+      bottom: -1.5rem;
+      left: 10%;
+      right: 10%;
+      background: white;
+      border-radius: 1.25rem;
+      padding: 1rem;
+      box-shadow: 0 15px 40px rgba(91,43,224,0.18);
+      animation: floatCard 6s ease-in-out infinite;
+    }
+    @keyframes floatCard {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .btn-primary {
+      background: linear-gradient(120deg, var(--primary), var(--accent));
+      color: white;
+      padding: 0.75rem 1.6rem;
+      border-radius: 999px;
+      font-weight: 600;
+      box-shadow: 0 15px 35px rgba(91,43,224,0.3);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 45px rgba(91,43,224,0.4);
+    }
+    .btn-secondary {
+      border: 1px solid rgba(91,43,224,0.3);
+      color: var(--primary);
+      padding: 0.75rem 1.4rem;
+      border-radius: 999px;
+      font-weight: 600;
+      background: white;
+      transition: border 0.15s ease, background 0.15s ease;
+    }
+    .btn-secondary:hover {
+      background: rgba(91,43,224,0.08);
+    }
+    .card-surface {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 20px 45px rgba(15,23,42,0.08);
+      border: 1px solid var(--card-border);
     }
     .episode-panel {
       background: #f8fafc;
@@ -54,80 +212,147 @@
       padding: 1rem;
       margin-top: 0.75rem;
     }
-    .modal-shell {
-      max-height: 90vh;
-      overflow-y: auto;
+    .modal-backdrop { background: rgba(15, 23, 42, 0.7); }
+    .modal-shell { max-height: 90vh; overflow-y: auto; }
+    .nav-btn {
+      padding: 0.5rem 0.9rem;
+      border-radius: 999px;
+      transition: background 0.15s ease, color 0.15s ease;
     }
+    .nav-btn[aria-current="page"] {
+      background: rgba(91,43,224,0.1);
+      color: var(--primary);
+    }
+    .progress-line {
+      width: 100%;
+      height: 0.45rem;
+      border-radius: 999px;
+      background: rgba(148,163,184,0.35);
+      overflow: hidden;
+    }
+    .progress-line span {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(120deg, var(--accent), var(--primary));
+      width: var(--progress, 0%);
+      animation: fillBar 1.5s ease forwards;
+    }
+    @keyframes fillBar {
+      from { width: 0; }
+      to { width: var(--progress, 70%); }
+    }
+    .insight-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+      background: rgba(91,43,224,0.08);
+      color: var(--primary);
+      font-weight: 600;
+    }
+    [data-animate] { opacity: 0; transform: translateY(12px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    [data-animate].animate-in { opacity: 1; transform: translateY(0); }
     @media (max-width: 640px) {
       .top-header nav { display: none; }
-      body { padding-bottom: 140px; }
+      body { padding-bottom: 160px; }
     }
     @media (min-width: 641px) {
       .bottom-nav { display: none; }
     }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen">
+<body class="text-slate-900 min-h-screen">
   <header class="top-header">
-    <div class="max-w-6xl h-full mx-auto px-4 flex items-center justify-between gap-4">
+    <div class="max-w-6xl h-full mx-auto px-4 flex items-center gap-4">
       <div class="flex items-center gap-3">
-        <button id="creatorToggle" class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-semibold focus-ring" aria-label="Switch account">EL</button>
+        <button id="creatorToggle" class="logo-mark focus-ring" aria-label="Switch account">EL</button>
         <div>
-          <p class="font-bold">EduLylas</p>
-          <p class="text-xs text-blue-500">#শেখারঅভিযান</p>
+          <p class="font-semibold text-lg">EduLylas</p>
+          <p class="text-xs text-slate-500">Learning Playbooks OS</p>
         </div>
       </div>
-      <div class="hidden md:block flex-1">
+      <div class="hidden md:block search-shell">
+        <span class="material-icons" aria-hidden="true">search</span>
         <label class="sr-only" for="searchInput">Search playbooks</label>
-        <input id="searchInput" class="w-full border border-slate-200 rounded-xl px-4 py-2 focus:ring focus:ring-blue-100" placeholder="Search topics, playbooks, creators…" />
+        <input id="searchInput" placeholder="Search topics, playbooks, creators…" autocomplete="off" />
+        <div id="searchDropdown" class="search-dropdown" role="listbox" aria-label="Search suggestions"></div>
       </div>
-      <nav aria-label="Primary">
-        <div class="hidden sm:flex gap-4 text-sm font-semibold">
-          <button class="nav-btn focus-ring" data-view="home">Home</button>
+      <nav aria-label="Primary" class="relative">
+        <div class="hidden lg:flex items-center gap-2 text-sm font-semibold">
+          <button class="nav-btn focus-ring" data-view="home" aria-current="page">Home</button>
+          <div class="relative">
+            <button id="discoverToggle" class="nav-btn focus-ring flex items-center gap-1" type="button" aria-expanded="false" aria-controls="discoverDropdown">
+              Discover <i class="fa-solid fa-chevron-down text-[10px]"></i>
+            </button>
+            <div id="discoverDropdown" class="dropdown-panel" role="menu" aria-labelledby="discoverToggle">
+              <button class="focus-ring" data-view="home" role="menuitem">Highlights</button>
+              <button class="focus-ring" data-view="search" role="menuitem">Deep Search</button>
+              <button class="focus-ring" data-view="creator" role="menuitem">Creator Studio</button>
+            </div>
+          </div>
           <button class="nav-btn focus-ring" data-view="search">Search</button>
           <button class="nav-btn focus-ring" data-view="creator">Create</button>
-          <button class="nav-btn focus-ring" data-view="profile">Profile</button>
+          <button class="nav-btn focus-ring" data-view="profile">Account</button>
         </div>
       </nav>
       <div id="navUser" class="flex items-center gap-2"></div>
     </div>
   </header>
 
-  <main class="max-w-6xl mx-auto px-4 pt-6 space-y-6" id="appRoot">
-    <div class="md:hidden mt-4">
-      <label class="sr-only" for="searchInputMobile">Search playbooks</label>
-      <input id="searchInputMobile" class="w-full border border-slate-200 rounded-xl px-4 py-2 focus:ring focus:ring-blue-100" placeholder="Search topics, playbooks, creators…" />
+  <main class="max-w-6xl mx-auto px-4 pt-8 space-y-6" id="appRoot">
+    <div class="md:hidden mt-6">
+      <div class="search-shell w-full">
+        <span class="material-icons" aria-hidden="true">search</span>
+        <label class="sr-only" for="searchInputMobile">Search playbooks</label>
+        <input id="searchInputMobile" placeholder="Search topics, playbooks, creators…" autocomplete="off" />
+        <div id="searchDropdownMobile" class="search-dropdown" role="listbox" aria-label="Search suggestions"></div>
+      </div>
     </div>
 
-    <details class="bg-white rounded-2xl shadow p-4" open>
-      <summary class="font-semibold cursor-pointer">README • Demo Instructions</summary>
-      <div class="mt-3 text-sm space-y-2">
-        <p>Save this file as <strong>index.html</strong> and open it directly in Chrome/Edge. All demo data persists in <code>localStorage</code>; no server needed. For iframe embeds (YouTube, Medium, Dev.to) best results happen when you run <code>npx serve .</code> so browsers allow the secure embeds.</p>
-        <p>Auto-login user: <strong>dev@edulylas.test</strong>. Use the “EL” avatar button to switch to creator <strong>creator@edulylas.test</strong>.</p>
-        <p>Payments are simulated client-side. Unlock anything locked to see the payment flow. Purchases land in <code>edulylas_purchases</code> and unlocks in <code>edulylas_unlocks</code>. Debug panel lets you simulate webhook failures or reseed storage.</p>
-      </div>
-    </details>
+    <section id="view-home" class="view-panel space-y-8" data-view="home">
+      <section class="hero-panel" id="heroSpotlight" aria-live="polite">
+        <div id="heroCopy" class="space-y-5"></div>
+        <div id="heroMedia" class="hero-media"></div>
+      </section>
 
-    <section class="flex flex-wrap gap-2" id="categoryShortcuts" aria-label="Categories"></section>
+      <section class="flex flex-wrap gap-2" id="categoryShortcuts" aria-label="Categories"></section>
 
-    <section>
-      <div class="flex items-center justify-between mb-2">
-        <h2 class="text-lg font-semibold">Trending Playbooks</h2>
-        <span class="text-xs text-slate-500">বিনামূল্যে &amp; প্রিমিয়াম মিশ্রিত</span>
-      </div>
-      <div id="trendingCarousel" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2" aria-label="Trending playbooks"></div>
+      <section id="insightDeck" class="grid gap-4 md:grid-cols-3"></section>
+
+      <section>
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-lg font-semibold">Trending Playbooks</h2>
+          <span class="text-xs text-slate-500">Live community favorites</span>
+        </div>
+        <div id="trendingCarousel" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2" aria-label="Trending playbooks"></div>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold mb-3">Recommended For You</h2>
+        <div id="recommendedFeed" class="space-y-4"></div>
+      </section>
+
+      <section id="progressShowcase" class="grid gap-4 md:grid-cols-2"></section>
+
+      <section id="playbookPreview" class="card-surface space-y-4"></section>
+      <section id="playbookDetails" class="card-surface space-y-4"></section>
+      <section id="episodePlayer" class="card-surface space-y-4"></section>
     </section>
 
-    <section>
-      <h2 class="text-lg font-semibold mb-3">Recommended For You</h2>
-      <div id="recommendedFeed" class="space-y-4"></div>
+    <section id="view-search" class="view-panel hidden space-y-4" data-view="search">
+      <div class="card-surface space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h2 class="text-xl font-semibold">Search Results</h2>
+          <p id="searchSummary" class="text-sm text-slate-500"></p>
+        </div>
+        <div id="searchResultsList" class="grid gap-3 md:grid-cols-2"></div>
+      </div>
     </section>
 
-    <section id="playbookPreview" class="bg-white rounded-2xl shadow p-4"></section>
-    <section id="playbookDetails" class="bg-white rounded-2xl shadow p-4"></section>
-    <section id="episodePlayer" class="bg-white rounded-2xl shadow p-4"></section>
-    <section id="creatorPanel" class="hidden bg-white rounded-2xl shadow p-4"></section>
-    <section id="profilePanel" class="bg-white rounded-2xl shadow p-4"></section>
+    <section id="creatorPanel" class="view-panel hidden card-surface space-y-4" data-view="creator"></section>
+    <section id="profilePanel" class="view-panel hidden card-surface space-y-4" data-view="profile"></section>
   </main>
 
   <nav class="bottom-nav" aria-label="Mobile navigation">
@@ -144,9 +369,9 @@
         <span class="material-icons text-xl">add_circle</span>
         Create
       </button>
-      <button class="nav-btn focus-ring flex flex-col items-center" data-view="profile" aria-label="Profile">
+      <button class="nav-btn focus-ring flex flex-col items-center" data-view="profile" aria-label="Account">
         <span class="material-icons text-xl">person</span>
-        Profile
+        Account
       </button>
     </div>
   </nav>
@@ -165,7 +390,7 @@
       </div>
       <form id="paymentContent" class="space-y-3 text-sm" autocomplete="off"></form>
       <div id="paymentStatus" class="text-sm" role="status"></div>
-      <button id="payNowBtn" class="w-full bg-blue-600 text-white rounded-xl py-2 font-semibold focus-ring" type="button">Pay ৳<span id="payAmountLabel"></span></button>
+      <button id="payNowBtn" class="w-full bg-blue-600 text-white rounded-xl py-2 font-semibold focus-ring" type="button">Pay Tk<span id="payAmountLabel"></span></button>
     </div>
   </div>
 
@@ -212,7 +437,7 @@
       currentUser: 'edulylas_current_user'
     };
     const allowedEmbedDomains = ['youtube.com', 'youtu.be', 'medium.com', 'dev.to'];
-    const fallbackThumbnail = 'https://via.placeholder.com/480x270?text=No+Image';
+    const fallbackThumbnail = 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80';
 
     const appState = {
       activePlaybookId: null,
@@ -221,8 +446,11 @@
       processingPayment: false,
       debug: { webhookFailure: false },
       focusTrap: null,
-      nagadAttempts: 0
+      nagadAttempts: 0,
+      activeView: 'home',
+      searchQuery: ''
     };
+    let revealObserver;
 
     function uuidv4() {
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -248,52 +476,69 @@
         { id: 'u2', name: 'OpenSource Academy', email: 'creator@edulylas.test', isCreator: true, avatarUrl: 'https://i.pravatar.cc/80?img=32' }
       ];
       const playbooks = [
-        { id: 'pb_python', slug: 'python-programming-playbook', title: 'Python Programming Playbook', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Beginner→Pro Python with projects. First 2 episodes free; rest locked.', tags: ['Tech','Programming'], difficulty: 'Beginner→Intermediate', rating: 4.7, priceTaka: 499, thumbnailUrl: 'https://img.youtube.com/vi/rfscVS0vtbw/hqdefault.jpg', totalEpisodes: 6, createdAt: '2025-10-01T09:00:00Z' },
-        { id: 'pb_marketing', slug: 'digital-marketing-master-playbook-2025', title: 'Digital Marketing Master Playbook 2025', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Campaign blueprints covering SEO, PPC, funnels.', tags: ['Marketing','Business'], difficulty: 'Intermediate', rating: 4.6, priceTaka: 399, thumbnailUrl: 'https://via.placeholder.com/480x270?text=Digital+Marketing', totalEpisodes: 8, createdAt: '2025-09-12T09:00:00Z' },
-        { id: 'pb_uiux', slug: 'ui-ux-design-crash-playbook', title: 'UI/UX Design Crash Playbook', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Sketch to prototype: UX research, UI systems, and usability.', tags: ['Design','Tech'], difficulty: 'Beginner', rating: 4.8, priceTaka: 349, thumbnailUrl: 'https://via.placeholder.com/480x270?text=UI%2FUX+Design', totalEpisodes: 8, createdAt: '2025-08-05T09:00:00Z' },
-        { id: 'pb_ai', slug: 'ai-machine-learning-starter-pack', title: 'AI & Machine Learning Starter Pack', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Math-light intro to AI/ML workflows and tools.', tags: ['AI/ML','Tech'], difficulty: 'Intermediate', rating: 4.9, priceTaka: 599, thumbnailUrl: 'https://via.placeholder.com/480x270?text=AI+ML', totalEpisodes: 7, createdAt: '2025-11-10T09:00:00Z' },
-        { id: 'pb_fullstack', slug: 'full-stack-web-development-2025', title: 'Full-Stack Web Development 2025', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Modern MERN stack with Edge deployments.', tags: ['Tech'], difficulty: 'Intermediate', rating: 4.5, priceTaka: 499, thumbnailUrl: 'https://via.placeholder.com/480x270?text=Full+Stack+2025', totalEpisodes: 9, createdAt: '2025-10-21T09:00:00Z' },
-        { id: 'pb_ba', slug: 'business-analytics-excel-powerbi', title: 'Business Analytics with Excel & Power BI', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Dashboards, KPIs, Power Query recipes.', tags: ['Business'], difficulty: 'Beginner', rating: 4.4, priceTaka: 349, thumbnailUrl: 'https://via.placeholder.com/480x270?text=Analytics', totalEpisodes: 6, createdAt: '2025-09-25T09:00:00Z' },
-        { id: 'pb_startup', slug: 'entrepreneurship-startup-playbook', title: 'Entrepreneurship & Startup Playbook', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Idea validation to funding decks.', tags: ['Business'], difficulty: 'All Levels', rating: 4.3, priceTaka: 299, thumbnailUrl: 'https://via.placeholder.com/480x270?text=Startup', totalEpisodes: 7, createdAt: '2025-07-18T09:00:00Z' }
+        { id: 'pb_python', slug: 'python-programming-accelerator', title: 'Python Programming Accelerator', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Beginner to pro Python with automation projects and modern tooling.', tags: ['Tech','Programming'], difficulty: 'Beginner→Intermediate', rating: 4.8, priceTaka: 499, thumbnailUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80', totalEpisodes: 6, createdAt: '2025-10-01T09:00:00Z' },
+        { id: 'pb_marketing', slug: 'digital-marketing-master-playbook-2025', title: 'Digital Marketing Master Playbook 2025', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Campaign blueprints covering SEO, PPC, funnels, and retention systems.', tags: ['Marketing','Business'], difficulty: 'Intermediate', rating: 4.6, priceTaka: 399, thumbnailUrl: 'https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=900&q=80', totalEpisodes: 8, createdAt: '2025-09-12T09:00:00Z' },
+        { id: 'pb_uiux', slug: 'ui-ux-design-crash-playbook', title: 'UI/UX Design Crash Playbook', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Sketch to prototype: UX research, motion, systems, and usability.', tags: ['Design','Tech'], difficulty: 'Beginner', rating: 4.8, priceTaka: 349, thumbnailUrl: 'https://images.unsplash.com/photo-1559028012-481c04fa702d?auto=format&fit=crop&w=900&q=80', totalEpisodes: 8, createdAt: '2025-08-05T09:00:00Z' },
+        { id: 'pb_ai', slug: 'ai-machine-learning-starter-pack', title: 'AI & Machine Learning Starter Pack', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Math-light intro to AI/ML workflows, tooling, and deployment.', tags: ['AI/ML','Tech'], difficulty: 'Intermediate', rating: 4.9, priceTaka: 599, thumbnailUrl: 'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?auto=format&fit=crop&w=900&q=80', totalEpisodes: 7, createdAt: '2025-11-10T09:00:00Z' },
+        { id: 'pb_fullstack', slug: 'full-stack-web-development-2025', title: 'Full-Stack Web Development 2025', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Modern MERN stack with edge deployments and CI/CD.', tags: ['Tech'], difficulty: 'Intermediate', rating: 4.5, priceTaka: 499, thumbnailUrl: 'https://images.unsplash.com/photo-1526378722484-bd91ca387e72?auto=format&fit=crop&w=900&q=80', totalEpisodes: 9, createdAt: '2025-10-21T09:00:00Z' },
+        { id: 'pb_ba', slug: 'business-analytics-excel-powerbi', title: 'Business Analytics with Excel & Power BI', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Dashboards, KPIs, Power Query recipes, and data storytelling.', tags: ['Business','Analytics'], difficulty: 'Beginner', rating: 4.4, priceTaka: 349, thumbnailUrl: 'https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=900&q=80', totalEpisodes: 6, createdAt: '2025-09-25T09:00:00Z' },
+        { id: 'pb_startup', slug: 'entrepreneurship-startup-playbook', title: 'Entrepreneurship & Startup Playbook', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Idea validation to funding decks and GTM readiness.', tags: ['Business','Leadership'], difficulty: 'All Levels', rating: 4.3, priceTaka: 299, thumbnailUrl: 'https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=900&q=80', totalEpisodes: 7, createdAt: '2025-07-18T09:00:00Z' },
+        { id: 'pb_product', slug: 'product-strategy-blueprint', title: 'Product Strategy Blueprint', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Prioritization models, roadmaps, KPI trees, and stakeholder rituals.', tags: ['Product','Business'], difficulty: 'Intermediate', rating: 4.7, priceTaka: 449, thumbnailUrl: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=900&q=80', totalEpisodes: 5, createdAt: '2025-11-15T09:00:00Z' },
+        { id: 'pb_cyber', slug: 'cybersecurity-zero-to-pro', title: 'Cybersecurity Zero to Pro', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Threat modeling, blue-team tooling, and on-call simulations.', tags: ['Security','Tech'], difficulty: 'Intermediate', rating: 4.5, priceTaka: 529, thumbnailUrl: 'https://images.unsplash.com/photo-1510511459019-5dda7724fd87?auto=format&fit=crop&w=900&q=80', totalEpisodes: 6, createdAt: '2025-11-20T09:00:00Z' },
+        { id: 'pb_story', slug: 'data-storytelling-visual-narratives', title: 'Data Storytelling & Visual Narratives', creatorId: 'u2', creatorName: 'OpenSource Academy', description: 'Sketch compelling dashboards with motion, annotation, and narrative arcs.', tags: ['Analytics','Design'], difficulty: 'Intermediate', rating: 4.6, priceTaka: 379, thumbnailUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=80', totalEpisodes: 5, createdAt: '2025-08-28T09:00:00Z' }
       ];
       const episodes = [
         { id:'ep_py_1', playbookId:'pb_python', title:'Intro to Python', description:'Overview, setup, why Python.', embedUrl:'https://www.youtube.com/embed/rfscVS0vtbw', thumbnailUrl:'https://img.youtube.com/vi/rfscVS0vtbw/hqdefault.jpg', order:1, isFree:true, durationSeconds:600 },
-        { id:'ep_py_2', playbookId:'pb_python', title:'Variables & Data Types', description:'Basics of variables, lists, dicts.', embedUrl:'https://www.youtube.com/embed/_uQrJ0TkZlc', thumbnailUrl:'https://img.youtube.com/vi/_uQrJ0TkZlc/hqdefault.jpg', order:2, isFree:true, durationSeconds:900 },
-        { id:'ep_py_3', playbookId:'pb_python', title:'Control Flow', description:'Conditionals and loops.', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Control+Flow', order:3, isFree:false, durationSeconds:1200 },
-        { id:'ep_py_4', playbookId:'pb_python', title:'Functions & Modules', description:'Modular design and functions.', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Functions', order:4, isFree:false, durationSeconds:1300 },
-        { id:'ep_py_5', playbookId:'pb_python', title:'OOP Basics', description:'Classes, objects, inheritance.', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+OOP', order:5, isFree:false, durationSeconds:1500 },
-        { id:'ep_py_6', playbookId:'pb_python', title:'Build a CLI Project', description:'Project: CLI todo app.', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+CLI+Project', order:6, isFree:false, durationSeconds:1800 },
+        { id:'ep_py_2', playbookId:'pb_python', title:'Variables & Data Types', description:'Work with lists, dicts, tuples.', embedUrl:'https://www.youtube.com/embed/_uQrJ0TkZlc', thumbnailUrl:'https://img.youtube.com/vi/_uQrJ0TkZlc/hqdefault.jpg', order:2, isFree:true, durationSeconds:900 },
+        { id:'ep_py_3', playbookId:'pb_python', title:'Control Flow', description:'Conditionals and loops with projects.', embedUrl:'https://www.youtube.com/embed/8ext9G7xspg', thumbnailUrl:'https://img.youtube.com/vi/8ext9G7xspg/hqdefault.jpg', order:3, isFree:false, durationSeconds:1200 },
+        { id:'ep_py_4', playbookId:'pb_python', title:'Functions & Modules', description:'Modular design and packaging.', embedUrl:'https://www.youtube.com/embed/apACNr7DC_s', thumbnailUrl:'https://img.youtube.com/vi/apACNr7DC_s/hqdefault.jpg', order:4, isFree:false, durationSeconds:1300 },
+        { id:'ep_py_5', playbookId:'pb_python', title:'OOP Basics', description:'Classes, objects, inheritance.', embedUrl:'https://www.youtube.com/embed/kqtD5dpn9C8', thumbnailUrl:'https://img.youtube.com/vi/kqtD5dpn9C8/hqdefault.jpg', order:5, isFree:false, durationSeconds:1500 },
+        { id:'ep_py_6', playbookId:'pb_python', title:'Build a CLI Project', description:'Project: CLI todo + packaging.', embedUrl:'https://www.youtube.com/embed/CqCDO6sXetw', thumbnailUrl:'https://img.youtube.com/vi/CqCDO6sXetw/hqdefault.jpg', order:6, isFree:false, durationSeconds:1800 },
         { id:'ep_dm_1', playbookId:'pb_marketing', title:'Intro to Digital Marketing', description:'Marketing fundamentals.', embedUrl:'https://www.youtube.com/embed/3m3H5gqk4_k', thumbnailUrl:'https://img.youtube.com/vi/3m3H5gqk4_k/hqdefault.jpg', order:1, isFree:true, durationSeconds:720 },
         { id:'ep_dm_2', playbookId:'pb_marketing', title:'SEO Basics', description:'Keyword research & on-page SEO.', embedUrl:'https://www.youtube.com/embed/5WpwzKJq0Ck', thumbnailUrl:'https://img.youtube.com/vi/5WpwzKJq0Ck/hqdefault.jpg', order:2, isFree:true, durationSeconds:800 },
-        { id:'ep_dm_3', playbookId:'pb_marketing', title:'Paid Ads Foundations', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Ads', order:3, isFree:false, durationSeconds:900 },
-        { id:'ep_dm_4', playbookId:'pb_marketing', title:'Funnels & Automation', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Funnels', order:4, isFree:false, durationSeconds:1000 },
-        { id:'ep_dm_5', playbookId:'pb_marketing', title:'Email Marketing', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Email', order:5, isFree:false, durationSeconds:1000 },
-        { id:'ep_dm_6', playbookId:'pb_marketing', title:'Analytics & Reporting', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Analytics', order:6, isFree:false, durationSeconds:1000 },
-        { id:'ep_dm_7', playbookId:'pb_marketing', title:'Retention Strategies', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Retention', order:7, isFree:false, durationSeconds:1000 },
-        { id:'ep_dm_8', playbookId:'pb_marketing', title:'Scaling Playbooks', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Scaling', order:8, isFree:false, durationSeconds:1000 },
+        { id:'ep_dm_3', playbookId:'pb_marketing', title:'Paid Ads Foundations', description:'Audience targeting + copy testing.', embedUrl:'https://www.youtube.com/embed/0QRO3gKj3qw', thumbnailUrl:'https://img.youtube.com/vi/0QRO3gKj3qw/hqdefault.jpg', order:3, isFree:false, durationSeconds:900 },
+        { id:'ep_dm_4', playbookId:'pb_marketing', title:'Funnels & Automation', description:'Lifecycle campaigns + CRM.', embedUrl:'https://www.youtube.com/embed/WhhC0k8L7sA', thumbnailUrl:'https://img.youtube.com/vi/WhhC0k8L7sA/hqdefault.jpg', order:4, isFree:false, durationSeconds:1000 },
+        { id:'ep_dm_5', playbookId:'pb_marketing', title:'Email Marketing', description:'Flows, deliverability, segmentation.', embedUrl:'https://www.youtube.com/embed/nJVoYsBym88', thumbnailUrl:'https://img.youtube.com/vi/nJVoYsBym88/hqdefault.jpg', order:5, isFree:false, durationSeconds:1000 },
+        { id:'ep_dm_6', playbookId:'pb_marketing', title:'Analytics & Reporting', description:'Attribution + dashboards.', embedUrl:'https://www.youtube.com/embed/k-9sfn6yCto', thumbnailUrl:'https://img.youtube.com/vi/k-9sfn6yCto/hqdefault.jpg', order:6, isFree:false, durationSeconds:1000 },
+        { id:'ep_dm_7', playbookId:'pb_marketing', title:'Retention Strategies', description:'Community + loyalty loops.', embedUrl:'https://www.youtube.com/embed/Xzk-Fefw4zo', thumbnailUrl:'https://img.youtube.com/vi/Xzk-Fefw4zo/hqdefault.jpg', order:7, isFree:false, durationSeconds:1000 },
+        { id:'ep_dm_8', playbookId:'pb_marketing', title:'Scaling Playbooks', description:'Budget modeling + forecasting.', embedUrl:'https://www.youtube.com/embed/IQzsQ3Gsk8Y', thumbnailUrl:'https://img.youtube.com/vi/IQzsQ3Gsk8Y/hqdefault.jpg', order:8, isFree:false, durationSeconds:1000 },
         { id:'ep_uiux_1', playbookId:'pb_uiux', title:'Design Thinking Sprint', description:'How to empathize & define problems.', embedUrl:'https://www.youtube.com/embed/3W3w2YQ1kKM', thumbnailUrl:'https://img.youtube.com/vi/3W3w2YQ1kKM/hqdefault.jpg', order:1, isFree:true, durationSeconds:780 },
         { id:'ep_uiux_2', playbookId:'pb_uiux', title:'User Research Basics', description:'Interview frameworks.', embedUrl:'https://www.youtube.com/embed/FZgqRL0vh6U', thumbnailUrl:'https://img.youtube.com/vi/FZgqRL0vh6U/hqdefault.jpg', order:2, isFree:true, durationSeconds:900 },
         { id:'ep_uiux_3', playbookId:'pb_uiux', title:'Wireframing Essentials', description:'Low-fi to hi-fi workflow.', embedUrl:'https://www.youtube.com/embed/6s2n0FQ8k3E', thumbnailUrl:'https://img.youtube.com/vi/6s2n0FQ8k3E/hqdefault.jpg', order:3, isFree:true, durationSeconds:860 },
         { id:'ep_uiux_4', playbookId:'pb_uiux', title:'UI Systems & Components', description:'Atomic design crash.', embedUrl:'https://www.youtube.com/embed/_sKjKQp2kQg', thumbnailUrl:'https://img.youtube.com/vi/_sKjKQp2kQg/hqdefault.jpg', order:4, isFree:true, durationSeconds:910 },
-        { id:'ep_uiux_5', playbookId:'pb_uiux', title:'Prototyping in Figma', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Prototype', order:5, isFree:false, durationSeconds:1000 },
-        { id:'ep_uiux_6', playbookId:'pb_uiux', title:'UX Writing', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+UX+Writing', order:6, isFree:false, durationSeconds:900 },
-        { id:'ep_uiux_7', playbookId:'pb_uiux', title:'Usability Testing', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Testing', order:7, isFree:false, durationSeconds:1000 },
-        { id:'ep_uiux_8', playbookId:'pb_uiux', title:'Design Handoff', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Handoff', order:8, isFree:false, durationSeconds:950 },
+        { id:'ep_uiux_5', playbookId:'pb_uiux', title:'Prototyping in Figma', description:'Advanced prototyping labs.', embedUrl:'https://www.youtube.com/embed/FTFaQWZBqQ8', thumbnailUrl:'https://img.youtube.com/vi/FTFaQWZBqQ8/hqdefault.jpg', order:5, isFree:false, durationSeconds:1000 },
+        { id:'ep_uiux_6', playbookId:'pb_uiux', title:'UX Writing', description:'Micro-copy playbook.', embedUrl:'https://www.youtube.com/embed/Ovj4hFxko7c', thumbnailUrl:'https://img.youtube.com/vi/Ovj4hFxko7c/hqdefault.jpg', order:6, isFree:false, durationSeconds:900 },
+        { id:'ep_uiux_7', playbookId:'pb_uiux', title:'Usability Testing', description:'Notebooks, heuristics, scripts.', embedUrl:'https://www.youtube.com/embed/7OSkB4p1dLM', thumbnailUrl:'https://img.youtube.com/vi/7OSkB4p1dLM/hqdefault.jpg', order:7, isFree:false, durationSeconds:1000 },
+        { id:'ep_uiux_8', playbookId:'pb_uiux', title:'Design Handoff', description:'Dev-ready assets & QA.', embedUrl:'https://www.youtube.com/embed/oXU7mLdWq88', thumbnailUrl:'https://img.youtube.com/vi/oXU7mLdWq88/hqdefault.jpg', order:8, isFree:false, durationSeconds:950 },
         { id:'ep_ai_1', playbookId:'pb_ai', title:'AI/ML Landscape', description:'Intro to AI & ML.', embedUrl:'https://www.youtube.com/embed/GwIo3gDZCVQ', thumbnailUrl:'https://img.youtube.com/vi/GwIo3gDZCVQ/hqdefault.jpg', order:1, isFree:true, durationSeconds:900 },
-        { id:'ep_ai_2', playbookId:'pb_ai', title:'Data Prep Pipelines', description:'Locked content placeholder', embedUrl:'', thumbnailUrl:'https://via.placeholder.com/480x270?text=Locked+Data', order:2, isFree:false, durationSeconds:1100 },
+        { id:'ep_ai_2', playbookId:'pb_ai', title:'Data Prep Pipelines', description:'ETL with Python.', embedUrl:'https://www.youtube.com/embed/f_uwKZIAeM0', thumbnailUrl:'https://img.youtube.com/vi/f_uwKZIAeM0/hqdefault.jpg', order:2, isFree:false, durationSeconds:1100 },
+        { id:'ep_ai_3', playbookId:'pb_ai', title:'Model Training', description:'From baseline to tuning.', embedUrl:'https://www.youtube.com/embed/7eh4d6sabA0', thumbnailUrl:'https://img.youtube.com/vi/7eh4d6sabA0/hqdefault.jpg', order:3, isFree:false, durationSeconds:1150 },
         { id:'ep_fullstack_1', playbookId:'pb_fullstack', title:'Full-Stack Foundations', description:'MERN overview.', embedUrl:'https://www.youtube.com/embed/3JluqTojuME', thumbnailUrl:'https://img.youtube.com/vi/3JluqTojuME/hqdefault.jpg', order:1, isFree:true, durationSeconds:960 },
+        { id:'ep_fullstack_2', playbookId:'pb_fullstack', title:'API Craft', description:'REST + GraphQL.', embedUrl:'https://www.youtube.com/embed/6YhqQ2ZW1sc', thumbnailUrl:'https://img.youtube.com/vi/6YhqQ2ZW1sc/hqdefault.jpg', order:2, isFree:false, durationSeconds:1200 },
         { id:'ep_ba_1', playbookId:'pb_ba', title:'Analytics Kickoff', description:'Excel dashboards.', embedUrl:'https://www.youtube.com/embed/mhQGZbV0BX4', thumbnailUrl:'https://img.youtube.com/vi/mhQGZbV0BX4/hqdefault.jpg', order:1, isFree:true, durationSeconds:840 },
-        { id:'ep_startup_1', playbookId:'pb_startup', title:'Startup Mindset', description:'Intro to lean loops.', embedUrl:'https://www.youtube.com/embed/rxjBWkg3wG8', thumbnailUrl:'https://img.youtube.com/vi/rxjBWkg3wG8/hqdefault.jpg', order:1, isFree:true, durationSeconds:780 }
+        { id:'ep_ba_2', playbookId:'pb_ba', title:'Power BI Live', description:'Connectors + visuals.', embedUrl:'https://www.youtube.com/embed/AGrl-H87pRU', thumbnailUrl:'https://img.youtube.com/vi/AGrl-H87pRU/hqdefault.jpg', order:2, isFree:false, durationSeconds:930 },
+        { id:'ep_startup_1', playbookId:'pb_startup', title:'Startup Mindset', description:'Intro to lean loops.', embedUrl:'https://www.youtube.com/embed/rxjBWkg3wG8', thumbnailUrl:'https://img.youtube.com/vi/rxjBWkg3wG8/hqdefault.jpg', order:1, isFree:true, durationSeconds:780 },
+        { id:'ep_startup_2', playbookId:'pb_startup', title:'Pitch Craft', description:'Decks investors love.', embedUrl:'https://www.youtube.com/embed/o9pEzgHorH0', thumbnailUrl:'https://img.youtube.com/vi/o9pEzgHorH0/hqdefault.jpg', order:2, isFree:false, durationSeconds:950 },
+        { id:'ep_product_1', playbookId:'pb_product', title:'Roadmaps that Ship', description:'Strategy to release plan.', embedUrl:'https://www.youtube.com/embed/a4wod7uCqZ0', thumbnailUrl:'https://img.youtube.com/vi/a4wod7uCqZ0/hqdefault.jpg', order:1, isFree:true, durationSeconds:780 },
+        { id:'ep_product_2', playbookId:'pb_product', title:'Prioritization Labs', description:'RICE, ICE, and stack ranking.', embedUrl:'https://www.youtube.com/embed/0YENXww4nDQ', thumbnailUrl:'https://img.youtube.com/vi/0YENXww4nDQ/hqdefault.jpg', order:2, isFree:false, durationSeconds:900 },
+        { id:'ep_cyber_1', playbookId:'pb_cyber', title:'Security Landscape', description:'Threat modeling crash course.', embedUrl:'https://www.youtube.com/embed/8dWL3wF_OMw', thumbnailUrl:'https://img.youtube.com/vi/8dWL3wF_OMw/hqdefault.jpg', order:1, isFree:true, durationSeconds:820 },
+        { id:'ep_cyber_2', playbookId:'pb_cyber', title:'Incident Playbooks', description:'Blue-team response drills.', embedUrl:'https://www.youtube.com/embed/inWWhr5tnEA', thumbnailUrl:'https://img.youtube.com/vi/inWWhr5tnEA/hqdefault.jpg', order:2, isFree:false, durationSeconds:980 },
+        { id:'ep_story_1', playbookId:'pb_story', title:'Narrative Frameworks', description:'Story arcs for dashboards.', embedUrl:'https://www.youtube.com/embed/6ZrO90AI0c8', thumbnailUrl:'https://img.youtube.com/vi/6ZrO90AI0c8/hqdefault.jpg', order:1, isFree:true, durationSeconds:800 },
+        { id:'ep_story_2', playbookId:'pb_story', title:'Visual Systems', description:'Color, typography, motion.', embedUrl:'https://www.youtube.com/embed/wog_kd23T58', thumbnailUrl:'https://img.youtube.com/vi/wog_kd23T58/hqdefault.jpg', order:2, isFree:false, durationSeconds:920 }
       ];
       const comments = [
         { id:'c1', userId:'u1', episodeId:'ep_py_1', content:'Great intro — clear and fast!', createdAt:'2025-11-01T10:00:00Z' },
-        { id:'c2', userId:'u1', episodeId:'ep_dm_2', content:'SEO tips were practical.', createdAt:'2025-11-02T11:00:00Z' }
+        { id:'c2', userId:'u1', episodeId:'ep_dm_2', content:'SEO tips were practical.', createdAt:'2025-11-02T11:00:00Z' },
+        { id:'c3', userId:'u1', episodeId:'ep_product_1', content:'Loved the roadmap checklist!', createdAt:'2025-11-05T09:30:00Z' }
       ];
       const purchases = [
-        { id:'p1', userId:'u1', playbookId:'pb_python', amountTaka:499, provider:'card', providerPaymentId:'sim_init_001', status:'completed', createdAt:'2025-11-03T12:00:00Z' }
+        { id:'p1', userId:'u1', playbookId:'pb_python', amountTaka:499, provider:'card', providerPaymentId:'sim_init_001', status:'completed', createdAt:'2025-11-03T12:00:00Z' },
+        { id:'p2', userId:'u1', playbookId:'pb_marketing', amountTaka:399, provider:'bkash', providerPaymentId:'sim_init_002', status:'completed', createdAt:'2025-11-04T15:00:00Z' },
+        { id:'p3', userId:'u1', playbookId:'pb_ai', amountTaka:599, provider:'card', providerPaymentId:'sim_init_003', status:'processing', createdAt:'2025-11-05T08:00:00Z' }
       ];
       const unlocks = [
-        { id:'unlock_1', userId:'u1', playbookId:'pb_python', unlockedAt:'2025-11-03T12:00:01Z' }
+        { id:'unlock_1', userId:'u1', playbookId:'pb_python', unlockedAt:'2025-11-03T12:00:01Z' },
+        { id:'unlock_2', userId:'u1', playbookId:'pb_marketing', unlockedAt:'2025-11-04T15:00:01Z' }
       ];
       saveToStore(storeKeys.users, users);
       saveToStore(storeKeys.playbooks, playbooks);
@@ -349,11 +594,11 @@
       const users = getFromStore(storeKeys.users) || [];
       const userObj = users.find(u => u.id === current.id);
       container.innerHTML = `
-        <div class="text-right">
-          <p class="text-sm font-semibold">${current.name}</p>
-          <p class="text-xs text-slate-500">${current.email}</p>
+        <div class="hidden sm:block text-right text-xs">
+          <p class="font-semibold text-sm">${current.name}</p>
+          <p class="text-slate-500">${current.email}</p>
         </div>
-        <img src="${userObj?.avatarUrl || fallbackThumbnail}" alt="${current.name} avatar" class="w-10 h-10 rounded-full border" loading="lazy"/>
+        <img src="${userObj?.avatarUrl || fallbackThumbnail}" alt="${current.name} avatar" class="w-11 h-11 rounded-full border-2 border-white shadow-md" loading="lazy"/>
       `;
     }
 
@@ -363,10 +608,111 @@
       row.innerHTML = '';
       categories.forEach(cat => {
         const btn = document.createElement('button');
-        btn.textContent = cat;
-        btn.className = 'px-4 py-2 rounded-full border border-slate-200 bg-white text-sm focus-ring';
+        btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles text-[10px] text-violet-500"></i> ${cat}`;
+        btn.className = 'px-4 py-2 rounded-full border border-slate-200 bg-white text-sm focus-ring hover:border-violet-200 transition flex items-center gap-2';
+        btn.setAttribute('data-animate','true');
         btn.addEventListener('click', () => filterByCategory(cat));
         row.appendChild(btn);
+      });
+    }
+
+    function renderHeroSpotlight() {
+      const heroCopy = document.getElementById('heroCopy');
+      const heroMedia = document.getElementById('heroMedia');
+      if (!heroCopy || !heroMedia) return;
+      const playbooks = getFromStore(storeKeys.playbooks) || [];
+      if (!playbooks.length) return;
+      const purchases = getFromStore(storeKeys.purchases) || [];
+      const unlocks = getFromStore(storeKeys.unlocks) || [];
+      const spotlight = [...playbooks].sort((a, b) => b.rating - a.rating)[0];
+      const stats = [
+        { label: 'Creators active', value: `${Math.max(2, (getFromStore(storeKeys.users) || []).filter(u => u.isCreator).length)}+` },
+        { label: 'Live unlocks', value: `${unlocks.length + purchases.length * 3}` },
+        { label: 'Avg rating', value: `${spotlight.rating.toFixed(1)}` }
+      ];
+      heroCopy.setAttribute('data-animate', 'true');
+      heroCopy.innerHTML = `
+        <span class="insight-pill">Weekly drop</span>
+        <h1>Craft interactive learning systems with <span class="text-violet-600">${spotlight.title}</span></h1>
+        <p class="text-slate-600">Premium creator workflows, verified payment flows, and gorgeous viewer experiences—ready to demo instantly.</p>
+        <div class="flex flex-wrap gap-3">
+          <button class="btn-primary focus-ring" data-nav-target="home">Explore playbooks</button>
+          <button class="btn-secondary focus-ring" data-nav-target="creator">Launch creator studio</button>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+          ${stats.map(stat => `<div class='bg-white/80 rounded-2xl p-3 shadow-sm border border-violet-50'><p class='text-xs text-slate-500 uppercase tracking-wide'>${stat.label}</p><p class='text-lg font-semibold mt-1'>${stat.value}</p></div>`).join('')}
+        </div>`;
+      const progress = Math.min(100, Math.round((spotlight.rating / 5) * 100));
+      heroMedia.setAttribute('data-animate', 'true');
+      heroMedia.innerHTML = `
+        <img src="${getThumbnail(spotlight)}" alt="${spotlight.title} feature" loading="lazy"/>
+        <div class="hero-floating-card">
+          <p class="text-sm font-semibold">${spotlight.title}</p>
+          <p class="text-xs text-slate-500">${spotlight.totalEpisodes} episodes • ${spotlight.difficulty}</p>
+          <div class="progress-line mt-3"><span style="--progress:${progress}%"></span></div>
+          <p class="text-xs text-slate-500 mt-1">${progress}% completion streak from early adopters</p>
+        </div>`;
+    }
+
+    function renderInsightDeck() {
+      const container = document.getElementById('insightDeck');
+      if (!container) return;
+      const playbooks = getFromStore(storeKeys.playbooks) || [];
+      const purchases = getFromStore(storeKeys.purchases) || [];
+      const comments = getFromStore(storeKeys.comments) || [];
+      const insights = [
+        { icon: 'fa-solid fa-bolt', title: 'Live unlock rate', value: `${Math.min(98, purchases.length * 12 + 12)}%`, note: 'Past 24h upgrades' },
+        { icon: 'fa-solid fa-layer-group', title: 'Playbooks published', value: `${playbooks.length}`, note: 'Studio-ready demos' },
+        { icon: 'fa-solid fa-comments', title: 'Learner shout-outs', value: `${comments.length}+`, note: 'Fresh reactions this week' }
+      ];
+      container.innerHTML = '';
+      insights.forEach(item => {
+        const card = document.createElement('article');
+        card.className = 'card-surface space-y-2';
+        card.setAttribute('data-animate', 'true');
+        card.innerHTML = `
+          <span class="insight-pill"><i class="${item.icon}"></i> Insight</span>
+          <h3 class="text-2xl font-semibold">${item.value}</h3>
+          <p class="text-sm text-slate-500">${item.title}</p>
+          <p class="text-xs text-slate-400">${item.note}</p>`;
+        container.appendChild(card);
+      });
+    }
+
+    function renderProgressShowcase() {
+      const container = document.getElementById('progressShowcase');
+      if (!container) return;
+      const playbooks = getFromStore(storeKeys.playbooks) || [];
+      const featured = playbooks.slice(0, 2);
+      container.innerHTML = '';
+      featured.forEach(pb => {
+        const card = document.createElement('article');
+        card.className = 'card-surface space-y-3 flex flex-col justify-between';
+        card.setAttribute('data-animate', 'true');
+        const progress = Math.min(100, Math.round((pb.rating / 5) * 100));
+        card.innerHTML = `
+          <div class="flex gap-4">
+            <img src="${getThumbnail(pb)}" alt="${pb.title}" class="w-20 h-20 rounded-xl object-cover" loading="lazy"/>
+            <div class="flex-1">
+              <p class="text-xs uppercase text-slate-500">Spotlight</p>
+              <h3 class="font-semibold">${pb.title}</h3>
+              <p class="text-xs text-slate-500">${pb.totalEpisodes} episodes • ${pb.difficulty}</p>
+            </div>
+          </div>
+          <div>
+            <div class="progress-line"><span style="--progress:${progress}%"></span></div>
+            <p class="text-xs text-slate-500 mt-1">${progress}% of modules curated</p>
+          </div>
+          <button class="btn-secondary focus-ring w-full" type="button" data-playbook-progress="${pb.id}">Open overview</button>`;
+        container.appendChild(card);
+      });
+      container.querySelectorAll('[data-playbook-progress]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          appState.activePlaybookId = btn.dataset.playbookProgress;
+          renderAll();
+          setView('home');
+          document.getElementById('playbookPreview').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
       });
     }
 
@@ -382,7 +728,9 @@
     function renderPlaybookCard(pb) {
       const freeCount = (getFromStore(storeKeys.episodes) || []).filter(ep => ep.playbookId === pb.id && ep.isFree).length;
       const card = document.createElement('article');
-      card.className = 'playbook-card min-w-[240px] bg-white rounded-2xl shadow p-3 cursor-pointer hover:-translate-y-1 transition transform';
+      card.className = 'playbook-card min-w-[260px] bg-white rounded-2xl shadow p-4 cursor-pointer hover:-translate-y-1 transition transform border border-violet-50';
+      card.setAttribute('data-animate', 'true');
+      const completion = Math.min(100, Math.round((freeCount / Math.max(1, pb.totalEpisodes)) * 100) + 30);
       card.innerHTML = `
         <div class="rounded-xl overflow-hidden">
           <img src="${getThumbnail(pb)}" alt="${pb.title} thumbnail" loading="lazy">
@@ -391,7 +739,8 @@
           <p class="text-xs uppercase text-slate-500">${pb.creatorName}</p>
           <h3 class="font-semibold">${pb.title}</h3>
           <p class="text-xs text-blue-500">${pb.tags.join(', ')}</p>
-          <span class="inline-flex items-center text-xs mt-1 px-2 py-1 rounded-full bg-slate-100">${freeCount} Free • ${pb.totalEpisodes - freeCount} Paid</span>
+          <span class="inline-flex items-center text-xs mt-1 px-2 py-1 rounded-full bg-slate-100">${freeCount} Free • ${Math.max(0, pb.totalEpisodes - freeCount)} Premium</span>
+          <div class="progress-line mt-2" aria-hidden="true"><span style="--progress:${completion}%"></span></div>
         </div>`;
       card.addEventListener('click', () => {
         appState.activePlaybookId = pb.id;
@@ -401,6 +750,75 @@
         document.getElementById('playbookPreview').scrollIntoView({ behavior: 'smooth' });
       });
       return card;
+    }
+
+    function renderSearchResults(results, query) {
+      const list = document.getElementById('searchResultsList');
+      const summary = document.getElementById('searchSummary');
+      if (!list || !summary) return;
+      if (!query) {
+        summary.textContent = 'Start typing to explore the catalog.';
+        list.innerHTML = '<p class="text-sm text-slate-500">Use the search bar above to filter playbooks by topic, creator, or keyword.</p>';
+        return;
+      }
+      summary.textContent = results.length ? `${results.length} matches for "${query}"` : `No matches for "${query}"`;
+      if (!results.length) {
+        list.innerHTML = '<p class="text-sm text-slate-500">Try another phrase or browse the trending section.</p>';
+        return;
+      }
+      list.innerHTML = '';
+      results.forEach(pb => {
+        const card = document.createElement('article');
+        card.className = 'border border-slate-100 rounded-2xl p-4 flex gap-3 bg-white hover:border-violet-200 transition cursor-pointer';
+        card.setAttribute('data-animate', 'true');
+        card.innerHTML = `
+          <img src="${getThumbnail(pb)}" alt="${pb.title}" class="w-20 h-20 rounded-xl object-cover" loading="lazy"/>
+          <div class="flex-1">
+            <h3 class="font-semibold">${pb.title}</h3>
+            <p class="text-xs text-slate-500">${pb.creatorName} • ${pb.difficulty}</p>
+            <p class="text-sm text-slate-600 mt-1">${pb.description}</p>
+          </div>`;
+        card.addEventListener('click', () => {
+          appState.activePlaybookId = pb.id;
+          const firstEpisode = (getFromStore(storeKeys.episodes) || []).find(ep => ep.playbookId === pb.id);
+          appState.activeEpisodeId = firstEpisode?.id || null;
+          renderAll();
+          setView('home');
+          document.getElementById('playbookPreview').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        list.appendChild(card);
+      });
+      refreshRevealAnimations();
+    }
+
+    function hideSearchDropdown(id) {
+      const dropdown = document.getElementById(id);
+      if (!dropdown) return;
+      dropdown.classList.remove('active');
+      dropdown.innerHTML = '';
+    }
+
+    function renderSearchDropdown(results, dropdownId, inputId) {
+      const dropdown = document.getElementById(dropdownId);
+      if (!dropdown) return;
+      if (!results.length) {
+        hideSearchDropdown(dropdownId);
+        return;
+      }
+      dropdown.innerHTML = '';
+      results.slice(0, 5).forEach(pb => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.innerHTML = `<img src="${getThumbnail(pb)}" alt="${pb.title}" class="w-10 h-10 rounded-lg object-cover" loading="lazy"/> <div><p class='text-sm font-semibold'>${pb.title}</p><p class='text-xs text-slate-500'>${pb.creatorName}</p></div>`;
+        btn.addEventListener('click', () => {
+          const input = document.getElementById(inputId);
+          if (input) input.value = pb.title;
+          hideSearchDropdown(dropdownId);
+          applySearch(pb.title, { focusResults: true, updateDropdown: false, source: inputId === 'searchInputMobile' ? 'mobile' : 'desktop' });
+        });
+        dropdown.appendChild(btn);
+      });
+      dropdown.classList.add('active');
     }
 
     function renderTrending() {
@@ -417,31 +835,50 @@
       const container = document.getElementById('recommendedFeed');
       container.innerHTML = '';
       const data = listOverride?.length ? listOverride : playbooks.filter(pb => recommendedIds.includes(pb.id));
+      if (!data.length) {
+        container.innerHTML = '<p class="text-sm text-slate-500">No playbooks match your search yet. Try another keyword.</p>';
+        return;
+      }
       data.forEach(pb => {
         const card = document.createElement('article');
-        card.className = 'playbook-card bg-white rounded-2xl shadow flex flex-col md:flex-row gap-4 p-4 border border-transparent hover:border-blue-100 cursor-pointer';
+        card.className = 'card-surface flex flex-col md:flex-row gap-4 border border-violet-50 hover:border-violet-200 transition';
         card.dataset.tags = pb.tags.join(',');
+        card.setAttribute('data-animate', 'true');
+        const progress = Math.min(100, Math.round((pb.rating / 5) * 100));
         card.innerHTML = `
-          <div class="md:w-48 w-full rounded-xl overflow-hidden">
+          <div class="md:w-48 w-full rounded-2xl overflow-hidden">
             <img src="${getThumbnail(pb)}" alt="${pb.title} cover" loading="lazy">
           </div>
-          <div class="flex-1 space-y-1">
-            <div class="flex items-center justify-between gap-3">
-              <h3 class="text-lg font-semibold">${pb.title}</h3>
-              <span class="text-sm font-bold text-blue-600">৳${pb.priceTaka}</span>
+          <div class="flex-1 space-y-2">
+            <div class="flex items-center justify-between gap-3 flex-wrap">
+              <div>
+                <p class="text-xs uppercase text-slate-500">${pb.creatorName}</p>
+                <h3 class="text-lg font-semibold">${pb.title}</h3>
+              </div>
+              <span class="text-sm font-bold text-blue-600">Tk ${pb.priceTaka}</span>
             </div>
             <p class="text-sm text-slate-600">${pb.description}</p>
-            <div class="text-xs text-yellow-500">⭐ ${pb.rating}</div>
-            <div class="flex gap-2 flex-wrap pt-1">
-              ${pb.tags.map(tag => `<span class="px-2 py-1 bg-slate-100 rounded-full text-xs">${tag}</span>`).join('')}
+            <div class="flex gap-2 flex-wrap pt-1 text-xs">
+              ${pb.tags.map(tag => `<span class="px-2 py-1 bg-slate-100 rounded-full">${tag}</span>`).join('')}
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-500">
+              <i class="fa-solid fa-star text-amber-400"></i> ${pb.rating.toFixed(1)} rating • ${pb.totalEpisodes} episodes
+            </div>
+            <div class="progress-line" aria-hidden="true"><span style="--progress:${progress}%"></span></div>
+            <div class="flex flex-wrap gap-3">
+              <button class="btn-primary focus-ring flex-1 md:flex-none" type="button" data-preview="${pb.id}">Preview</button>
+              <button class="btn-secondary focus-ring flex-1 md:flex-none" type="button" data-unlock="${pb.id}">Unlock</button>
             </div>
           </div>`;
-        card.addEventListener('click', () => {
+        card.querySelector('[data-preview]').addEventListener('click', () => {
           appState.activePlaybookId = pb.id;
           const firstEpisode = (getFromStore(storeKeys.episodes) || []).find(ep => ep.playbookId === pb.id);
           appState.activeEpisodeId = firstEpisode?.id || null;
           renderAll();
+          setView('home');
+          document.getElementById('playbookPreview').scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
+        card.querySelector('[data-unlock]').addEventListener('click', () => openPaymentModal(pb));
         container.appendChild(card);
       });
     }
@@ -463,7 +900,7 @@
                 <span class="text-xs text-slate-500">${formatDuration(ep.durationSeconds)}</span>
               </div>
               <p class="text-sm text-slate-500">${ep.description}</p>
-              <span class="text-xs ${ep.isFree ? 'text-green-600' : 'text-rose-500'}">${ep.isFree ? 'বিনামূল্যে' : 'Locked প্রিমিয়াম'}</span>
+              <span class="text-xs ${ep.isFree ? 'text-green-600' : 'text-rose-500'}">${ep.isFree ? 'Free preview' : 'Locked premium'}</span>
             </div>
             ${locked ? '<span class="material-icons text-rose-500" aria-hidden="true">lock</span>' : '<span class="material-icons text-slate-400">expand_more</span>'}
           </button>`;
@@ -575,32 +1012,31 @@
       const unlockedEpisodes = pbEpisodes.filter(ep => ep.isFree || unlocked).length;
       const progress = total ? Math.round((unlockedEpisodes / total) * 100) : 0;
       const container = document.getElementById('playbookPreview');
+      container.setAttribute('data-animate', 'true');
       container.innerHTML = `
-        <div class="flex flex-col md:flex-row gap-4">
-          <div class="md:w-60 w-full rounded-2xl overflow-hidden">
-            <img src="${getThumbnail(pb)}" alt="${pb.title}" class="w-full h-auto" loading="lazy"/>
+        <div class="grid gap-6 md:grid-cols-[260px,1fr]">
+          <div class="rounded-3xl overflow-hidden border border-slate-100 shadow-sm">
+            <img src="${getThumbnail(pb)}" alt="${pb.title}" class="w-full h-full object-cover" loading="lazy"/>
           </div>
-          <div class="flex-1 space-y-3">
-            <div class="flex flex-wrap justify-between gap-2">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between flex-wrap gap-3">
               <div>
                 <p class="text-xs uppercase text-slate-500">${pb.creatorName}</p>
                 <h3 class="text-2xl font-bold">${pb.title}</h3>
               </div>
-              <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-sm">${pb.difficulty}</span>
+              <span class="px-3 py-1 rounded-full bg-violet-50 text-violet-700 text-sm">${pb.difficulty}</span>
             </div>
             <p class="text-sm text-slate-600">${pb.description}</p>
             <div class="flex gap-2 flex-wrap">
               ${pb.tags.map(tag => `<span class='text-xs bg-slate-100 rounded-full px-3 py-1'>${tag}</span>`).join('')}
             </div>
             <div>
-              <div class="w-full bg-slate-200 rounded-full h-2" aria-hidden="true">
-                <div class="bg-blue-500 h-2 rounded-full" style="width:${progress}%"></div>
-              </div>
+              <div class="progress-line" aria-hidden="true"><span style="--progress:${progress}%"></span></div>
               <p class="text-xs mt-1 text-slate-500" aria-live="polite">${unlockedEpisodes}/${total} episodes available (${progress}%)</p>
             </div>
-            <div class="flex flex-wrap gap-3 items-center justify-between">
-              <p class="text-lg font-semibold">Unlock all episodes for <span class="text-blue-600">৳${pb.priceTaka}</span></p>
-              <button ${unlocked ? 'disabled' : ''} class="px-4 py-2 rounded-xl font-semibold ${unlocked ? 'bg-slate-200 text-slate-500 cursor-not-allowed' : 'bg-blue-600 text-white'}" data-playbook="${pb.id}" aria-label="Unlock full playbook">${unlocked ? 'Already unlocked' : 'Unlock Full Playbook • ৳'+pb.priceTaka}</button>
+            <div class="flex flex-wrap gap-3 items-center">
+              <p class="text-lg font-semibold flex-1">Unlock all episodes for <span class="text-blue-600">Tk ${pb.priceTaka}</span></p>
+              <button ${unlocked ? 'disabled' : ''} class="btn-primary ${unlocked ? 'opacity-50 cursor-not-allowed' : ''}" data-playbook="${pb.id}" aria-label="Unlock full playbook">${unlocked ? 'Already unlocked' : 'Unlock full access'}</button>
             </div>
           </div>
         </div>`;
@@ -610,7 +1046,7 @@
       }
       const episodeWrapper = document.createElement('div');
       episodeWrapper.className = 'mt-6';
-      episodeWrapper.innerHTML = '<h4 class="font-semibold mb-2">Episode Preview</h4>';
+      episodeWrapper.innerHTML = '<h4 class="font-semibold mb-2 flex items-center gap-2"><i class="fa-solid fa-wave-square text-violet-500"></i> Episode Preview</h4>';
       episodeWrapper.appendChild(buildEpisodeList(pb, unlocked));
       container.appendChild(episodeWrapper);
     }
@@ -622,19 +1058,23 @@
       if (!pb) return;
       const pbEpisodes = episodes.filter(ep => ep.playbookId === pb.id).sort((a,b) => a.order - b.order);
       const detail = document.getElementById('playbookDetails');
+      detail.setAttribute('data-animate', 'true');
       detail.innerHTML = `
         <div class="flex flex-wrap items-center justify-between gap-2">
           <h3 class="text-xl font-semibold">Playbook Details</h3>
-          <span class="text-sm text-slate-500">Rating ⭐ ${pb.rating}</span>
+          <span class="insight-pill"><i class="fa-solid fa-star text-amber-400"></i> ${pb.rating.toFixed(1)}</span>
         </div>
         <p class="text-sm text-slate-600 mt-2">${pb.description}</p>
         <div class="mt-3 flex flex-wrap gap-2">
           ${pb.tags.map(tag => `<span class='px-3 py-1 rounded-full bg-slate-100 text-xs'>${tag}</span>`).join('')}
         </div>
         <div class="mt-4 space-y-2">
-          ${pbEpisodes.map(ep => `<div class='flex items-center justify-between border rounded-xl px-3 py-2 text-sm'>
-            <span>${ep.order}. ${ep.title}</span>
-            <span>${ep.isFree ? 'বিনামূল্যে' : '🔒'}</span>
+          ${pbEpisodes.map(ep => `<div class='flex items-center justify-between border rounded-2xl px-4 py-3 text-sm bg-slate-50'>
+            <div>
+              <p class='font-semibold'>${ep.order}. ${ep.title}</p>
+              <p class='text-xs text-slate-500'>${formatDuration(ep.durationSeconds)}</p>
+            </div>
+            <span class='text-xs ${ep.isFree ? 'text-green-600' : 'text-rose-500'}'>${ep.isFree ? 'Free' : 'Premium'}</span>
           </div>`).join('')}
         </div>`;
     }
@@ -649,6 +1089,7 @@
         return;
       }
       const playbook = playbooks.find(pb => pb.id === currentEpisode.playbookId);
+      container.setAttribute('data-animate', 'true');
       container.innerHTML = `
         <div class="flex items-center justify-between gap-2">
           <div>
@@ -664,32 +1105,65 @@
     function renderCreatorPanel() {
       const current = getFromStore(storeKeys.currentUser);
       const panel = document.getElementById('creatorPanel');
-      panel.classList.toggle('hidden', !current?.isCreator);
-      if (!current?.isCreator) return;
+      if (!panel) return;
+      panel.setAttribute('data-animate', 'true');
+      if (!current?.isCreator) {
+        panel.innerHTML = `
+          <h3 class="text-xl font-semibold">Creator Studio</h3>
+          <p class="text-sm text-slate-500">Switch to the creator account to unlock publishing, payment testing, and scheduling tools.</p>
+          <button class="btn-primary focus-ring" type="button" id="requestCreatorAccess">Switch to creator demo</button>`;
+        const requestBtn = document.getElementById('requestCreatorAccess');
+        if (requestBtn) {
+          requestBtn.addEventListener('click', switchUser);
+        }
+        return;
+      }
       panel.innerHTML = `
-        <h3 class="text-xl font-semibold">Creator Console</h3>
-        <p class="text-sm text-slate-500">Submit new playbooks or schedule episodes.</p>
-        <form id="createPlaybookForm" class="grid md:grid-cols-2 gap-4 mt-4">
-          <label class="text-sm">Title<input name="title" required class="mt-1 border rounded-xl px-3 py-2 w-full" placeholder="Playbook title"/></label>
-          <label class="text-sm">Difficulty<input name="difficulty" class="mt-1 border rounded-xl px-3 py-2 w-full" placeholder="Beginner"/></label>
-          <label class="text-sm md:col-span-2">Description<textarea name="description" class="mt-1 border rounded-xl px-3 py-2 w-full" rows="2"></textarea></label>
-          <label class="text-sm">Tags<input name="tags" class="mt-1 border rounded-xl px-3 py-2 w-full" placeholder="Tech, Programming"/></label>
-          <label class="text-sm">Price (৳)<input name="price" type="number" class="mt-1 border rounded-xl px-3 py-2 w-full"/></label>
-          <label class="text-sm">Thumbnail URL<input name="thumbnail" class="mt-1 border rounded-xl px-3 py-2 w-full"/></label>
-          <label class="text-sm">Rating<input name="rating" type="number" step="0.1" class="mt-1 border rounded-xl px-3 py-2 w-full"/></label>
-          <button class="md:col-span-2 bg-slate-900 text-white rounded-xl py-2">Add Playbook</button>
-        </form>
-        <hr class="my-6"/>
-        <form id="addEpisodeForm" class="grid md:grid-cols-2 gap-4">
-          <label class="text-sm">Playbook<select name="playbookId" class="mt-1 border rounded-xl px-3 py-2 w-full"></select></label>
-          <label class="text-sm">Title<input name="title" required class="mt-1 border rounded-xl px-3 py-2 w-full"/></label>
-          <label class="text-sm md:col-span-2">Embed URL<input name="embed" required class="mt-1 border rounded-xl px-3 py-2 w-full" placeholder="https://www.youtube.com/watch?v=..."/></label>
-          <label class="text-sm">Thumbnail URL<input name="thumbnail" class="mt-1 border rounded-xl px-3 py-2 w-full"/></label>
-          <label class="text-sm">Duration (seconds)<input name="duration" type="number" class="mt-1 border rounded-xl px-3 py-2 w-full"/></label>
-          <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="isFree"/> Free episode</label>
-          <button class="md:col-span-2 bg-blue-600 text-white rounded-xl py-2">Add Episode</button>
-          <p id="creatorValidation" class="md:col-span-2 text-sm text-rose-500"></p>
-        </form>`;
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p class="text-xs uppercase text-slate-500">Creator Studio</p>
+            <h3 class="text-xl font-semibold">Launch new learning drops</h3>
+          </div>
+          <span class="insight-pill"><i class="fa-solid fa-circle-play"></i> Live preview</span>
+        </div>
+        <div class="grid md:grid-cols-3 gap-3 text-sm">
+          <div class="bg-slate-50 rounded-2xl p-3">
+            <p class="text-xs text-slate-500 uppercase">Playbooks</p>
+            <p class="text-2xl font-semibold">${(getFromStore(storeKeys.playbooks) || []).length}</p>
+          </div>
+          <div class="bg-slate-50 rounded-2xl p-3">
+            <p class="text-xs text-slate-500 uppercase">Episodes</p>
+            <p class="text-2xl font-semibold">${(getFromStore(storeKeys.episodes) || []).filter(ep => ep.playbookId).length}</p>
+          </div>
+          <div class="bg-slate-50 rounded-2xl p-3">
+            <p class="text-xs text-slate-500 uppercase">Unlocks</p>
+            <p class="text-2xl font-semibold">${(getFromStore(storeKeys.unlocks) || []).length}</p>
+          </div>
+        </div>
+        <div class="grid gap-6 mt-4">
+          <form id="createPlaybookForm" class="grid md:grid-cols-2 gap-4 bg-white rounded-2xl border border-slate-100 p-4">
+            <h4 class="md:col-span-2 font-semibold text-slate-700">Create a new playbook</h4>
+            <label class="text-sm">Title<input name="title" required class="mt-1 border rounded-xl px-3 py-2 w-full" placeholder="Playbook title"/></label>
+            <label class="text-sm">Difficulty<input name="difficulty" class="mt-1 border rounded-xl px-3 py-2 w-full" placeholder="Beginner"/></label>
+            <label class="text-sm md:col-span-2">Description<textarea name="description" class="mt-1 border rounded-xl px-3 py-2 w-full" rows="2"></textarea></label>
+            <label class="text-sm">Tags<input name="tags" class="mt-1 border rounded-xl px-3 py-2 w-full" placeholder="Tech, Programming"/></label>
+            <label class="text-sm">Price (Tk)<input name="price" type="number" class="mt-1 border rounded-xl px-3 py-2 w-full"/></label>
+            <label class="text-sm">Thumbnail URL<input name="thumbnail" class="mt-1 border rounded-xl px-3 py-2 w-full"/></label>
+            <label class="text-sm">Rating<input name="rating" type="number" step="0.1" class="mt-1 border rounded-xl px-3 py-2 w-full"/></label>
+            <button class="md:col-span-2 btn-primary">Add Playbook</button>
+          </form>
+          <form id="addEpisodeForm" class="grid md:grid-cols-2 gap-4 bg-white rounded-2xl border border-slate-100 p-4">
+            <h4 class="md:col-span-2 font-semibold text-slate-700">Add an episode</h4>
+            <label class="text-sm">Playbook<select name="playbookId" class="mt-1 border rounded-xl px-3 py-2 w-full"></select></label>
+            <label class="text-sm">Title<input name="title" required class="mt-1 border rounded-xl px-3 py-2 w-full"/></label>
+            <label class="text-sm md:col-span-2">Embed URL<input name="embed" required class="mt-1 border rounded-xl px-3 py-2 w-full" placeholder="https://www.youtube.com/watch?v=..."/></label>
+            <label class="text-sm">Thumbnail URL<input name="thumbnail" class="mt-1 border rounded-xl px-3 py-2 w-full"/></label>
+            <label class="text-sm">Duration (seconds)<input name="duration" type="number" class="mt-1 border rounded-xl px-3 py-2 w-full"/></label>
+            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="isFree"/> Free episode</label>
+            <button class="md:col-span-2 btn-secondary">Add Episode</button>
+            <p id="creatorValidation" class="md:col-span-2 text-sm text-rose-500"></p>
+          </form>
+        </div>`;
       const select = panel.querySelector('select[name="playbookId"]');
       const playbooks = getFromStore(storeKeys.playbooks).filter(pb => pb.creatorId === current.id || current.email === 'creator@edulylas.test');
       playbooks.forEach(pb => {
@@ -752,14 +1226,34 @@
       const purchases = getFromStore(storeKeys.purchases) || [];
       const playbooks = getFromStore(storeKeys.playbooks) || [];
       const container = document.getElementById('profilePanel');
+      container.setAttribute('data-animate', 'true');
       container.innerHTML = `
-        <h3 class="text-xl font-semibold">Profile & Activity</h3>
-        <p class="text-sm text-slate-500">${user?.email || 'Not signed in'}</p>
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p class="text-xs uppercase text-slate-500">Account</p>
+            <h3 class="text-xl font-semibold">${user?.name || 'Guest mode'}</h3>
+            <p class="text-sm text-slate-500">${user?.email || 'Not signed in'}</p>
+          </div>
+          <button id="resetDemo" class="btn-secondary">Reset demo data</button>
+        </div>
+        <div class="grid md:grid-cols-3 gap-3 mt-4 text-sm">
+          <div class="bg-slate-50 rounded-2xl p-3">
+            <p class="text-xs text-slate-500 uppercase">Purchases</p>
+            <p class="text-2xl font-semibold">${purchases.filter(p => p.userId === user?.id).length}</p>
+          </div>
+          <div class="bg-slate-50 rounded-2xl p-3">
+            <p class="text-xs text-slate-500 uppercase">Unlocked</p>
+            <p class="text-2xl font-semibold">${(getFromStore(storeKeys.unlocks) || []).filter(u => u.userId === user?.id).length}</p>
+          </div>
+          <div class="bg-slate-50 rounded-2xl p-3">
+            <p class="text-xs text-slate-500 uppercase">Favorites</p>
+            <p class="text-2xl font-semibold">${(playbooks.slice(0, 3)).length}</p>
+          </div>
+        </div>
         <div class="mt-4">
           <h4 class="font-semibold">Purchases</h4>
           <div class="space-y-3 mt-2" id="purchaseList"></div>
         </div>
-        <button id="resetDemo" class="mt-4 bg-rose-600 text-white px-4 py-2 rounded-xl focus-ring">Reset Demo Data</button>
       `;
       const list = container.querySelector('#purchaseList');
       const userPurchases = purchases.filter(p => p.userId === user?.id);
@@ -770,7 +1264,7 @@
           const pb = playbooks.find(pb => pb.id === p.playbookId);
           const row = document.createElement('div');
           row.className = 'border rounded-xl p-3';
-          row.innerHTML = `<p class='font-semibold'>${pb?.title || p.playbookId}</p><p class='text-sm text-slate-500'>৳${p.amountTaka} • ${p.provider} • ${p.status}</p><p class='text-xs text-slate-400 font-mono'>${p.providerPaymentId}</p>`;
+          row.innerHTML = `<p class='font-semibold'>${pb?.title || p.playbookId}</p><p class='text-sm text-slate-500'>Tk ${p.amountTaka} • ${p.provider} • ${p.status}</p><p class='text-xs text-slate-400 font-mono'>${p.providerPaymentId}</p>`;
           list.appendChild(row);
         });
       }
@@ -782,33 +1276,113 @@
       });
     }
 
-    function applySearch(value) {
-      const query = value.toLowerCase();
+    function initSearchInputs() {
+      ['searchInput', 'searchInputMobile'].forEach(id => {
+        const input = document.getElementById(id);
+        if (!input) return;
+        const source = id === 'searchInputMobile' ? 'mobile' : 'desktop';
+        input.addEventListener('input', (e) => applySearch(e.target.value, { source }));
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            applySearch(e.target.value, { source, focusResults: true });
+          }
+        });
+      });
+      document.addEventListener('click', (event) => {
+        if (!event.target.closest('.search-shell')) {
+          hideSearchDropdown('searchDropdown');
+          hideSearchDropdown('searchDropdownMobile');
+        }
+      });
+    }
+
+    function initDiscoverDropdown() {
+      const toggle = document.getElementById('discoverToggle');
+      const dropdown = document.getElementById('discoverDropdown');
+      if (!toggle || !dropdown) return;
+      toggle.addEventListener('click', () => {
+        const expanded = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', String(!expanded));
+        dropdown.classList.toggle('active', !expanded);
+      });
+      document.addEventListener('click', (event) => {
+        if (!event.target.closest('#discoverDropdown') && event.target !== toggle) {
+          dropdown.classList.remove('active');
+          toggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    function setView(view) {
+      appState.activeView = view;
+      document.querySelectorAll('.view-panel').forEach(panel => {
+        panel.classList.toggle('hidden', panel.dataset.view !== view);
+      });
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        const match = btn.dataset.view === view;
+        btn.classList.toggle('text-blue-600', match);
+        btn.setAttribute('aria-current', match ? 'page' : 'false');
+      });
+      hideSearchDropdown('searchDropdown');
+      hideSearchDropdown('searchDropdownMobile');
+      const dropdown = document.getElementById('discoverDropdown');
+      const toggle = document.getElementById('discoverToggle');
+      if (dropdown) dropdown.classList.remove('active');
+      if (toggle) toggle.setAttribute('aria-expanded', 'false');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function initRevealAnimations() {
+      revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+    }
+
+    function refreshRevealAnimations() {
+      if (!revealObserver) return;
+      document.querySelectorAll('[data-animate]').forEach(el => {
+        if (!el.classList.contains('animate-in')) {
+          revealObserver.observe(el);
+        }
+      });
+    }
+
+    function applySearch(value, options = {}) {
+      const { focusResults = false, source = 'desktop', updateDropdown = true } = options;
       const playbooks = getFromStore(storeKeys.playbooks) || [];
-      const filtered = playbooks.filter(pb => pb.title.toLowerCase().includes(query) || pb.description.toLowerCase().includes(query));
-      renderRecommended(query ? filtered : null);
+      const query = value.trim();
+      appState.searchQuery = query;
+      const normalized = query.toLowerCase();
+      const filtered = normalized ? playbooks.filter(pb => pb.title.toLowerCase().includes(normalized) || pb.description.toLowerCase().includes(normalized) || pb.tags.join(' ').toLowerCase().includes(normalized)) : [];
+      if (updateDropdown) {
+        const dropdownId = source === 'mobile' ? 'searchDropdownMobile' : 'searchDropdown';
+        const inputId = source === 'mobile' ? 'searchInputMobile' : 'searchInput';
+        renderSearchDropdown(normalized ? filtered : [], dropdownId, inputId);
+      }
+      renderRecommended(normalized ? filtered : null);
+      renderSearchResults(filtered, query);
+      if (focusResults && normalized) {
+        setView('search');
+      }
     }
 
     function handleNav(view) {
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.toggle('text-blue-600', btn.dataset.view === view);
-        btn.setAttribute('aria-current', btn.dataset.view === view ? 'page' : 'false');
-      });
+      setView(view);
       if (view === 'search') {
-        document.getElementById('searchInput').focus();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else if (view === 'creator') {
-        document.getElementById('creatorPanel').scrollIntoView({ behavior: 'smooth' });
-      } else if (view === 'profile') {
-        document.getElementById('profilePanel').scrollIntoView({ behavior: 'smooth' });
-      } else {
-        document.getElementById('appRoot').scrollIntoView({ behavior: 'smooth' });
+        const searchEl = document.getElementById('searchInput');
+        searchEl?.focus();
       }
     }
 
     function openPaymentModal(pb) {
       if (!pb) return;
-      document.getElementById('paymentPlaybookTitle').textContent = `${pb.title} • ৳${pb.priceTaka}`;
+      document.getElementById('paymentPlaybookTitle').textContent = `${pb.title} • Tk ${pb.priceTaka}`;
       document.getElementById('payAmountLabel').textContent = pb.priceTaka;
       document.getElementById('paymentModal').classList.remove('hidden');
       document.getElementById('paymentModal').classList.add('flex');
@@ -826,7 +1400,7 @@
 
     function openReceiptModal(details) {
       document.getElementById('receiptPlaybook').textContent = details.playbook;
-      document.getElementById('receiptAmount').textContent = `৳${details.amount}`;
+      document.getElementById('receiptAmount').textContent = `Tk ${details.amount}`;
       document.getElementById('receiptProvider').textContent = details.provider;
       document.getElementById('receiptTxn').textContent = details.txn;
       document.getElementById('receiptDate').textContent = new Date(details.date).toLocaleString();
@@ -1120,26 +1694,30 @@
 
     function renderAll() {
       renderNavUser();
+      renderHeroSpotlight();
       renderCategories();
+      renderInsightDeck();
       renderTrending();
       renderRecommended();
+      renderProgressShowcase();
       renderPlaybookPreview();
       renderPlaybookDetails();
       renderEpisodePlayer();
       renderCreatorPanel();
       renderProfilePanel();
+      refreshRevealAnimations();
     }
 
     function initApp() {
       seedData();
       autoLogin();
+      initRevealAnimations();
       renderAll();
+      renderSearchResults([], '');
+      setView('home');
       document.getElementById('creatorToggle').addEventListener('click', switchUser);
-      document.getElementById('searchInput').addEventListener('input', (e) => applySearch(e.target.value));
-      document.getElementById('searchInputMobile').addEventListener('input', (e) => {
-        document.getElementById('searchInput').value = e.target.value;
-        applySearch(e.target.value);
-      });
+      initSearchInputs();
+      initDiscoverDropdown();
       document.querySelectorAll('.payment-tab').forEach(btn => btn.addEventListener('click', () => setPaymentTab(btn.dataset.provider)));
       document.getElementById('closePayment').addEventListener('click', closePaymentModal);
       document.getElementById('closeReceipt').addEventListener('click', closeReceiptModal);
@@ -1150,6 +1728,14 @@
         document.getElementById('playbookPreview').scrollIntoView({ behavior: 'smooth' });
       });
       document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => handleNav(btn.dataset.view)));
+      document.querySelectorAll('#discoverDropdown [data-view]').forEach(btn => btn.addEventListener('click', () => handleNav(btn.dataset.view)));
+      document.addEventListener('click', (event) => {
+        const navTarget = event.target.closest('[data-nav-target]');
+        if (navTarget) {
+          event.preventDefault();
+          handleNav(navTarget.dataset.navTarget);
+        }
+      });
       document.addEventListener('edulylas:userSwitched', () => {
         renderAll();
       });
