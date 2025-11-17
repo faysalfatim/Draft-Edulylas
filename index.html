@@ -9,698 +9,131 @@
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: {
-            inter: ['Inter', 'system-ui', 'sans-serif'],
-          },
           colors: {
             edulylas: {
               purple: '#5A2FD8',
-              blue: '#4F9CF9',
+              blue: '#4F9CF9'
             }
+          },
+          fontFamily: {
+            inter: ['Inter', 'system-ui', 'sans-serif']
           }
         }
       }
-    }
+    };
   </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler.min.css" />
-  <script
-    src="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/js/tabler.min.js">
-  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/js/tabler.min.js"></script>
 </head>
-<body class="font-inter bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
-  <header class="fixed top-0 inset-x-0 z-30 bg-white/90 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800 backdrop-blur">
+<body data-page="home" data-nav-root="." class="font-inter bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen">
+  <header class="fixed inset-x-0 top-0 z-30 border-b border-slate-200/80 dark:border-slate-800/60 bg-white/80 dark:bg-slate-950/70 backdrop-blur">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="h-20 flex items-center gap-6">
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-edulylas-purple to-edulylas-blue text-white font-bold flex items-center justify-center shadow-lg">
+        <a href="./index.html" class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-edulylas-purple to-edulylas-blue text-white font-bold flex items-center justify-center">
             EL
           </div>
           <div>
-            <p class="text-lg font-semibold text-slate-900 dark:text-white">EduLylas</p>
+            <p class="text-lg font-semibold">EduLylas</p>
             <p class="text-sm text-slate-500 dark:text-slate-400">Community Playbooks</p>
           </div>
-        </div>
-        <div class="relative flex-1 max-w-xl hidden md:block">
-          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+        </a>
+        <nav class="flex flex-wrap items-center gap-2 ml-auto" data-nav></nav>
+        <div class="flex items-center gap-3">
+          <a href="./search.html" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-800 text-sm text-slate-500 dark:text-slate-300 hover:border-edulylas-purple">
             <i class="ti ti-search"></i>
-          </span>
-          <input id="globalSearch" type="search" placeholder="Search AI classrooms, creators, cohorts..." class="w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/70 px-12 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-edulylas-purple" autocomplete="off" />
-          <div id="searchDropdown" class="hidden absolute mt-2 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl divide-y divide-slate-100 dark:divide-slate-800"></div>
-        </div>
-        <div class="flex items-center gap-4 ml-auto">
-          <div class="relative">
-            <button id="notificationBtn" class="relative w-11 h-11 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-300 hover:text-edulylas-purple">
-              <i class="ti ti-bell"></i>
-              <span class="absolute top-2 right-2 block w-2 h-2 rounded-full bg-edulylas-blue"></span>
-            </button>
-            <div id="notificationDropdown" class="hidden absolute right-0 mt-3 w-72 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl">
-              <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800 font-semibold">Notifications</div>
-              <div id="notificationList" class="max-h-80 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800"></div>
-            </div>
-          </div>
-          <div class="relative">
-            <button id="userMenuBtn" class="flex items-center gap-3 p-2 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-edulylas-purple">
-              <div class="text-right hidden sm:block">
-                <p class="text-sm font-semibold">Camila Idris</p>
-                <p class="text-xs text-slate-500">Lead Facilitator</p>
-              </div>
-              <img src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=facearea&w=80&h=80&q=80" alt="avatar" class="w-12 h-12 rounded-2xl object-cover" />
-              <i class="ti ti-chevron-down text-sm text-slate-400"></i>
-            </button>
-            <div id="userDropdown" class="hidden absolute right-0 mt-3 w-60 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl divide-y divide-slate-100 dark:divide-slate-800">
-              <div class="p-4 text-sm space-y-3">
-                <button class="w-full text-left font-medium">Create Playbook</button>
-                <button class="w-full text-left">Profile</button>
-                <button class="w-full text-left">My Resources</button>
-                <button class="w-full text-left">Settings</button>
-                <button id="themeToggle" class="w-full text-left flex items-center justify-between">
-                  <span>Theme</span>
-                  <span class="text-xs px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800" id="themeLabel">Light</span>
-                </button>
-                <button class="w-full text-left text-rose-500">Logout</button>
-              </div>
-            </div>
-          </div>
+            Quick search
+          </a>
+          <button id="themeToggle" class="w-11 h-11 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center">
+            <span data-theme-label class="text-xs">Light</span>
+          </button>
+          <button class="md:hidden w-11 h-11 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center">
+            <i class="ti ti-menu-2"></i>
+          </button>
         </div>
       </div>
     </div>
   </header>
 
-  <div class="flex">
-    <aside class="hidden lg:flex fixed top-20 bottom-0 w-72 border-r border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/70 backdrop-blur overflow-y-auto">
-      <div class="px-6 py-8 space-y-8 w-full">
-        <div>
-          <p class="text-xs uppercase tracking-widest text-slate-400 mb-3">Navigation</p>
-          <nav class="space-y-2" id="mainNav"></nav>
-        </div>
-        <div>
-          <p class="text-xs uppercase tracking-widest text-slate-400 mb-3">Recently Viewed</p>
-          <div id="recentList" class="space-y-3 text-sm"></div>
-        </div>
-        <div>
-          <p class="text-xs uppercase tracking-widest text-slate-400 mb-3">Enrolled</p>
-          <div id="enrolledList" class="space-y-3 text-sm"></div>
-        </div>
-        <div>
-          <p class="text-xs uppercase tracking-widest text-slate-400 mb-3">Recommended</p>
-          <div id="recommendedList" class="space-y-3 text-sm"></div>
+  <main class="pt-28 pb-20">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid gap-10 lg:grid-cols-[1.2fr_0.8fr] items-center">
+      <div class="space-y-6">
+        <p class="text-sm uppercase tracking-[0.2em] text-slate-400">Playbook Exchange</p>
+        <h1 class="text-4xl sm:text-5xl font-semibold leading-tight">Build courageous AI classrooms with proven community playbooks.</h1>
+        <p class="text-lg text-slate-600 dark:text-slate-300">Browse curated systems for onboarding cohorts, caring for facilitators, and shipping beautiful learning experiences. Every playbook is designed by practitioners and updated weekly.</p>
+        <div class="flex flex-wrap gap-4">
+          <a href="./playbooks/index.html" class="px-6 py-3 rounded-2xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold">Explore the library</a>
+          <a href="./playbooks/ai-literacy-kickoff.html" class="px-6 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-semibold">See a featured playbook</a>
         </div>
       </div>
-    </aside>
-
-    <main class="w-full pt-24 pb-20 lg:ml-72">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 space-y-12">
-        <section class="bg-gradient-to-br from-slate-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-950 dark:to-indigo-950 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-lg p-6 sm:p-10 flex flex-col lg:flex-row gap-10">
-          <div class="flex-1 space-y-6">
-            <p class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-edulylas-purple">
-              <span class="w-2 h-2 rounded-full bg-edulylas-blue animate-pulse"></span>
-              Live community drop
-            </p>
-            <h1 class="text-3xl sm:text-4xl font-semibold text-slate-900 dark:text-white">Design, remix, and launch collaborative AI classrooms with playbooks curated by educators worldwide.</h1>
-            <p class="text-base text-slate-600 dark:text-slate-300">Mix and match paid, free, and hybrid playbooks from 42+ regions. Keep progress synced, invite co-creators, and track weekly drops across the network.</p>
-            <div class="flex flex-wrap gap-4">
-              <button class="px-6 py-3 rounded-2xl bg-gradient-to-r from-edulylas-purple to-edulylas-blue text-white font-semibold shadow-md">Explore Playbooks</button>
-              <button class="px-6 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 font-semibold">Share Your Flow</button>
-            </div>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-              <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70">
-                <p class="text-2xl font-semibold">184</p>
-                <p class="text-slate-500">Community playbooks</p>
-              </div>
-              <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70">
-                <p class="text-2xl font-semibold">62</p>
-                <p class="text-slate-500">Active cohorts</p>
-              </div>
-              <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70">
-                <p class="text-2xl font-semibold">1.2k</p>
-                <p class="text-slate-500">Creators sharing</p>
-              </div>
-              <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70">
-                <p class="text-2xl font-semibold">8.7k</p>
-                <p class="text-slate-500">Learners enrolled</p>
-              </div>
-            </div>
+      <div class="rounded-[28px] border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 p-6 shadow-xl space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-slate-500">Active cohorts</p>
+            <p class="text-3xl font-semibold">32</p>
           </div>
-          <div class="flex-1">
-            <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xl">
-              <img id="heroSpotlight" src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=900&q=80" class="w-full h-64 object-cover" alt="hero" />
-              <div class="p-6 space-y-4">
-                <p class="text-sm font-semibold text-edulylas-purple">Spotlight cohort</p>
-                <p class="text-xl font-semibold">AI Studio Leadership Week</p>
-                <p class="text-sm text-slate-500 dark:text-slate-400">15 labs • Hybrid access • Tools: Notion, Figma, Gamma, Canva</p>
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-2xl overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=facearea&w=120&h=120&q=80" class="w-full h-full object-cover" alt="creator" />
-                  </div>
-                  <div>
-                    <p class="text-sm font-semibold">Studio Nova</p>
-                    <p class="text-xs text-slate-500">Coaches in São Paulo + Lagos</p>
-                  </div>
-                </div>
-                <div class="flex items-center justify-between text-xs text-slate-500">
-                  <span>Progress</span>
-                  <span class="font-semibold">68%</span>
-                </div>
-                <div class="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800">
-                  <div class="h-full rounded-full bg-gradient-to-r from-edulylas-purple to-edulylas-blue" style="width: 68%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <div class="flex items-center justify-between mb-6">
-            <div>
-              <p class="text-sm uppercase tracking-widest text-edulylas-purple">Weekly Drop</p>
-              <h2 class="text-2xl font-semibold">Fresh mixes curated by the community</h2>
-            </div>
-            <div class="flex gap-3">
-              <button id="weeklyPrev" class="w-11 h-11 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center justify-center"><i class="ti ti-chevron-left"></i></button>
-              <button id="weeklyNext" class="w-11 h-11 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center justify-center"><i class="ti ti-chevron-right"></i></button>
-            </div>
-          </div>
-          <div class="relative">
-            <div id="weeklyTrack" class="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4"></div>
-          </div>
-        </section>
-
-        <section>
-          <div class="flex flex-col gap-3 mb-6">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm uppercase tracking-widest text-edulylas-purple">Community Playbooks</p>
-                <h2 class="text-2xl font-semibold">Browse free, paid, and hybrid flows</h2>
-              </div>
-              <div class="flex gap-3 text-sm font-semibold">
-                <button class="px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-700" data-filter="all">All</button>
-                <button class="px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-700" data-filter="free">Free</button>
-                <button class="px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-700" data-filter="paid">Paid</button>
-                <button class="px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-700" data-filter="hybrid">Hybrid</button>
-              </div>
-            </div>
-          </div>
-          <div id="communityGrid" class="grid gap-6 md:grid-cols-2 xl:grid-cols-3"></div>
-        </section>
-
-        <section id="playbookDetail" class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl shadow-lg overflow-hidden">
-          <div class="grid lg:grid-cols-2">
-            <div class="p-6 lg:p-10 space-y-5 border-r border-slate-100 dark:border-slate-800">
-              <p class="text-sm uppercase tracking-widest text-edulylas-purple">Playbook</p>
-              <h2 id="detailTitle" class="text-3xl font-semibold"></h2>
-              <p id="detailAuthor" class="text-slate-500 dark:text-slate-400"></p>
-              <p id="detailSummary" class="text-slate-600 dark:text-slate-300"></p>
-              <div class="flex flex-wrap gap-3" id="detailTags"></div>
-              <div class="flex gap-4 text-sm">
-                <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
-                  <p class="text-xs uppercase text-slate-400">Access</p>
-                  <p id="detailAccess" class="font-semibold"></p>
-                </div>
-                <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
-                  <p class="text-xs uppercase text-slate-400">Duration</p>
-                  <p id="detailDuration" class="font-semibold"></p>
-                </div>
-                <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
-                  <p class="text-xs uppercase text-slate-400">Level</p>
-                  <p id="detailLevel" class="font-semibold"></p>
-                </div>
-              </div>
-              <button class="px-6 py-3 rounded-2xl bg-gradient-to-r from-edulylas-purple to-edulylas-blue text-white font-semibold">Access this playbook</button>
-            </div>
-            <div class="bg-slate-50 dark:bg-slate-950 p-6 lg:p-10 space-y-5" id="detailModules">
-              <p class="text-sm uppercase tracking-widest text-edulylas-purple">Modules</p>
-            </div>
-          </div>
-        </section>
+          <span class="px-3 py-1 text-xs rounded-full bg-emerald-100 text-emerald-700">+6 new</span>
+        </div>
+        <div class="space-y-3" id="homeRecommendations"></div>
+        <a href="./search.html" class="block text-center text-sm font-semibold text-edulylas-purple">Jump to search</a>
       </div>
-    </main>
-  </div>
+    </section>
 
-  <template id="sidebarItemTemplate">
-    <a href="#" class="flex items-start gap-3 p-3 rounded-2xl border border-transparent hover:border-edulylas-purple/40">
-      <div>
-        <p class="font-medium"></p>
-        <p class="text-xs text-slate-500"></p>
+    <section class="mt-16 bg-white dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800 py-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+          <div>
+            <p class="text-sm uppercase tracking-[0.3em] text-slate-400">Weekly Drop</p>
+            <h2 class="text-2xl font-semibold">Fresh playbooks from the community</h2>
+          </div>
+          <a href="./playbooks/index.html" class="text-sm font-semibold text-edulylas-purple">Browse all</a>
+        </div>
+        <div id="featuredPlaybooks" class="grid gap-6 md:grid-cols-2 lg:grid-cols-4"></div>
       </div>
-    </a>
-  </template>
+    </section>
 
-  <template id="playbookCardTemplate">
-    <article class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-md flex flex-col overflow-hidden cursor-pointer transition-transform hover:-translate-y-1" data-playbook-id="">
-      <div class="relative">
-        <img class="w-full h-48 object-cover" alt="playbook cover" />
-        <span class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-semibold bg-white/80 dark:bg-slate-900/80" data-access></span>
-      </div>
-      <div class="p-6 space-y-4 flex-1">
+    <section class="mt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
         <div>
-          <p class="text-sm text-slate-500" data-region></p>
-          <h3 class="text-xl font-semibold" data-title></h3>
+          <p class="text-sm uppercase tracking-[0.3em] text-slate-400">Library</p>
+          <h2 class="text-2xl font-semibold">All community-tested playbooks</h2>
         </div>
-        <p class="text-sm text-slate-600 dark:text-slate-400" data-summary></p>
-        <div class="flex items-center justify-between text-sm">
-          <div class="flex items-center gap-2" data-author></div>
-          <span data-price class="font-semibold"></span>
-        </div>
-        <div class="flex flex-wrap gap-2 text-xs" data-tags></div>
+        <a href="./playbooks/index.html" class="px-5 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 text-sm font-semibold">Open full library</a>
       </div>
-    </article>
-  </template>
+      <div id="allPlaybooks" class="grid gap-6 md:grid-cols-2"></div>
+    </section>
 
-  <template id="notificationTemplate">
-    <div class="p-4 text-sm space-y-1">
-      <p class="font-semibold"></p>
-      <p class="text-slate-500"></p>
-    </div>
-  </template>
+    <section class="mt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid gap-8 lg:grid-cols-2">
+      <div class="rounded-[28px] border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 p-8">
+        <h3 class="text-xl font-semibold mb-3">Need something specific?</h3>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Use the advanced search page to filter by outcomes, region, cadence, and recommended tech stack.</p>
+        <a href="./search.html" class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold">
+          Open search desk
+          <i class="ti ti-arrow-up-right text-base"></i>
+        </a>
+      </div>
+      <div class="rounded-[28px] border border-slate-200 dark:border-slate-800 bg-gradient-to-br from-slate-900 to-slate-700 text-white p-8">
+        <h3 class="text-xl font-semibold mb-3">Payments & billing</h3>
+        <p class="text-sm text-white/80 mb-6">Update team seats, download invoices, or submit purchase orders directly from the finance pages.</p>
+        <div class="flex gap-4">
+          <a href="./payments.html" class="px-5 py-3 rounded-2xl bg-white/10 text-white text-sm font-semibold border border-white/30">Payment portal</a>
+          <a href="./billing.html" class="px-5 py-3 rounded-2xl bg-white text-slate-900 text-sm font-semibold">Billing history</a>
+        </div>
+      </div>
+    </section>
+  </main>
 
+  <script src="./assets/js/data.js"></script>
+  <script src="./assets/js/common.js"></script>
   <script>
-    const playbooks = [
-      {
-        id: 'pb-sahara',
-        title: 'Sahara STEAM Dispatch',
-        summary: 'Co-design climate storytelling labs blending Earth data, Midjourney prompts, and hands-on prototyping.',
-        cover: 'https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=900&q=80',
-        region: 'Dakar • Marrakech',
-        author: { name: 'Asha Diallo', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=facearea&w=120&h=120&q=80', title: 'Community Lead' },
-        price: 'Free',
-        access: 'free',
-        duration: '4 weeks',
-        level: 'Intermediate',
-        tags: ['Storytelling', 'Climate', 'AI Art'],
-        modules: ['Signal scans & speculative prompts', 'Community interviews & data walls', 'Midjourney narrative boards', 'Prototype showcase & feedback']
-      },
-      {
-        id: 'pb-holo',
-        title: 'HoloCampus Navigator',
-        summary: 'Launch immersive hologram classrooms and empower learners to remix AI agents with local contexts.',
-        cover: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=900&q=80',
-        region: 'Seoul • Austin',
-        author: { name: 'Min Park', avatar: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=facearea&w=120&h=120&q=80', title: 'XR Fellow' },
-        price: '$38',
-        access: 'paid',
-        duration: '3 weeks',
-        level: 'Advanced',
-        tags: ['XR', 'AI Agents', 'Labs'],
-        modules: ['Spatial onboarding + safety', 'Agent remix sprint', 'Cohort build review', 'Hybrid pitch night']
-      },
-      {
-        id: 'pb-fjord',
-        title: 'Fjord Literacy Studio',
-        summary: 'Blended literacy pods where students craft AI-assisted radio stories with fjord ecosystems.',
-        cover: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80',
-        region: 'Oslo • Reykjavík',
-        author: { name: 'Liv Sønder', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=facearea&w=120&h=120&q=80', title: 'Youth Studio' },
-        price: 'Hybrid',
-        access: 'hybrid',
-        duration: '6 weeks',
-        level: 'Beginner',
-        tags: ['Literacy', 'Audio', 'Community'],
-        modules: ['Soundwalk & AI annotation', 'Script remix jam', 'Community radio takeover', 'Impact retros']
-      },
-      {
-        id: 'pb-metropolis',
-        title: 'Metropolis Service Jam',
-        summary: 'Civic design sprint pairing city labs with students to redesign mobility using GPT copilots.',
-        cover: 'https://images.unsplash.com/photo-1482192597420-4817fdd7e8b0?auto=format&fit=crop&w=900&q=80',
-        region: 'Manila • Nairobi',
-        author: { name: 'City Syndicate', avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=facearea&w=120&h=120&q=80', title: 'Civic Lab' },
-        price: '$12',
-        access: 'paid',
-        duration: '2 weeks',
-        level: 'Intermediate',
-        tags: ['Civic', 'Mobility', 'GPT'],
-        modules: ['Field sensing missions', 'Blueprint prototyping', 'Policy debate hallway', 'City hall demo']
-      },
-      {
-        id: 'pb-tide',
-        title: 'Tidepool BioHack Residency',
-        summary: 'Open-source biology residency mixing AI lab notebooks with citizen-science field trips.',
-        cover: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80',
-        region: 'Lisbon • Florianópolis',
-        author: { name: 'Orbit Lab', avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=facearea&w=120&h=120&q=80', title: 'Bio Collective' },
-        price: 'Free',
-        access: 'free',
-        duration: '5 weeks',
-        level: 'Advanced',
-        tags: ['Biology', 'Fieldwork', 'AI Logs'],
-        modules: ['Wet lab onboarding', 'AI journaling rituals', 'Citizen field capture', 'Residency showcase']
-      },
-      {
-        id: 'pb-orbit',
-        title: 'Orbit Finance Fellowship',
-        summary: 'Peer-led cohort for teens to build transparent micro-funds with AI compliance copilots.',
-        cover: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=80',
-        region: 'Toronto • Accra',
-        author: { name: 'Nia Torres', avatar: 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=facearea&w=120&h=120&q=80', title: 'Financial Mentor' },
-        price: '$18',
-        access: 'hybrid',
-        duration: '4 weeks',
-        level: 'Intermediate',
-        tags: ['Finance', 'Transparency', 'AI Review'],
-        modules: ['Trust frameworks', 'Micro-fund design sprint', 'Compliance copilots', 'Demo day']
-      },
-      {
-        id: 'pb-pulse',
-        title: 'PulseCare Studio',
-        summary: 'Healthcare educators co-create chatbot bedside training with hospital partners.',
-        cover: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=900&q=80',
-        region: 'Chicago • Mumbai',
-        author: { name: 'Noor Patel', avatar: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=facearea&w=120&h=120&q=80', title: 'Clinical Designer' },
-        price: 'Free',
-        access: 'free',
-        duration: '3 weeks',
-        level: 'Advanced',
-        tags: ['Healthcare', 'Chatbots', 'Simulation'],
-        modules: ['Ward immersion & need finding', 'GPT bedside flows', 'Simulation testing', 'Nurse council review']
-      },
-      {
-        id: 'pb-harbor',
-        title: 'Harbor Youth Exchange',
-        summary: 'Public youth labs remixing maritime data for storytelling and entrepreneurship.',
-        cover: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=900&q=80',
-        region: 'Rotterdam • Cape Town',
-        author: { name: 'Blue Commons', avatar: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=facearea&w=120&h=120&q=80', title: 'Harbor Lab' },
-        price: '$9',
-        access: 'paid',
-        duration: '3 weeks',
-        level: 'Beginner',
-        tags: ['Youth', 'Data', 'Storytelling'],
-        modules: ['Data sonification lab', 'Community interviews', 'AI venture canvas', 'Dockside pitch']
-      }
-    ];
-
-    const weeklyDrop = [
-      { title: 'Studio Residency Sampler', host: 'Orbit Lab', members: 42, cover: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80', description: 'Blend wet labs with AI journaling prompts and residencies.' },
-      { title: 'XR + Civic Mobility', host: 'City Syndicate', members: 58, cover: 'https://images.unsplash.com/photo-1482192597420-4817fdd7e8b0?auto=format&fit=crop&w=900&q=80', description: 'Pair city labs with hologram classrooms for policy jams.' },
-      { title: 'Fjord Audio Residency', host: 'Liv Sønder', members: 36, cover: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80', description: 'AI-supported radio storytelling with fjord ecosystems.' },
-      { title: 'PulseCare Teams', host: 'Noor Patel', members: 65, cover: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=900&q=80', description: 'Simulate bedside chats with GPT-powered copilots.' }
-    ];
-
-    const navLinks = [
-      { label: 'Home', icon: 'ti ti-sparkles' },
-      { label: 'Search', icon: 'ti ti-search' },
-      { label: 'Create', icon: 'ti ti-plus' },
-      { label: 'Account', icon: 'ti ti-user' },
-      { label: 'Analytics', icon: 'ti ti-chart-line' }
-    ];
-
-    const recentPlaybooks = [
-      { title: 'River Commons Residency', meta: 'Unlocked 2 days ago' },
-      { title: 'North Star Media Lab', meta: 'Module 3 in progress' },
-      { title: 'Aero Bot Bootcamp', meta: 'Shared with mentors' }
-    ];
-
-    const enrolledPlaybooks = [
-      { title: 'PulseCare Studio', meta: 'Due today' },
-      { title: 'Metropolis Service Jam', meta: 'Sync Friday' },
-      { title: 'Orbit Finance Fellowship', meta: 'New feedback' }
-    ];
-
-    const recommendedPlaybooks = [
-      { title: 'HoloCampus Navigator', meta: 'Matches XR interest' },
-      { title: 'Sahara STEAM Dispatch', meta: 'Trending free drop' },
-      { title: 'Harbor Youth Exchange', meta: 'Community pick' }
-    ];
-
-    const notifications = [
-      { title: 'Liv Sønder invited you to co-create Fjord Literacy Studio', detail: 'Review the shared board before Monday.' },
-      { title: 'New notes from Min Park', detail: 'XR checkpoints added to HoloCampus Navigator.' },
-      { title: 'Orbit Lab granted hybrid scholarships', detail: '3 new learners joined your cohort.' }
-    ];
-
-    const weeklyTrack = document.getElementById('weeklyTrack');
-    const weeklyPrev = document.getElementById('weeklyPrev');
-    const weeklyNext = document.getElementById('weeklyNext');
-    const communityGrid = document.getElementById('communityGrid');
-    const searchDropdown = document.getElementById('searchDropdown');
-    const globalSearch = document.getElementById('globalSearch');
-    const detailTitle = document.getElementById('detailTitle');
-    const detailAuthor = document.getElementById('detailAuthor');
-    const detailSummary = document.getElementById('detailSummary');
-    const detailTags = document.getElementById('detailTags');
-    const detailAccess = document.getElementById('detailAccess');
-    const detailDuration = document.getElementById('detailDuration');
-    const detailLevel = document.getElementById('detailLevel');
-    const detailModules = document.getElementById('detailModules');
-
-    function renderNav() {
-      const nav = document.getElementById('mainNav');
-      nav.innerHTML = '';
-      navLinks.forEach(link => {
-        const item = document.createElement('button');
-        item.className = 'w-full flex items-center gap-3 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-edulylas-purple text-sm font-medium';
-        item.innerHTML = `<i class="${link.icon} text-slate-400"></i><span>${link.label}</span>`;
-        nav.appendChild(item);
-      });
-    }
-
-    function renderSidebarList(id, list) {
-      const container = document.getElementById(id);
-      const template = document.getElementById('sidebarItemTemplate');
-      container.innerHTML = '';
-      list.forEach(item => {
-        const clone = template.content.cloneNode(true);
-        clone.querySelector('p.font-medium').textContent = item.title;
-        clone.querySelector('p.text-xs').textContent = item.meta;
-        container.appendChild(clone);
-      });
-    }
-
-    function renderWeeklyDrop() {
-      weeklyTrack.innerHTML = '';
-      weeklyDrop.forEach(drop => {
-        const card = document.createElement('article');
-        card.className = 'min-w-[260px] snap-start bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-md overflow-hidden';
-        card.innerHTML = `
-          <img src="${drop.cover}" alt="${drop.title}" class="w-full h-40 object-cover" />
-          <div class="p-5 space-y-3">
-            <p class="text-xs uppercase tracking-widest text-edulylas-purple">Weekly drop</p>
-            <h3 class="text-lg font-semibold">${drop.title}</h3>
-            <p class="text-sm text-slate-500">${drop.description}</p>
-            <div class="flex items-center justify-between text-sm">
-              <span>${drop.host}</span>
-              <span>${drop.members} members</span>
-            </div>
-          </div>`;
-        weeklyTrack.appendChild(card);
-      });
-    }
-
-    function renderCommunity(filter = 'all') {
-      communityGrid.innerHTML = '';
-      const template = document.getElementById('playbookCardTemplate');
-      playbooks
-        .filter(pb => filter === 'all' ? true : pb.access === filter)
-        .forEach(pb => {
-          const clone = template.content.cloneNode(true);
-          const article = clone.querySelector('article');
-          article.dataset.playbookId = pb.id;
-          const img = clone.querySelector('img');
-          img.src = pb.cover;
-          img.alt = pb.title;
-          clone.querySelector('[data-access]').textContent = pb.access.toUpperCase();
-          clone.querySelector('[data-region]').textContent = pb.region;
-          clone.querySelector('[data-title]').textContent = pb.title;
-          clone.querySelector('[data-summary]').textContent = pb.summary;
-          clone.querySelector('[data-author]').innerHTML = `<img src="${pb.author.avatar}" class="w-8 h-8 rounded-2xl object-cover" alt="${pb.author.name}"><span>${pb.author.name}</span>`;
-          clone.querySelector('[data-price]').textContent = pb.price;
-          const tagWrap = clone.querySelector('[data-tags]');
-          pb.tags.forEach(tag => {
-            const span = document.createElement('span');
-            span.className = 'px-3 py-1 rounded-full border border-slate-200 dark:border-slate-700';
-            span.textContent = tag;
-            tagWrap.appendChild(span);
-          });
-          communityGrid.appendChild(clone);
-        });
-    }
-
-    function updateDetail(playbook) {
-      detailTitle.textContent = playbook.title;
-      detailAuthor.textContent = `${playbook.author.name} • ${playbook.region}`;
-      detailSummary.textContent = playbook.summary;
-      detailTags.innerHTML = '';
-      playbook.tags.forEach(tag => {
-        const span = document.createElement('span');
-        span.className = 'px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-xs';
-        span.textContent = tag;
-        detailTags.appendChild(span);
-      });
-      detailAccess.textContent = playbook.access.toUpperCase();
-      detailDuration.textContent = playbook.duration;
-      detailLevel.textContent = playbook.level;
-      const modulesWrapper = detailModules;
-      modulesWrapper.innerHTML = '<p class="text-sm uppercase tracking-widest text-edulylas-purple">Modules</p>';
-      playbook.modules.forEach((module, index) => {
-        const row = document.createElement('div');
-        row.className = 'flex items-start gap-4 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/40 dark:bg-slate-900/40';
-        row.innerHTML = `<div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-edulylas-purple/20 to-edulylas-blue/20 flex items-center justify-center font-semibold">${index + 1}</div><div class="text-sm">${module}</div>`;
-        modulesWrapper.appendChild(row);
-      });
-    }
-
-    function attachCardClicks() {
-      communityGrid.querySelectorAll('article').forEach(article => {
-        article.addEventListener('click', () => {
-          const selected = playbooks.find(pb => pb.id === article.dataset.playbookId);
-          if (selected) {
-            updateDetail(selected);
-            article.classList.add('ring-2', 'ring-edulylas-purple');
-            communityGrid.querySelectorAll('article').forEach(card => {
-              if (card !== article) card.classList.remove('ring-2', 'ring-edulylas-purple');
-            });
-          }
-        });
-      });
-    }
-
-    function setupFilters() {
-      document.querySelectorAll('[data-filter]').forEach(button => {
-        button.addEventListener('click', () => {
-          document.querySelectorAll('[data-filter]').forEach(btn => btn.classList.remove('bg-slate-900', 'text-white', 'dark:bg-white/10'));
-          button.classList.add('bg-slate-900', 'text-white', 'dark:bg-white/10');
-          renderCommunity(button.dataset.filter);
-          attachCardClicks();
-          const first = communityGrid.querySelector('article');
-          if (first) {
-            const pb = playbooks.find(item => item.id === first.dataset.playbookId);
-            updateDetail(pb);
-            first.classList.add('ring-2', 'ring-edulylas-purple');
-          }
-        });
-      });
-    }
-
-    function renderNotifications() {
-      const container = document.getElementById('notificationList');
-      const template = document.getElementById('notificationTemplate');
-      container.innerHTML = '';
-      notifications.forEach(note => {
-        const clone = template.content.cloneNode(true);
-        clone.querySelector('p.font-semibold').textContent = note.title;
-        clone.querySelector('p.text-slate-500').textContent = note.detail;
-        container.appendChild(clone);
-      });
-    }
-
-    function setupSearch() {
-      const buildDropdown = (items) => {
-        searchDropdown.innerHTML = '';
-        if (!items.length) {
-          searchDropdown.classList.add('hidden');
-          return;
-        }
-        items.forEach(item => {
-          const button = document.createElement('button');
-          button.className = 'w-full text-left px-4 py-3 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 flex flex-col';
-          button.innerHTML = `<span class="font-semibold">${item.title}</span><span class="text-xs text-slate-500">${item.region}</span>`;
-          button.addEventListener('click', () => {
-            updateDetail(item);
-            searchDropdown.classList.add('hidden');
-            globalSearch.value = item.title;
-          });
-          searchDropdown.appendChild(button);
-        });
-        searchDropdown.classList.remove('hidden');
-      };
-
-      globalSearch.addEventListener('input', (event) => {
-        const value = event.target.value.toLowerCase();
-        if (!value) {
-          searchDropdown.classList.add('hidden');
-          return;
-        }
-        const matches = playbooks.filter(pb => pb.title.toLowerCase().includes(value) || pb.tags.some(tag => tag.toLowerCase().includes(value)));
-        buildDropdown(matches.slice(0, 5));
-      });
-    }
-
-    function setupDropdowns() {
-      const notificationBtn = document.getElementById('notificationBtn');
-      const notificationDropdown = document.getElementById('notificationDropdown');
-      const userMenuBtn = document.getElementById('userMenuBtn');
-      const userDropdown = document.getElementById('userDropdown');
-
-      notificationBtn.addEventListener('click', () => {
-        notificationDropdown.classList.toggle('hidden');
-      });
-
-      userMenuBtn.addEventListener('click', () => {
-        userDropdown.classList.toggle('hidden');
-      });
-
-      document.addEventListener('click', (event) => {
-        if (!notificationBtn.contains(event.target) && !notificationDropdown.contains(event.target)) {
-          notificationDropdown.classList.add('hidden');
-        }
-        if (!userMenuBtn.contains(event.target) && !userDropdown.contains(event.target)) {
-          userDropdown.classList.add('hidden');
-        }
-        if (!document.getElementById('globalSearch').contains(event.target) && !searchDropdown.contains(event.target)) {
-          searchDropdown.classList.add('hidden');
-        }
-      });
-    }
-
-    function setupTheme() {
-      const themeToggle = document.getElementById('themeToggle');
-      const themeLabel = document.getElementById('themeLabel');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const savedTheme = localStorage.getItem('edulylas-theme');
-      const root = document.documentElement;
-
-      const applyTheme = (mode) => {
-        if (mode === 'dark') {
-          root.classList.add('dark');
-          themeLabel.textContent = 'Dark';
-        } else {
-          root.classList.remove('dark');
-          themeLabel.textContent = 'Light';
-        }
-        localStorage.setItem('edulylas-theme', mode);
-      };
-
-      applyTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
-
-      themeToggle.addEventListener('click', () => {
-        const next = root.classList.contains('dark') ? 'light' : 'dark';
-        applyTheme(next);
-      });
-    }
-
-    function setupWeeklyControls() {
-      weeklyPrev.addEventListener('click', () => {
-        weeklyTrack.scrollBy({ left: -320, behavior: 'smooth' });
-      });
-      weeklyNext.addEventListener('click', () => {
-        weeklyTrack.scrollBy({ left: 320, behavior: 'smooth' });
-      });
-    }
-
-    function init() {
-      renderNav();
-      renderSidebarList('recentList', recentPlaybooks);
-      renderSidebarList('enrolledList', enrolledPlaybooks);
-      renderSidebarList('recommendedList', recommendedPlaybooks);
-      renderNotifications();
-      renderWeeklyDrop();
-      renderCommunity();
-      attachCardClicks();
-      setupFilters();
-      setupSearch();
-      setupDropdowns();
-      setupTheme();
-      setupWeeklyControls();
-      updateDetail(playbooks[0]);
-      const firstCard = communityGrid.querySelector('article');
-      if (firstCard) firstCard.classList.add('ring-2', 'ring-edulylas-purple');
-    }
-
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', () => {
+      Site.renderPlaybookGrid('#featuredPlaybooks', { limit: 4, compact: true });
+      Site.renderPlaybookGrid('#allPlaybooks');
+      Site.renderRecommendations('#homeRecommendations', 3);
+    });
   </script>
 </body>
 </html>
