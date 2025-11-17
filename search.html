@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Playbooks • EduLylas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            edulylas: {
+              purple: '#5A2FD8',
+              blue: '#4F9CF9'
+            }
+          },
+          fontFamily: {
+            inter: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body data-page="search" data-nav-root="." class="font-inter bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen">
+  <header class="fixed inset-x-0 top-0 z-30 border-b border-slate-200/80 dark:border-slate-800/60 bg-white/80 dark:bg-slate-950/70 backdrop-blur">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="h-20 flex items-center gap-6">
+        <a href="./index.html" class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-edulylas-purple to-edulylas-blue text-white font-bold flex items-center justify-center">EL</div>
+          <div>
+            <p class="text-lg font-semibold">EduLylas</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Community Playbooks</p>
+          </div>
+        </a>
+        <nav class="flex flex-wrap items-center gap-2 ml-auto" data-nav></nav>
+        <button id="themeToggle" class="w-11 h-11 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center">
+          <span data-theme-label class="text-xs">Light</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-28 pb-16">
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+      <p class="text-sm uppercase tracking-[0.3em] text-slate-400 mb-3">Search desk</p>
+      <h1 class="text-4xl font-semibold mb-4">Search or filter recommendations.</h1>
+      <p class="text-lg text-slate-600 dark:text-slate-300">Type any focus, facilitator, or tag and instantly see matching playbooks. Quick recommendations update with every keystroke.</p>
+      <div class="mt-8 rounded-[30px] border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 p-6">
+        <div class="relative mb-4">
+          <span class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"><i class="ti ti-search"></i></span>
+          <input id="searchInput" type="search" placeholder="Search AI classrooms, creators, cohorts..." class="w-full rounded-3xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 py-4 pl-14 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-edulylas-purple">
+        </div>
+        <div class="flex flex-wrap gap-3 text-sm">
+          <button data-chip="foundation" class="px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-800">Foundation</button>
+          <button data-chip="intermediate" class="px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-800">Intermediate</button>
+          <button data-chip="advanced" class="px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-800">Advanced</button>
+          <button data-chip="wellness" class="px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-800">Wellness</button>
+          <button data-chip="mentors" class="px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-800">Mentors</button>
+          <button data-chip="families" class="px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-800">Families</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid gap-8 lg:grid-cols-[1.4fr_0.8fr]">
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold">Search results</h2>
+          <span class="text-sm text-slate-500" id="resultsCount">0 playbooks</span>
+        </div>
+        <div id="searchResults" class="grid gap-6 md:grid-cols-2"></div>
+      </div>
+      <aside class="space-y-6">
+        <div class="p-6 rounded-[28px] border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70">
+          <h3 class="text-lg font-semibold mb-2">Suggested playbooks</h3>
+          <div id="searchRecommendations" class="space-y-3"></div>
+        </div>
+        <div class="p-6 rounded-[28px] border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70">
+          <h3 class="text-lg font-semibold mb-2">Operations notes</h3>
+          <div id="searchNotes" class="space-y-3"></div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script src="./assets/js/data.js"></script>
+  <script src="./assets/js/common.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const chips = document.querySelectorAll('[data-chip]');
+      const searchInput = document.getElementById('searchInput');
+      const resultsCount = document.getElementById('resultsCount');
+      let activeChips = new Set();
+
+      const filterResults = () => {
+        const query = searchInput.value.toLowerCase();
+        const filtered = PLAYBOOKS.filter(playbook => {
+          const matchesQuery = !query || playbook.title.toLowerCase().includes(query) || playbook.summary.toLowerCase().includes(query) || playbook.tags.some(tag => tag.includes(query));
+          const matchesChip = !activeChips.size || [...activeChips].every(chip => playbook.tags.includes(chip) || playbook.level.toLowerCase() === chip);
+          return matchesQuery && matchesChip;
+        });
+        resultsCount.textContent = `${filtered.length} playbooks`;
+        Site.renderPlaybookGrid('#searchResults', { items: filtered, emptyMessage: 'No playbooks match your search.' });
+      };
+
+      chips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          const value = chip.dataset.chip;
+          if (activeChips.has(value)) {
+            activeChips.delete(value);
+            chip.classList.remove('bg-slate-900', 'text-white', 'dark:bg-white', 'dark:text-slate-900');
+          } else {
+            activeChips.add(value);
+            chip.classList.add('bg-slate-900', 'text-white', 'dark:bg-white', 'dark:text-slate-900');
+          }
+          filterResults();
+        });
+      });
+
+      searchInput.addEventListener('input', filterResults);
+
+      Site.renderRecommendations('#searchRecommendations', 4);
+      Site.renderNotes('#searchNotes');
+      filterResults();
+    });
+  </script>
+</body>
+</html>

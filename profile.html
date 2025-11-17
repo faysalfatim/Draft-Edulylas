@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile & Settings • EduLylas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            edulylas: {
+              purple: '#5A2FD8',
+              blue: '#4F9CF9'
+            }
+          },
+          fontFamily: {
+            inter: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body data-page="profile" data-nav-root="." class="font-inter bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen">
+  <header class="fixed inset-x-0 top-0 z-30 border-b border-slate-200/80 dark:border-slate-800/60 bg-white/80 dark:bg-slate-950/70 backdrop-blur">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="h-20 flex items-center gap-6">
+        <a href="./index.html" class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-edulylas-purple to-edulylas-blue text-white font-bold flex items-center justify-center">EL</div>
+          <div>
+            <p class="text-lg font-semibold">EduLylas</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Community Playbooks</p>
+          </div>
+        </a>
+        <nav class="flex flex-wrap items-center gap-2 ml-auto" data-nav></nav>
+        <button id="themeToggle" class="w-11 h-11 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center">
+          <span data-theme-label class="text-xs">Light</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-28 pb-16">
+    <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-sm uppercase tracking-[0.3em] text-slate-400 mb-4">Profile & settings</p>
+      <div class="rounded-[32px] border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 p-8 space-y-8">
+        <div class="flex flex-col lg:flex-row lg:items-center gap-6">
+          <img src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=facearea&w=160&h=160&q=80" alt="Avatar" class="w-32 h-32 rounded-3xl object-cover">
+          <div class="flex-1 space-y-4">
+            <div>
+              <h1 class="text-3xl font-semibold">Camila Idris</h1>
+              <p class="text-slate-500 dark:text-slate-400">Lead Facilitator • Lagos, Nigeria</p>
+            </div>
+            <div class="flex flex-wrap gap-3 text-sm">
+              <button class="px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-700">Upload new photo</button>
+              <button class="px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-700">Export profile</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid gap-6 lg:grid-cols-2">
+          <form class="space-y-4">
+            <div>
+              <label class="text-sm font-medium">Full name</label>
+              <input type="text" value="Camila Idris" class="mt-1 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/60 px-4 py-3">
+            </div>
+            <div>
+              <label class="text-sm font-medium">Role / title</label>
+              <input type="text" value="Lead Facilitator" class="mt-1 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/60 px-4 py-3">
+            </div>
+            <div>
+              <label class="text-sm font-medium">Email</label>
+              <input type="email" value="camila@edulylas.org" class="mt-1 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/60 px-4 py-3">
+            </div>
+            <div>
+              <label class="text-sm font-medium">Region</label>
+              <select class="mt-1 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/60 px-4 py-3">
+                <option>Africa</option>
+                <option>Europe</option>
+                <option>Asia-Pacific</option>
+                <option>North America</option>
+                <option>Latin America</option>
+              </select>
+            </div>
+          </form>
+
+          <form class="space-y-4">
+            <div>
+              <label class="text-sm font-medium">Preferred contact</label>
+              <select class="mt-1 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/60 px-4 py-3">
+                <option>Weekly recap</option>
+                <option>Daily digest</option>
+                <option>Only announcements</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-medium">Time zone</label>
+              <input type="text" value="GMT+1" class="mt-1 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/60 px-4 py-3">
+            </div>
+            <div>
+              <label class="text-sm font-medium">Languages</label>
+              <input type="text" value="English, Hausa" class="mt-1 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/60 px-4 py-3">
+            </div>
+            <div>
+              <label class="text-sm font-medium">Notification email</label>
+              <input type="email" value="ops@edulylas.org" class="mt-1 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/60 px-4 py-3">
+            </div>
+          </form>
+        </div>
+
+        <div class="grid gap-6 lg:grid-cols-2">
+          <div class="p-6 rounded-[28px] border border-slate-200 dark:border-slate-800 bg-slate-900 text-white">
+            <h3 class="text-lg font-semibold mb-4">Security</h3>
+            <div class="space-y-4 text-sm">
+              <label class="flex items-center justify-between">Two-factor auth
+                <input type="checkbox" checked class="form-checkbox rounded-full text-slate-900" />
+              </label>
+              <label class="flex items-center justify-between">Login alerts
+                <input type="checkbox" checked class="form-checkbox rounded-full text-slate-900" />
+              </label>
+              <label class="flex items-center justify-between">New device approvals
+                <input type="checkbox" class="form-checkbox rounded-full text-slate-900" />
+              </label>
+            </div>
+          </div>
+          <div class="p-6 rounded-[28px] border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70">
+            <h3 class="text-lg font-semibold mb-4">Preferences</h3>
+            <div class="space-y-4 text-sm">
+              <label class="flex items-center justify-between">Community digest
+                <input type="checkbox" checked class="form-checkbox rounded text-edulylas-purple" />
+              </label>
+              <label class="flex items-center justify-between">Beta invites
+                <input type="checkbox" class="form-checkbox rounded text-edulylas-purple" />
+              </label>
+              <label class="flex items-center justify-between">Facilitator hotline
+                <input type="checkbox" checked class="form-checkbox rounded text-edulylas-purple" />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-4">
+          <button class="px-6 py-3 rounded-2xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold">Save changes</button>
+          <button class="px-6 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 font-semibold">Reset</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./assets/js/data.js"></script>
+  <script src="./assets/js/common.js"></script>
+</body>
+</html>
