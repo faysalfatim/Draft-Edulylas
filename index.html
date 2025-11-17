@@ -28,8 +28,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/js/tabler.min.js"></script>
 </head>
-<body data-page="home" data-nav-root="." class="font-inter bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen">
-  <header class="fixed inset-x-0 top-0 z-30 border-b border-slate-200/80 dark:border-slate-800/60 bg-white/80 dark:bg-slate-950/70 backdrop-blur">
+<body data-page="home" data-nav-root="." class="font-inter bg-slate-50 text-slate-900 min-h-screen">
+  <header class="fixed inset-x-0 top-0 z-30 border-b border-slate-200/80 bg-white/80 backdrop-blur">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="h-20 flex items-center gap-6">
         <a href="./index.html" class="flex items-center gap-3">
@@ -38,19 +38,16 @@
           </div>
           <div>
             <p class="text-lg font-semibold">EduLylas</p>
-            <p class="text-sm text-slate-500 dark:text-slate-400">Community Playbooks</p>
+            <p class="text-sm text-slate-500">Community Playbooks</p>
           </div>
         </a>
         <nav class="flex flex-wrap items-center gap-2 ml-auto" data-nav></nav>
         <div class="flex items-center gap-3">
-          <a href="./search.html" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-800 text-sm text-slate-500 dark:text-slate-300 hover:border-edulylas-purple">
+          <a href="./search.html" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-2xl border border-slate-200 text-sm text-slate-500 hover:border-edulylas-purple">
             <i class="ti ti-search"></i>
             Quick search
           </a>
-          <button id="themeToggle" class="w-11 h-11 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center">
-            <span data-theme-label class="text-xs">Light</span>
-          </button>
-          <button class="md:hidden w-11 h-11 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center">
+          <button class="md:hidden w-11 h-11 rounded-2xl border border-slate-200 flex items-center justify-center">
             <i class="ti ti-menu-2"></i>
           </button>
         </div>
@@ -63,13 +60,13 @@
       <div class="space-y-6">
         <p class="text-sm uppercase tracking-[0.2em] text-slate-400">Playbook Exchange</p>
         <h1 class="text-4xl sm:text-5xl font-semibold leading-tight">Build courageous AI classrooms with proven community playbooks.</h1>
-        <p class="text-lg text-slate-600 dark:text-slate-300">Browse curated systems for onboarding cohorts, caring for facilitators, and shipping beautiful learning experiences. Every playbook is designed by practitioners and updated weekly.</p>
+        <p class="text-lg text-slate-600">Browse curated systems for onboarding cohorts, caring for facilitators, and shipping beautiful learning experiences. Every playbook is designed by practitioners and updated weekly.</p>
         <div class="flex flex-wrap gap-4">
-          <a href="./playbooks/index.html" class="px-6 py-3 rounded-2xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold">Explore the library</a>
-          <a href="./playbooks/ai-literacy-kickoff.html" class="px-6 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-semibold">See a featured playbook</a>
+          <a href="./playbooks/index.html" class="px-6 py-3 rounded-2xl bg-slate-900 text-white font-semibold">Explore the library</a>
+          <a href="./playbooks/ai-literacy-kickoff.html" class="px-6 py-3 rounded-2xl border border-slate-300 text-slate-700 font-semibold">See a featured playbook</a>
         </div>
       </div>
-      <div class="rounded-[28px] border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 p-6 shadow-xl space-y-4">
+      <div class="rounded-[28px] border border-slate-200 bg-white/80 p-6 shadow-xl space-y-4">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm text-slate-500">Active cohorts</p>
@@ -82,7 +79,7 @@
       </div>
     </section>
 
-    <section class="mt-16 bg-white dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800 py-16">
+    <section class="mt-16 bg-white border-y border-slate-200 py-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div>
@@ -101,21 +98,21 @@
           <p class="text-sm uppercase tracking-[0.3em] text-slate-400">Library</p>
           <h2 class="text-2xl font-semibold">All community-tested playbooks</h2>
         </div>
-        <a href="./playbooks/index.html" class="px-5 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 text-sm font-semibold">Open full library</a>
+        <a href="./playbooks/index.html" class="px-5 py-3 rounded-2xl border border-slate-300 text-sm font-semibold">Open full library</a>
       </div>
       <div id="allPlaybooks" class="grid gap-6 md:grid-cols-2"></div>
     </section>
 
     <section class="mt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid gap-8 lg:grid-cols-2">
-      <div class="rounded-[28px] border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 p-8">
+      <div class="rounded-[28px] border border-slate-200 bg-white/80 p-8">
         <h3 class="text-xl font-semibold mb-3">Need something specific?</h3>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Use the advanced search page to filter by outcomes, region, cadence, and recommended tech stack.</p>
-        <a href="./search.html" class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold">
+        <p class="text-sm text-slate-500 mb-6">Use the advanced search page to filter by outcomes, region, cadence, and recommended tech stack.</p>
+        <a href="./search.html" class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-slate-900 text-white font-semibold">
           Open search desk
           <i class="ti ti-arrow-up-right text-base"></i>
         </a>
       </div>
-      <div class="rounded-[28px] border border-slate-200 dark:border-slate-800 bg-gradient-to-br from-slate-900 to-slate-700 text-white p-8">
+      <div class="rounded-[28px] border border-slate-200 bg-gradient-to-br from-slate-900 to-slate-700 text-white p-8">
         <h3 class="text-xl font-semibold mb-3">Payments & billing</h3>
         <p class="text-sm text-white/80 mb-6">Update team seats, download invoices, or submit purchase orders directly from the finance pages.</p>
         <div class="flex gap-4">

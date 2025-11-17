@@ -26,58 +26,55 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body data-page="playbooks" data-nav-root=".." data-slug="global-collab-lab" class="font-inter bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen">
-  <header class="fixed inset-x-0 top-0 z-30 border-b border-slate-200/80 dark:border-slate-800/60 bg-white/80 dark:bg-slate-950/70 backdrop-blur">
+<body data-page="playbooks" data-nav-root=".." data-slug="global-collab-lab" class="font-inter bg-slate-50 text-slate-900 min-h-screen">
+  <header class="fixed inset-x-0 top-0 z-30 border-b border-slate-200/80 bg-white/80 backdrop-blur">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="h-20 flex items-center gap-6">
         <a href="../index.html" class="flex items-center gap-3">
           <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-edulylas-purple to-edulylas-blue text-white font-bold flex items-center justify-center">EL</div>
           <div>
             <p class="text-lg font-semibold">EduLylas</p>
-            <p class="text-sm text-slate-500 dark:text-slate-400">Community Playbooks</p>
+            <p class="text-sm text-slate-500">Community Playbooks</p>
           </div>
         </a>
         <nav class="flex flex-wrap items-center gap-2 ml-auto" data-nav></nav>
-        <button id="themeToggle" class="w-11 h-11 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center">
-          <span data-theme-label class="text-xs">Light</span>
-        </button>
       </div>
     </div>
   </header>
 
   <main class="pt-28 pb-16">
     <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
-      <a href="../playbooks/index.html" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
+      <a href="../playbooks/index.html" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900">
         <i class="ti ti-arrow-left"></i>
         Back to library
       </a>
       <p class="text-sm uppercase tracking-[0.3em] text-slate-400 mt-6" data-playbook-focus>Playbook</p>
       <h1 class="text-4xl font-semibold mt-3 mb-4" data-playbook-title>Playbook title</h1>
-      <p class="text-lg text-slate-600 dark:text-slate-300" data-playbook-summary>Summary</p>
+      <p class="text-lg text-slate-600" data-playbook-summary>Summary</p>
       <div class="mt-6 flex flex-wrap gap-2" data-playbook-tags></div>
     </section>
 
     <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid gap-8 lg:grid-cols-[1.4fr_0.8fr]">
       <div class="space-y-6">
-        <article class="p-8 rounded-[28px] border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70">
+        <article class="p-8 rounded-[28px] border border-slate-200 bg-white/80">
           <h2 class="text-xl font-semibold mb-3">Highlights</h2>
-          <p class="text-sm text-slate-600 dark:text-slate-300" data-playbook-highlight>Highlight copy.</p>
+          <p class="text-sm text-slate-600" data-playbook-highlight>Highlight copy.</p>
         </article>
-        <article class="p-8 rounded-[28px] border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70">
+        <article class="p-8 rounded-[28px] border border-slate-200 bg-white/80">
           <h2 class="text-xl font-semibold mb-6">Outcomes</h2>
           <ul class="space-y-4" data-playbook-outcomes></ul>
         </article>
-        <article class="p-8 rounded-[28px] border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70">
+        <article class="p-8 rounded-[28px] border border-slate-200 bg-white/80">
           <h2 class="text-xl font-semibold mb-6">Resources & rituals</h2>
           <ul class="space-y-4" data-playbook-resources></ul>
         </article>
       </div>
       <aside class="space-y-6">
-        <div class="p-8 rounded-[28px] border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70">
+        <div class="p-8 rounded-[28px] border border-slate-200 bg-white/80">
           <h3 class="text-lg font-semibold mb-4">Key details</h3>
           <div class="grid grid-cols-2 gap-4 text-sm" data-playbook-meta></div>
         </div>
-        <div class="p-8 rounded-[28px] border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70">
+        <div class="p-8 rounded-[28px] border border-slate-200 bg-white/80">
           <h3 class="text-lg font-semibold mb-4">Recommended next</h3>
           <div id="relatedPlaybooks" class="space-y-4"></div>
         </div>

@@ -15,20 +15,20 @@
 
   const createPlaybookCard = (playbook, compact = false) => {
     const article = document.createElement('article');
-    article.className = `rounded-3xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 shadow-sm ${compact ? 'p-5' : 'p-6'} flex flex-col gap-4 hover:-translate-y-1 hover:shadow-xl transition`;
+    article.className = `rounded-3xl border border-slate-200 bg-white/80 shadow-sm ${compact ? 'p-5' : 'p-6'} flex flex-col gap-4 hover:-translate-y-1 hover:shadow-xl transition`;
     article.innerHTML = `
       <div class="flex items-center justify-between gap-3">
         <div>
           <p class="text-xs uppercase tracking-widest text-slate-400">${playbook.focus}</p>
-          <h3 class="text-lg font-semibold text-slate-900 dark:text-white">${playbook.title}</h3>
+          <h3 class="text-lg font-semibold text-slate-900">${playbook.title}</h3>
         </div>
-        <span class="text-xs px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">${playbook.duration}</span>
+        <span class="text-xs px-3 py-1 rounded-full bg-slate-100 text-slate-600">${playbook.duration}</span>
       </div>
-      <p class="text-sm text-slate-500 dark:text-slate-400">${playbook.summary}</p>
+      <p class="text-sm text-slate-500">${playbook.summary}</p>
       <div class="flex flex-wrap gap-2">
-        ${playbook.tags.slice(0, 3).map(tag => `<span class="text-xs px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">${tag}</span>`).join('')}
+        ${playbook.tags.slice(0, 3).map(tag => `<span class="text-xs px-3 py-1 rounded-full bg-slate-100 text-slate-600">${tag}</span>`).join('')}
       </div>
-      <div class="flex items-center justify-between pt-2 text-sm text-slate-500 dark:text-slate-400">
+      <div class="flex items-center justify-between pt-2 text-sm text-slate-500">
         <span>${playbook.creator}</span>
         <a href="${resolvePath(playbook.slug ? `playbooks/${playbook.slug}.html` : '#')}" class="text-edulylas-purple font-medium hover:underline">Open</a>
       </div>`;
@@ -44,32 +44,9 @@
         const anchor = document.createElement('a');
         anchor.href = resolvePath(link.path);
         anchor.textContent = link.label;
-        anchor.className = `px-4 py-2 rounded-2xl text-sm font-medium transition ${link.id === activeId ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'}`;
+        anchor.className = `px-4 py-2 rounded-2xl text-sm font-medium transition ${link.id === activeId ? 'bg-slate-900 text-white' : 'text-slate-500 hover:text-slate-900'}`;
         container.appendChild(anchor);
       });
-    });
-  };
-
-  const initTheme = () => {
-    const toggle = document.getElementById('themeToggle');
-    const label = document.querySelector('[data-theme-label]');
-    const root = document.documentElement;
-    const saved = localStorage.getItem('edulylas-theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const apply = (mode) => {
-      if (mode === 'dark') {
-        root.classList.add('dark');
-        label && (label.textContent = 'Dark');
-      } else {
-        root.classList.remove('dark');
-        label && (label.textContent = 'Light');
-      }
-      localStorage.setItem('edulylas-theme', mode);
-    };
-    apply(saved || (prefersDark ? 'dark' : 'light'));
-    toggle?.addEventListener('click', () => {
-      const next = root.classList.contains('dark') ? 'light' : 'dark';
-      apply(next);
     });
   };
 
@@ -86,7 +63,7 @@
     });
     if (!subset.length && options.emptyMessage) {
       const message = document.createElement('p');
-      message.className = 'text-sm text-slate-500 dark:text-slate-400';
+      message.className = 'text-sm text-slate-500';
       message.textContent = options.emptyMessage;
       container.appendChild(message);
     }
@@ -118,7 +95,7 @@
       tags.innerHTML = '';
       playbook.tags.forEach(tag => {
         const badge = document.createElement('span');
-        badge.className = 'text-xs px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300';
+        badge.className = 'text-xs px-3 py-1 rounded-full bg-slate-100 text-slate-600';
         badge.textContent = tag;
         tags.appendChild(badge);
       });
@@ -130,7 +107,7 @@
       items.forEach(item => {
         const li = document.createElement('li');
         li.className = 'flex gap-3';
-        li.innerHTML = `<span class="text-edulylas-purple"><i class="ti ti-check"></i></span><span class="text-sm text-slate-600 dark:text-slate-300">${item}</span>`;
+        li.innerHTML = `<span class="text-edulylas-purple"><i class="ti ti-check"></i></span><span class="text-sm text-slate-600">${item}</span>`;
         target.appendChild(li);
       });
     };
@@ -146,10 +123,10 @@
     container.innerHTML = '';
     list.forEach(playbook => {
       const card = document.createElement('div');
-      card.className = 'p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/50 flex flex-col gap-2';
+      card.className = 'p-4 rounded-2xl border border-slate-200 bg-white/60 flex flex-col gap-2';
       card.innerHTML = `
         <p class="text-xs text-slate-400">${playbook.focus}</p>
-        <p class="font-semibold text-slate-900 dark:text-white">${playbook.title}</p>
+        <p class="font-semibold text-slate-900">${playbook.title}</p>
         <a class="text-sm text-edulylas-purple font-medium" href="${resolvePath(`playbooks/${playbook.slug}.html`)}">View playbook</a>`;
       container.appendChild(card);
     });
@@ -161,8 +138,8 @@
     container.innerHTML = '';
     window.RECOMMENDED_NOTES.forEach(note => {
       const card = document.createElement('article');
-      card.className = 'p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60';
-      card.innerHTML = `<p class="text-sm font-semibold text-slate-900 dark:text-white">${note.title}</p><p class="text-sm text-slate-500 dark:text-slate-400">${note.detail}</p>`;
+      card.className = 'p-4 rounded-2xl border border-slate-200 bg-white/60';
+      card.innerHTML = `<p class="text-sm font-semibold text-slate-900">${note.title}</p><p class="text-sm text-slate-500">${note.detail}</p>`;
       container.appendChild(card);
     });
   };
@@ -170,7 +147,6 @@
   const initShell = () => {
     const pageId = document.body?.dataset?.page;
     renderNav(pageId);
-    initTheme();
   };
 
   document.addEventListener('DOMContentLoaded', initShell);
