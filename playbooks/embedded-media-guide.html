@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playbook Detail • EduLylas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            edulylas: {
+              purple: '#5A2FD8',
+              blue: '#4F9CF9'
+            }
+          },
+          fontFamily: {
+            inter: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body data-page="playbooks" data-nav-root=".." data-slug="embedded-media-guide" class="font-inter bg-slate-50 text-slate-900 min-h-screen">
+  <header class="fixed inset-x-0 top-0 z-30 border-b border-slate-200/80 bg-white/80 backdrop-blur">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="h-20 flex items-center gap-6">
+        <a href="../index.html" class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-edulylas-purple to-edulylas-blue text-white font-bold flex items-center justify-center">EL</div>
+          <div>
+            <p class="text-lg font-semibold">EduLylas</p>
+            <p class="text-sm text-slate-500">Community Playbooks</p>
+          </div>
+        </a>
+        <nav class="flex flex-wrap items-center gap-2 ml-auto" data-nav></nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-28 pb-16">
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
+      <a href="../playbooks/index.html" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900">
+        <i class="ti ti-arrow-left"></i>
+        Back to library
+      </a>
+      <p class="text-sm uppercase tracking-[0.3em] text-slate-400 mt-6" data-playbook-focus>Playbook</p>
+      <h1 class="text-4xl font-semibold mt-3 mb-4" data-playbook-title>Playbook title</h1>
+      <p class="text-lg text-slate-600" data-playbook-summary>Summary</p>
+      <div class="mt-6 flex flex-wrap gap-2" data-playbook-tags></div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid gap-8 lg:grid-cols-[1.4fr_0.8fr]">
+      <div class="space-y-6">
+        <article class="p-8 rounded-[28px] border border-slate-200 bg-white/80">
+          <h2 class="text-xl font-semibold mb-3">Highlights</h2>
+          <ul class="list-disc list-inside space-y-2 text-sm text-slate-700" data-playbook-highlight></ul>
+        </article>
+        <article class="p-8 rounded-[28px] border border-slate-200 bg-white/80">
+          <h2 class="text-xl font-semibold mb-6">Outcomes</h2>
+          <ul class="space-y-4" data-playbook-outcomes></ul>
+        </article>
+        <article class="p-8 rounded-[28px] border border-slate-200 bg-white/80">
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <h2 class="text-xl font-semibold">Guided media pathway</h2>
+            <span class="text-xs px-3 py-1 rounded-full bg-slate-100 text-slate-600">Demo</span>
+          </div>
+          <p class="text-sm text-slate-600 mb-6">Follow the embedded assets in order. Each step mirrors how facilitators can stitch videos, images, articles, and audio while capturing quick AI-generated takeaways.</p>
+          <div class="space-y-8">
+            <div class="space-y-3">
+              <div class="flex items-center gap-3 text-sm font-semibold text-slate-900">
+                <span class="w-8 h-8 rounded-full bg-edulylas-purple/10 text-edulylas-purple flex items-center justify-center">1</span>
+                Watch the kickoff video
+              </div>
+              <div class="aspect-video rounded-2xl overflow-hidden border border-slate-200 bg-slate-100">
+                <iframe class="w-full h-full" src="https://www.youtube.com/embed/GEmuEWjHr5c" title="AI for education" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              </div>
+              <div class="p-4 rounded-2xl bg-indigo-50 text-sm text-slate-700">
+                <p class="font-semibold text-indigo-900 mb-1">AI summary</p>
+                <p>The clip frames why layered media keeps cohorts engaged, highlights safety norms around embeds, and previews the reflection cadence facilitators can copy.</p>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <div class="flex items-center gap-3 text-sm font-semibold text-slate-900">
+                <span class="w-8 h-8 rounded-full bg-edulylas-purple/10 text-edulylas-purple flex items-center justify-center">2</span>
+                Scan the sample storyboard
+              </div>
+              <div class="rounded-2xl overflow-hidden border border-slate-200 bg-slate-100">
+                <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80" alt="Storyboard sketch" class="w-full h-full object-cover">
+              </div>
+              <div class="p-4 rounded-2xl bg-indigo-50 text-sm text-slate-700">
+                <p class="font-semibold text-indigo-900 mb-1">AI summary</p>
+                <p>The visual storyboard maps a three-act learning arc: invitation, practice, and reflection, showing where each embed lives inside the playbook.</p>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <div class="flex items-center gap-3 text-sm font-semibold text-slate-900">
+                <span class="w-8 h-8 rounded-full bg-edulylas-purple/10 text-edulylas-purple flex items-center justify-center">3</span>
+                Skim the anchor article
+              </div>
+              <div class="rounded-2xl overflow-hidden border border-slate-200 bg-slate-100">
+                <iframe src="https://en.wikipedia.org/wiki/Project-based_learning" title="Project-based learning" class="w-full h-72" loading="lazy"></iframe>
+              </div>
+              <div class="p-4 rounded-2xl bg-indigo-50 text-sm text-slate-700">
+                <p class="font-semibold text-indigo-900 mb-1">AI summary</p>
+                <p>The article outlines core moves in project-based learning and serves as a shared reference. Learners are prompted to highlight two moves they will apply in their next workshop.</p>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <div class="flex items-center gap-3 text-sm font-semibold text-slate-900">
+                <span class="w-8 h-8 rounded-full bg-edulylas-purple/10 text-edulylas-purple flex items-center justify-center">4</span>
+                Listen to the reflection audio
+              </div>
+              <div class="rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 p-4">
+                <audio class="w-full" controls>
+                  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </div>
+              <div class="p-4 rounded-2xl bg-indigo-50 text-sm text-slate-700">
+                <p class="font-semibold text-indigo-900 mb-1">AI summary</p>
+                <p>The audio models a facilitator reflection, emphasizing pacing, check-in prompts, and how to tag insights so AI note-takers can surface patterns for the cohort.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+      <aside class="space-y-6">
+        <div class="p-8 rounded-[28px] border border-slate-200 bg-white/80">
+          <h3 class="text-lg font-semibold mb-4">Key details</h3>
+          <div class="grid grid-cols-2 gap-4 text-sm" data-playbook-meta></div>
+          <div class="mt-6 space-y-3 text-sm text-slate-600">
+            <div class="flex gap-2">
+              <span class="text-edulylas-purple"><i class="ti ti-player-play"></i></span>
+              <p>Best used as a demo or template before facilitators build their own playbook.</p>
+            </div>
+            <div class="flex gap-2">
+              <span class="text-edulylas-purple"><i class="ti ti-link"></i></span>
+              <p>Optimized for shareable embeds from YouTube, Wikimedia, Unsplash, and public MP3s.</p>
+            </div>
+            <div class="flex gap-2">
+              <span class="text-edulylas-purple"><i class="ti ti-rocket"></i></span>
+              <p>Pairs well with AI note-takers or recap bots to keep reflections consistent.</p>
+            </div>
+          </div>
+        </div>
+        <div class="p-8 rounded-[28px] border border-slate-200 bg-white/80">
+          <h3 class="text-lg font-semibold mb-4">Recommended next</h3>
+          <div id="relatedPlaybooks" class="space-y-4"></div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/common.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slug = document.body.dataset.slug;
+      Site.renderPlaybookDetail(slug);
+      Site.renderRecommendations('#relatedPlaybooks', 3, slug);
+    });
+  </script>
+</body>
+</html>

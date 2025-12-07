@@ -13,6 +13,8 @@
     return `${root}/${path}`.replace(/\/+/, '/');
   };
 
+  const EMBEDDED_PLAYBOOK_PATH = 'playbooks/embedded-media-guide.html';
+
   const createPlaybookCard = (playbook, compact = false) => {
     const article = document.createElement('article');
     article.className = `rounded-3xl border border-slate-200 bg-white/80 shadow-sm ${compact ? 'p-5' : 'p-6'} flex flex-col gap-4 hover:-translate-y-1 hover:shadow-xl transition`;
@@ -30,7 +32,7 @@
       </div>
       <div class="flex items-center justify-between pt-2 text-sm text-slate-500">
         <span>${playbook.creator}</span>
-        <a href="${resolvePath(playbook.slug ? `playbooks/${playbook.slug}.html` : '#')}" class="text-edulylas-purple font-medium hover:underline">Open</a>
+        <a href="${resolvePath(EMBEDDED_PLAYBOOK_PATH)}" class="text-edulylas-purple font-medium hover:underline">Open</a>
       </div>`;
     return article;
   };
@@ -58,7 +60,7 @@
     container.innerHTML = '';
     subset.forEach(playbook => {
       const card = createPlaybookCard(playbook, options.compact);
-      card.querySelector('a').href = resolvePath(`playbooks/${playbook.slug}.html`);
+      card.querySelector('a').href = resolvePath(EMBEDDED_PLAYBOOK_PATH);
       container.appendChild(card);
     });
     if (!subset.length && options.emptyMessage) {
@@ -83,7 +85,19 @@
 
     if (title) title.textContent = playbook.title;
     if (summary) summary.textContent = playbook.summary;
-    if (highlight) highlight.textContent = playbook.highlight;
+    if (highlight) {
+      const content = playbook.highlight;
+      if (Array.isArray(content)) {
+        highlight.innerHTML = '';
+        content.forEach(item => {
+          const li = document.createElement('li');
+          li.textContent = item;
+          highlight.appendChild(li);
+        });
+      } else {
+        highlight.textContent = content;
+      }
+    }
     if (focus) focus.textContent = playbook.focus;
     if (meta) meta.innerHTML = `
       <div><p class="text-xs text-slate-400">Region</p><p class="font-semibold">${playbook.region}</p></div>
@@ -127,7 +141,7 @@
       card.innerHTML = `
         <p class="text-xs text-slate-400">${playbook.focus}</p>
         <p class="font-semibold text-slate-900">${playbook.title}</p>
-        <a class="text-sm text-edulylas-purple font-medium" href="${resolvePath(`playbooks/${playbook.slug}.html`)}">View playbook</a>`;
+        <a class="text-sm text-edulylas-purple font-medium" href="${resolvePath(EMBEDDED_PLAYBOOK_PATH)}">View playbook</a>`;
       container.appendChild(card);
     });
   };
