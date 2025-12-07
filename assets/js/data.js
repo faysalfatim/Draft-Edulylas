@@ -228,6 +228,29 @@ const PLAYBOOKS = [
       'Somatic practices cards',
       'Debrief circle script'
     ]
+  },
+  {
+    slug: 'embedded-media-guide',
+    title: 'Embedded Media Pathway Demo',
+    summary: 'Step-by-step template showing embedded videos, images, articles, and audio with AI recaps under each asset.',
+    region: 'Global',
+    level: 'Foundation',
+    duration: '2 weeks',
+    focus: 'Playbook Design',
+    cohortSize: 'Any size',
+    creator: 'EduLylas Studio',
+    tags: ['demo', 'multimedia', 'guides'],
+    highlight: 'Embed-first scaffolding with AI summaries that keep cohorts aligned.',
+    outcomes: [
+      'Facilitators learn how to chain different embed types into one flow.',
+      'Learners receive AI-generated takeaways under every media block.',
+      'Teams can remix the scaffold to add their own assets quickly.'
+    ],
+    resources: [
+      'Embed-ready facilitator outline',
+      'AI summary prompt bank',
+      'Reflection capture template'
+    ]
   }
 ];
 
